@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Info, Minus, Plus } from 'lucide-react'
 import { ru } from 'date-fns/locale'
 
 import { Calendar } from '@/shared/ui/calendar'
@@ -23,6 +23,7 @@ import type { Location } from '@/shared/mocks/locations'
 import { DAYS, TIME_LABELS } from '@/shared/mocks/locations'
 import { mockEvents, type EventDetail } from '@/shared/mocks/events'
 import { ScheduleTable } from '@/entities/location'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -81,7 +82,7 @@ function EventCard({
   const [bold, rest] = splitDescription(event.description)
 
   return (
-    <Card className="rounded-2xl px-5 py-4 gap-0">
+    <Card className="rounded-2xl px-5 py-4 gap-0 border-black">
       {/* Top row */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -108,7 +109,7 @@ function EventCard({
       <div className="flex items-center justify-between mt-4 gap-4">
         <Button
           variant="outline"
-          className="text-lg"
+          className="text-lg border-black"
           disabled={!available}
           onClick={available ? onBook : undefined}
         >
@@ -121,7 +122,7 @@ function EventCard({
             <Button
               variant="outline"
               size="icon"
-              className="h-7 w-7"
+              className="h-7 w-7 border-black"
               onClick={() => onQuantityChange(-1)}
               disabled={quantity <= 1}
             >
@@ -131,7 +132,7 @@ function EventCard({
             <Button
               variant="outline"
               size="icon"
-              className="h-7 w-7"
+              className="h-7 w-7 border-black"
               onClick={() => onQuantityChange(1)}
               disabled={quantity >= event.spotsLeft}
             >
@@ -211,13 +212,23 @@ export default function LocationPageClient({ location }: { location: Location })
           </div>
 
           {/* ── HEADER RIGHT: schedule title ────────────────────────── */}
-          <div className="flex items-end pb-6">
+          <div className="flex items-center gap-2 pb-6">
             <h2 className="text-4xl font-semibold">Расписание данной локации</h2>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="h-5 w-5 text-muted-foreground cursor-help shrink-0" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-[18px]">Выбирайте день, вид досуга, время и записывайтесь на любимые мероприятия через удобные интерфейсы нашей системы!</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
           {/* ── CONTENT LEFT: calendar ──────────────────────────────── */}
           <div className="mb-8 flex flex-col">
-            <div className="rounded-2xl overflow-hidden w-full flex-1 bg-linear-to-br from-[#1F1F1F] to-[#666666] **:data-[selected-single=true]:bg-[#498BD7] **:data-[slot=button]:text-lg">
+            <div className="rounded-2xl overflow-hidden w-full flex-1 bg-linear-to-br from-[#1F1F1F] to-[#666666] border border-black **:data-[selected-single=true]:bg-[#498BD7] **:data-[slot=button]:text-lg">
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -263,7 +274,7 @@ export default function LocationPageClient({ location }: { location: Location })
           <div className="flex flex-col gap-10">
             <div>
               <h2 className="text-4xl font-semibold mb-4">Галерея объекта</h2>
-              <div className="relative rounded-2xl overflow-hidden aspect-video bg-muted">
+              <div className="relative rounded-2xl overflow-hidden aspect-video bg-muted border border-black">
                 <Image
                   src={gallery[galleryIndex]}
                   alt={`${location.name} — фото ${galleryIndex + 1}`}
@@ -306,6 +317,16 @@ export default function LocationPageClient({ location }: { location: Location })
               <h2 className="text-4xl font-semibold mb-3">Описание</h2>
               <p className="text-xl text-muted-foreground leading-relaxed">{location.description}</p>
             </div>
+            <div>
+              <h2 className="text-4xl font-semibold mb-3">Адрес</h2>
+              <p className="text-xl text-muted-foreground">{location.address}</p>
+              <ul className="mt-2">
+                <li className="flex items-center gap-2 text-xl text-muted-foreground">
+                  <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: '#36D453' }} />
+                  {location.metro}
+                </li>
+              </ul>
+            </div>
           </div>
 
         </div>
@@ -313,7 +334,7 @@ export default function LocationPageClient({ location }: { location: Location })
 
       {/* Booking dialog */}
       <Dialog open={!!booking} onOpenChange={(open) => !open && closeBooking()}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="sm:max-w-sm border-black">
           <DialogHeader>
             <DialogTitle className="text-2xl">Записаться на мероприятие</DialogTitle>
             <Separator />
@@ -347,7 +368,7 @@ export default function LocationPageClient({ location }: { location: Location })
                 <Label htmlFor="booking-name" className="text-2xl">Как вас зовут?*</Label>
                 <Input
                   id="booking-name"
-                  className="text-2xl h-14"
+                  className="text-2xl h-14 border-black"
                   placeholder="Иванов Иван Иванович"
                   value={bookingName}
                   onChange={(e) => setBookingName(e.target.value)}
@@ -358,7 +379,7 @@ export default function LocationPageClient({ location }: { location: Location })
                 <Input
                   id="booking-email"
                   type="email"
-                  className="text-2xl h-14"
+                  className="text-2xl h-14 border-black"
                   placeholder="email@gmail.com"
                   value={bookingEmail}
                   onChange={(e) => setBookingEmail(e.target.value)}
@@ -368,7 +389,7 @@ export default function LocationPageClient({ location }: { location: Location })
           )}
           <DialogFooter className="mt-2 flex-row">
             <Button className="text-xl flex-1 h-12" onClick={closeBooking}>Отправить</Button>
-            <Button variant="outline" className="text-xl flex-1 h-12" onClick={closeBooking}>Отменить</Button>
+            <Button variant="outline" className="text-xl flex-1 h-12 border-black" onClick={closeBooking}>Отменить</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

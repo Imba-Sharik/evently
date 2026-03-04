@@ -12,6 +12,8 @@ export type Location = {
   image: string
   gallery: string[]
   description: string
+  address: string
+  metro: string
   schedule: Record<string, DaySchedule> // ключ: 'ПН' | 'ВТ' | 'СР' | 'ЧТ' | 'ПТ' | 'СБ' | 'ВС'
 }
 
@@ -37,6 +39,8 @@ export const locations: Location[] = [
     image: '/location_1.png',
     gallery: ['/location_1.png', '/location_1.png', '/location_1.png'],
     description: birchDescription,
+    address: 'Москва ул. Ленинская Слобода, 26, стр. 35',
+    metro: 'Авиамоторная',
     schedule: sharedSchedule,
   },
   {
@@ -45,6 +49,8 @@ export const locations: Location[] = [
     image: '/location_2.png',
     gallery: ['/location_2.png', '/location_2.png', '/location_2.png'],
     description: birchDescription,
+    address: 'Москва, ул. Садовая-Черногрязская, 13/3',
+    metro: 'Красные Ворота',
     schedule: sharedSchedule,
   },
   {
@@ -53,6 +59,8 @@ export const locations: Location[] = [
     image: '/location_3.png',
     gallery: ['/location_3.png', '/location_3.png', '/location_3.png'],
     description: birchDescription,
+    address: 'Москва, Берсеневская наб., 6, стр. 3',
+    metro: 'Кропоткинская',
     schedule: sharedSchedule,
   },
 ]

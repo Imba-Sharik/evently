@@ -13,7 +13,7 @@ export function ScheduleTable({ schedule, days, selectedDayKey = '', size = 'lg'
   const pad = size === 'sm' ? 'py-1 px-2' : 'py-1 px-3'
 
   return (
-    <div className="bg-linear-to-br from-[#1F1F1F] to-[#666666] rounded-xl px-3 pt-4 pb-2 flex-1">
+    <div className="bg-linear-to-br from-[#1F1F1F] to-[#666666] rounded-xl px-3 pt-4 pb-2 flex-1 border border-black">
       <Table className="border-separate border-spacing-0">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
