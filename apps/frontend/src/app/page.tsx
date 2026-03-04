@@ -23,7 +23,7 @@ export default function Home() {
                     alt={location.name}
                     fill
                     priority
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover"
                   />
                   <Image
@@ -32,7 +32,7 @@ export default function Home() {
                     aria-hidden
                     fill
                     priority
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover grayscale"
                     style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent 30%, black 70%)', maskImage: 'linear-gradient(to bottom, transparent 30%, black 70%)' }}
                   />

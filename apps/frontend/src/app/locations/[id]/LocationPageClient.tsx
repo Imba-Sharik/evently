@@ -279,6 +279,8 @@ export default function LocationPageClient({ location }: { location: Location })
                   src={gallery[galleryIndex]}
                   alt={`${location.name} — фото ${galleryIndex + 1}`}
                   fill
+                  priority={galleryIndex === 0}
+                  sizes="(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 640px"
                   className="object-cover"
                 />
                 {gallery.length > 1 && (
