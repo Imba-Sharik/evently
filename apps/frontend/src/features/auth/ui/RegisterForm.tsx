@@ -43,56 +43,59 @@ export function RegisterForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Create an account</h1>
-          <p className="text-muted-foreground text-sm text-balance">
+          <p className="text-muted-foreground text-lg text-balance">
             Fill in the form below to create your account
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="username">Username</FieldLabel>
+          <FieldLabel className="text-lg" htmlFor="username">Username</FieldLabel>
           <Input
             id="username"
             name="username"
             type="text"
             placeholder="johndoe"
             autoComplete="username"
+            className="text-lg h-11"
             required
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel className="text-lg" htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
             name="email"
             type="email"
             placeholder="m@example.com"
             autoComplete="email"
+            className="text-lg h-11"
             required
           />
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">Password</FieldLabel>
-          <PasswordInput id="password" name="password" autoComplete="new-password" required />
-          <FieldDescription>Minimum 8 characters.</FieldDescription>
+          <FieldLabel className="text-lg" htmlFor="password">Password</FieldLabel>
+          <PasswordInput id="password" name="password" autoComplete="new-password" className="text-lg h-11" required />
+          <FieldDescription className="text-lg">Minimum 8 characters.</FieldDescription>
         </Field>
         <Field>
-          <FieldLabel htmlFor="confirmPassword">Confirm password</FieldLabel>
+          <FieldLabel className="text-lg" htmlFor="confirmPassword">Confirm password</FieldLabel>
           <PasswordInput
             id="confirmPassword"
             name="confirmPassword"
             autoComplete="new-password"
+            className="text-lg h-11"
             required
           />
-          <FieldDescription>Repeat the password above.</FieldDescription>
+          <FieldDescription className="text-lg">Repeat the password above.</FieldDescription>
         </Field>
         <Field>
           {(passwordError ?? state?.error) && (
             <FieldError>{passwordError ?? state?.error}</FieldError>
           )}
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" className="text-lg h-11" disabled={isPending}>
             {isPending ? "Signing up..." : "Sign up"}
           </Button>
         </Field>
-        <FieldDescription className="text-center">
+        <FieldDescription className="text-center text-lg">
           Already have an account?{" "}
           <Link href="/login">Log in</Link>
         </FieldDescription>

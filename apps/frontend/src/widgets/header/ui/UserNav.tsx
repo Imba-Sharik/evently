@@ -21,10 +21,10 @@ export function UserNav({ session }: UserNavProps) {
   if (!session) {
     return (
       <div className="flex gap-2">
-        <Button variant="ghost" asChild>
+        <Button variant="ghost" className="text-lg" asChild>
           <Link href="/login">Log in</Link>
         </Button>
-        <Button asChild>
+        <Button className="text-lg" asChild>
           <Link href="/register">Sign up</Link>
         </Button>
       </div>

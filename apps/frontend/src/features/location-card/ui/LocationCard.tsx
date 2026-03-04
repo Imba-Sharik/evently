@@ -35,17 +35,7 @@ export function LocationCard({ location }: Props) {
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover"
             />
-            <Image
-              src={location.image}
-              alt=""
-              aria-hidden
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="object-cover grayscale"
-              style={{ WebkitMaskImage: 'linear-gradient(to bottom, transparent 30%, black 70%)', maskImage: 'linear-gradient(to bottom, transparent 30%, black 70%)' }}
-            />
-            <div className="absolute top-3 left-3">
+<div className="absolute top-3 left-3">
               <span className="bg-white/90 text-black text-lg font-medium px-3 py-1.5 rounded-full backdrop-blur-sm border border-black">
                 {location.address}
               </span>

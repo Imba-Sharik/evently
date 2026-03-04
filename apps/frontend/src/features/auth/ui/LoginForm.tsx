@@ -31,39 +31,40 @@ export function LoginForm({
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
-          <p className="text-muted-foreground text-sm text-balance">
+          <p className="text-muted-foreground text-lg text-balance">
             Enter your email below to login to your account
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldLabel className="text-lg" htmlFor="email">Email</FieldLabel>
           <Input
             id="email"
             name="identifier"
             type="email"
             placeholder="m@example.com"
+            className="text-lg h-11"
             required
           />
         </Field>
         <Field>
           <div className="flex items-center">
-            <FieldLabel htmlFor="password">Password</FieldLabel>
+            <FieldLabel className="text-lg" htmlFor="password">Password</FieldLabel>
             <a
               href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
+              className="ml-auto text-lg underline-offset-4 hover:underline"
             >
               Forgot your password?
             </a>
           </div>
-          <PasswordInput id="password" name="password" required />
+          <PasswordInput id="password" name="password" className="text-lg h-11" required />
         </Field>
         <Field>
           {state?.error && <FieldError>{state.error}</FieldError>}
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" className="text-lg h-11" disabled={isPending}>
             {isPending ? "Logging in..." : "Log in"}
           </Button>
         </Field>
-        <FieldDescription className="text-center">
+        <FieldDescription className="text-center text-lg">
           Don&apos;t have an account?{" "}
           <Link href="/register">Sign up</Link>
         </FieldDescription>
