@@ -193,13 +193,18 @@ export default function LocationPageClient({ location }: { location: Location })
               </Link>
               <h1 className="text-4xl font-semibold">{location.name}</h1>
             </div>
-            <div className="border rounded-2xl overflow-hidden w-fit">
+            <div className="rounded-2xl overflow-hidden w-full **:data-[selected-single=true]:bg-[#498BD7]">
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => date && setSelectedDate(date)}
                 locale={ru}
-                className="p-4"
+                className="p-4 bg-black/75 backdrop-blur-sm text-white"
+                classNames={{
+                  root: 'w-full',
+                  weekday: 'flex-1 rounded-md text-[0.8rem] font-normal text-white/60 select-none',
+                  outside: 'text-white/30 aria-selected:text-white/30',
+                }}
               />
             </div>
           </div>
@@ -207,18 +212,18 @@ export default function LocationPageClient({ location }: { location: Location })
           {/* ── ROW 1, RIGHT: schedule (stretches to calendar height) ── */}
           <div className="flex flex-col h-full">
             <h2 className="text-3xl font-semibold mb-4">Расписание данной локации</h2>
-            <div className="flex-1 bg-black/75 backdrop-blur-sm rounded-xl px-3 pt-2 pb-2">
-                <Table className="border-separate border-spacing-0">
+            <div className="h-83 bg-black/75 backdrop-blur-sm rounded-xl px-3 pt-4 pb-2">
+                <Table className="border-separate border-spacing-0 h-full">
                   <TableHeader>
                     <TableRow className="border-white/20 hover:bg-transparent">
-                      <TableHead className="text-white text-sm py-2.5 px-3 font-normal">День</TableHead>
-                      <TableHead className="text-white text-sm py-2.5 px-3 font-normal">
+                      <TableHead className="text-white text-sm py-2 px-3 font-normal">День</TableHead>
+                      <TableHead className="text-white text-sm py-2 px-3 font-normal">
                         Утро <span className="text-white/50">(08:00–11:00)</span>
                       </TableHead>
-                      <TableHead className="text-white text-sm py-2.5 px-3 font-normal">
+                      <TableHead className="text-white text-sm py-2 px-3 font-normal">
                         День <span className="text-white/50">(12:00–17:00)</span>
                       </TableHead>
-                      <TableHead className="text-white text-sm py-2.5 px-3 font-normal">
+                      <TableHead className="text-white text-sm py-2 px-3 font-normal">
                         Вечер <span className="text-white/50">(18:30–22:00)</span>
                       </TableHead>
                     </TableRow>
@@ -226,7 +231,7 @@ export default function LocationPageClient({ location }: { location: Location })
                   <TableBody>
                     {DAYS.map((day) => {
                       const isSelected = day === selectedDayKey
-                      const cellBase = 'text-sm py-2.5 px-3'
+                      const cellBase = 'text-sm py-2 px-3'
                       const cellColor = isSelected ? 'text-white' : 'text-white/90'
                       const bg = isSelected ? { backgroundColor: '#498BD7' } : undefined
                       return (
