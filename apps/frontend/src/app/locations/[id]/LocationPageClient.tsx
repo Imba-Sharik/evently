@@ -9,6 +9,9 @@ import { ru } from 'date-fns/locale'
 import { Calendar } from '@/shared/ui/calendar'
 import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
+import { Input } from '@/shared/ui/input'
+import { Label } from '@/shared/ui/label'
+import { Separator } from '@/shared/ui/separator'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
 import {
   Dialog,
@@ -36,6 +39,10 @@ const WEEKDAYS_SHORT = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб']
 
 function formatDate(date: Date) {
   return `${WEEKDAYS_SHORT[date.getDay()]}, ${date.getDate()} ${MONTHS_RU[date.getMonth()]}`
+}
+
+function formatDateLong(date: Date) {
+  return `${date.getDate()} ${MONTHS_RU[date.getMonth()]}, ${date.getFullYear()}`
 }
 
 function getDayKey(date: Date) {
@@ -78,21 +85,21 @@ function EventCard({
       {/* Top row */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-semibold text-base leading-tight">{event.name}</p>
-          <p className="text-sm text-muted-foreground mt-0.5">
+          <p className="font-semibold text-xl leading-tight">{event.name}</p>
+          <p className="text-lg text-muted-foreground mt-0.5">
             {available
               ? `Осталось ${event.spotsLeft} мест`
               : 'Не осталось мест :('}
           </p>
         </div>
-        <div className="text-right text-sm text-muted-foreground shrink-0">
+        <div className="text-right text-lg text-muted-foreground shrink-0">
           <p>{formatDate(date)}</p>
           <p>{event.timeRange}</p>
         </div>
       </div>
 
       {/* Description */}
-      <p className="text-sm mt-3 leading-relaxed">
+      <p className="text-lg mt-3 leading-relaxed">
         <strong>{bold}</strong>
         {rest}
       </p>
@@ -101,7 +108,7 @@ function EventCard({
       <div className="flex items-center justify-between mt-4 gap-4">
         <Button
           variant="outline"
-          size="sm"
+          className="text-lg"
           disabled={!available}
           onClick={available ? onBook : undefined}
         >
@@ -109,7 +116,7 @@ function EventCard({
         </Button>
 
         {available && (
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-lg">
             <span className="text-muted-foreground">Кол-во мест:</span>
             <Button
               variant="outline"
@@ -144,6 +151,14 @@ export default function LocationPageClient({ location }: { location: Location })
   const [quantities, setQuantities] = useState<Record<string, number>>({})
   const [booking, setBooking] = useState<BookingState | null>(null)
   const [galleryIndex, setGalleryIndex] = useState(0)
+  const [bookingName, setBookingName] = useState('')
+  const [bookingEmail, setBookingEmail] = useState('')
+
+  function closeBooking() {
+    setBooking(null)
+    setBookingName('')
+    setBookingEmail('')
+  }
 
   const selectedDayKey = getDayKey(selectedDate)
 
@@ -183,47 +198,56 @@ export default function LocationPageClient({ location }: { location: Location })
   return (
     <div className="bg-background min-h-screen p-8">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0">
 
-          {/* ── ROW 1, LEFT: title + calendar ───────────────────────── */}
-          <div className="flex flex-col gap-6">
+          {/* ── HEADER LEFT: title ──────────────────────────────────── */}
+          <div className="flex items-end pb-6">
             <div className="flex items-center gap-3">
               <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
                 <ArrowLeft className="size-6" />
               </Link>
-              <h1 className="text-4xl font-semibold">{location.name}</h1>
+              <h1 className="text-5xl font-semibold">{location.name}</h1>
             </div>
-            <div className="rounded-2xl overflow-hidden w-full **:data-[selected-single=true]:bg-[#498BD7]">
+          </div>
+
+          {/* ── HEADER RIGHT: schedule title ────────────────────────── */}
+          <div className="flex items-end pb-6">
+            <h2 className="text-4xl font-semibold">Расписание данной локации</h2>
+          </div>
+
+          {/* ── CONTENT LEFT: calendar ──────────────────────────────── */}
+          <div className="mb-8 flex flex-col">
+            <div className="rounded-2xl overflow-hidden w-full flex-1 bg-black/75 backdrop-blur-sm **:data-[selected-single=true]:bg-[#498BD7] **:data-[slot=button]:text-lg">
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={(date) => date && setSelectedDate(date)}
                 locale={ru}
-                className="p-4 bg-black/75 backdrop-blur-sm text-white"
+                className="p-3 bg-transparent text-white [--cell-size:--spacing(8)]"
                 classNames={{
                   root: 'w-full',
-                  weekday: 'flex-1 rounded-md text-[0.8rem] font-normal text-white/60 select-none',
+                  caption_label: 'font-medium select-none text-lg',
+                  weekday: 'flex-1 rounded-md text-base font-normal text-white/60 select-none',
                   outside: 'text-white/30 aria-selected:text-white/30',
                 }}
               />
             </div>
           </div>
 
-          {/* ── ROW 1, RIGHT: schedule (stretches to calendar height) ── */}
-          <div className="flex flex-col h-full">
-            <h2 className="text-3xl font-semibold mb-4">Расписание данной локации</h2>
-            <div className="h-83 bg-black/75 backdrop-blur-sm rounded-xl px-3 pt-4 pb-2">
-                <Table className="border-separate border-spacing-0 h-full">
+          {/* ── CONTENT RIGHT: schedule table ───────────────────────── */}
+          <div className="mb-8 flex flex-col">
+            <div className="bg-black/75 backdrop-blur-sm rounded-xl px-3 pt-4 pb-2 flex-1">
+                <Table className="border-separate border-spacing-0">
                   <TableHeader>
                     <TableRow className="border-white/20 hover:bg-transparent">
-                      <TableHead className="text-white text-sm py-2 px-3 font-normal">День</TableHead>
-                      <TableHead className="text-white text-sm py-2 px-3 font-normal">
+                      <TableHead className="text-white text-lg py-1 px-3 font-normal">День</TableHead>
+                      <TableHead className="text-white text-lg py-1 px-3 font-normal">
                         Утро <span className="text-white/50">(08:00–11:00)</span>
                       </TableHead>
-                      <TableHead className="text-white text-sm py-2 px-3 font-normal">
+                      <TableHead className="text-white text-lg py-1 px-3 font-normal">
                         День <span className="text-white/50">(12:00–17:00)</span>
                       </TableHead>
-                      <TableHead className="text-white text-sm py-2 px-3 font-normal">
+                      <TableHead className="text-white text-lg py-1 px-3 font-normal">
                         Вечер <span className="text-white/50">(18:30–22:00)</span>
                       </TableHead>
                     </TableRow>
@@ -231,7 +255,7 @@ export default function LocationPageClient({ location }: { location: Location })
                   <TableBody>
                     {DAYS.map((day) => {
                       const isSelected = day === selectedDayKey
-                      const cellBase = 'text-sm py-2 px-3'
+                      const cellBase = 'text-lg py-1 px-3'
                       const cellColor = isSelected ? 'text-white' : 'text-white/90'
                       const bg = isSelected ? { backgroundColor: '#498BD7' } : undefined
                       return (
@@ -270,7 +294,7 @@ export default function LocationPageClient({ location }: { location: Location })
               { label: TIME_LABELS.evening, event: eveningEvent },
             ].map(({ label, event }) => (
               <div key={label} className="flex flex-col gap-3">
-                <h2 className="text-lg font-medium text-muted-foreground">{label}</h2>
+                <h2 className="text-2xl font-medium text-muted-foreground">{label}</h2>
                 <EventCard
                   event={event}
                   date={selectedDate}
@@ -285,7 +309,7 @@ export default function LocationPageClient({ location }: { location: Location })
           {/* ── ROW 2, RIGHT: gallery + description ─────────────────── */}
           <div className="flex flex-col gap-10">
             <div>
-              <h2 className="text-3xl font-semibold mb-4">Галерея объекта</h2>
+              <h2 className="text-4xl font-semibold mb-4">Галерея объекта</h2>
               <div className="relative rounded-2xl overflow-hidden aspect-video bg-muted">
                 <Image
                   src={gallery[galleryIndex]}
@@ -326,8 +350,8 @@ export default function LocationPageClient({ location }: { location: Location })
               </div>
             </div>
             <div>
-              <h2 className="text-3xl font-semibold mb-3">Описание</h2>
-              <p className="text-muted-foreground leading-relaxed">{location.description}</p>
+              <h2 className="text-4xl font-semibold mb-3">Описание</h2>
+              <p className="text-xl text-muted-foreground leading-relaxed">{location.description}</p>
             </div>
           </div>
 
@@ -335,38 +359,63 @@ export default function LocationPageClient({ location }: { location: Location })
       </div>
 
       {/* Booking dialog */}
-      <Dialog open={!!booking} onOpenChange={(open) => !open && setBooking(null)}>
-        <DialogContent>
+      <Dialog open={!!booking} onOpenChange={(open) => !open && closeBooking()}>
+        <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Подтверждение записи</DialogTitle>
+            <DialogTitle className="text-2xl">Записаться на мероприятие</DialogTitle>
+            <Separator />
           </DialogHeader>
           {booking && (
-            <div className="flex flex-col gap-3 py-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Мероприятие</span>
-                <span className="font-medium">{booking.event.name}</span>
+            <div className="flex flex-col gap-2.5">
+              <div className="flex gap-2 text-2xl">
+                <span className="text-muted-foreground">Название</span>
+                <span className="font-semibold">{booking.event.name}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Дата</span>
-                <span>{formatDate(booking.date)}</span>
+              <div className="flex gap-2 text-2xl">
+                <span className="text-muted-foreground">Место:</span>
+                <span className="font-semibold">{location.name}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Время</span>
-                <span>{booking.event.timeRange}</span>
+              <div className="flex gap-2 text-2xl">
+                <span className="text-muted-foreground">Дата:</span>
+                <span className="font-semibold">{formatDateLong(booking.date)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Локация</span>
-                <span>{location.name}</span>
+              <div className="flex gap-2 text-2xl">
+                <span className="text-muted-foreground">Время:</span>
+                <span className="font-semibold">{booking.event.timeRange}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Количество мест</span>
+              <div className="flex gap-2 text-2xl">
+                <span className="text-muted-foreground">Количество мест:</span>
                 <span className="font-semibold">{booking.quantity}</span>
+              </div>
+
+              <Separator className="my-1" />
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="booking-name" className="text-2xl">Как вас зовут?*</Label>
+                <Input
+                  id="booking-name"
+                  className="text-2xl h-14"
+                  placeholder="Иванов Иван Иванович"
+                  value={bookingName}
+                  onChange={(e) => setBookingName(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="booking-email" className="text-2xl">Ваш Email*</Label>
+                <Input
+                  id="booking-email"
+                  type="email"
+                  className="text-2xl h-14"
+                  placeholder="email@gmail.com"
+                  value={bookingEmail}
+                  onChange={(e) => setBookingEmail(e.target.value)}
+                />
               </div>
             </div>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setBooking(null)}>Отмена</Button>
-            <Button onClick={() => setBooking(null)}>Подтвердить</Button>
+          <DialogFooter className="mt-2 flex-row">
+            <Button className="text-xl flex-1 h-12" onClick={closeBooking}>Отправить</Button>
+            <Button variant="outline" className="text-xl flex-1 h-12" onClick={closeBooking}>Отменить</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
