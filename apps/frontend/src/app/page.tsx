@@ -9,6 +9,7 @@ import { DAYS, locations } from '@/shared/mocks/locations'
 export default function Home() {
   return (
     <div className="bg-background p-8">
+      <div className="container mx-auto">
       <h2 className="text-5xl font-semibold mb-6">Выбери локацию</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -68,6 +69,7 @@ export default function Home() {
             </div>
           </Link>
         ))}
+      </div>
       </div>
     </div>
   )

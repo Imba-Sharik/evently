@@ -10,6 +10,8 @@ export type Location = {
   id: number
   name: string
   image: string
+  gallery: string[]
+  description: string
   schedule: Record<string, DaySchedule> // ключ: 'ПН' | 'ВТ' | 'СР' | 'ЧТ' | 'ПТ' | 'СБ' | 'ВС'
 }
 
@@ -25,23 +27,32 @@ const sharedSchedule: Record<string, DaySchedule> = {
   ВС: { morning: 'Family Yoga',    afternoon: 'Park Quest',            evening: 'Micro-performances' },
 }
 
+const birchDescription =
+  'The Birch, обладая всеми прелестями скандинавского дизайна, представляет собой настоящее искусство в области архитектуры и интерьера. Расположенным в лесном массиве, он впечатляет своей гармонией с природным окружением, благодаря правильной геометрии пространств и большим панорамным окнам, которые просвечиваются и позволяют наслаждаться захватывающими видами на природу.'
+
 export const locations: Location[] = [
   {
     id: 1,
     name: 'Локация #1',
     image: '/location_1.png',
+    gallery: ['/location_1.png', '/location_1.png', '/location_1.png'],
+    description: birchDescription,
     schedule: sharedSchedule,
   },
   {
     id: 2,
     name: 'Локация #2',
     image: '/location_2.png',
+    gallery: ['/location_2.png', '/location_2.png', '/location_2.png'],
+    description: birchDescription,
     schedule: sharedSchedule,
   },
   {
     id: 3,
     name: 'Локация #3',
     image: '/location_3.png',
+    gallery: ['/location_3.png', '/location_3.png', '/location_3.png'],
+    description: birchDescription,
     schedule: sharedSchedule,
   },
 ]
