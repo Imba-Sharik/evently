@@ -12,7 +12,6 @@ import { Card } from '@/shared/ui/card'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import { Separator } from '@/shared/ui/separator'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
 import {
   Dialog,
   DialogContent,
@@ -23,6 +22,7 @@ import {
 import type { Location } from '@/shared/mocks/locations'
 import { DAYS, TIME_LABELS } from '@/shared/mocks/locations'
 import { mockEvents, type EventDetail } from '@/shared/mocks/events'
+import { ScheduleTable } from '@/entities/location'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -217,7 +217,7 @@ export default function LocationPageClient({ location }: { location: Location })
 
           {/* ── CONTENT LEFT: calendar ──────────────────────────────── */}
           <div className="mb-8 flex flex-col">
-            <div className="rounded-2xl overflow-hidden w-full flex-1 bg-black/75 backdrop-blur-sm **:data-[selected-single=true]:bg-[#498BD7] **:data-[slot=button]:text-lg">
+            <div className="rounded-2xl overflow-hidden w-full flex-1 bg-linear-to-br from-[#1F1F1F] to-[#666666] **:data-[selected-single=true]:bg-[#498BD7] **:data-[slot=button]:text-lg">
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -236,54 +236,7 @@ export default function LocationPageClient({ location }: { location: Location })
 
           {/* ── CONTENT RIGHT: schedule table ───────────────────────── */}
           <div className="mb-8 flex flex-col">
-            <div className="bg-black/75 backdrop-blur-sm rounded-xl px-3 pt-4 pb-2 flex-1">
-                <Table className="border-separate border-spacing-0">
-                  <TableHeader>
-                    <TableRow className="border-white/20 hover:bg-transparent">
-                      <TableHead className="text-white text-lg py-1 px-3 font-normal">День</TableHead>
-                      <TableHead className="text-white text-lg py-1 px-3 font-normal">
-                        Утро <span className="text-white/50">(08:00–11:00)</span>
-                      </TableHead>
-                      <TableHead className="text-white text-lg py-1 px-3 font-normal">
-                        День <span className="text-white/50">(12:00–17:00)</span>
-                      </TableHead>
-                      <TableHead className="text-white text-lg py-1 px-3 font-normal">
-                        Вечер <span className="text-white/50">(18:30–22:00)</span>
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {DAYS.map((day) => {
-                      const isSelected = day === selectedDayKey
-                      const cellBase = 'text-lg py-1 px-3'
-                      const cellColor = isSelected ? 'text-white' : 'text-white/90'
-                      const bg = isSelected ? { backgroundColor: '#498BD7' } : undefined
-                      return (
-                        <TableRow key={day} className="border-0 hover:bg-transparent">
-                          <TableCell
-                            className={`${cellBase} ${cellColor} font-bold rounded-l-lg border-y border-l border-transparent`}
-                            style={bg}
-                          >
-                            {day}
-                          </TableCell>
-                          <TableCell className={`${cellBase} ${cellColor} border-y border-transparent`} style={bg}>
-                            {location.schedule[day].morning}
-                          </TableCell>
-                          <TableCell className={`${cellBase} ${cellColor} border-y border-transparent`} style={bg}>
-                            {location.schedule[day].afternoon}
-                          </TableCell>
-                          <TableCell
-                            className={`${cellBase} ${cellColor} rounded-r-lg border-y border-r border-transparent`}
-                            style={bg}
-                          >
-                            {location.schedule[day].evening}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
+            <ScheduleTable schedule={location.schedule} days={DAYS} selectedDayKey={selectedDayKey} />
           </div>
 
           {/* ── ROW 2, LEFT: events ─────────────────────────────────── */}
