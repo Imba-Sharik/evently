@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Alumni_Sans } from "next/font/google";
-import { Header } from "@/widgets/header/ui/Header";
 import "./globals.css";
 
 const alumniSans = Alumni_Sans({
@@ -24,8 +23,7 @@ export default function RootLayout({
       <body
         className={`${alumniSans.variable} font-(family-name:--font-alumni-sans) antialiased flex flex-col h-full`}
       >
-        <Header />
-        <main className="flex-1 overflow-y-auto pt-16 [scrollbar-gutter:stable]">{children}</main>
+        {children}
       </body>
     </html>
   );
