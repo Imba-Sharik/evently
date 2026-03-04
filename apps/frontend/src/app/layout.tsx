@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Alumni_Sans } from "next/font/google";
 import { Header } from "@/widgets/header/ui/Header";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const alumniSans = Alumni_Sans({
+  variable: "--font-alumni-sans",
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "My App",
-  description: "My app description",
+  title: "Evently",
+  description: "Платформа для бронирования мест на мероприятия",
 };
 
 export default function RootLayout({
@@ -24,12 +20,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="ru" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-full`}
+        className={`${alumniSans.variable} font-(family-name:--font-alumni-sans) antialiased flex flex-col h-full`}
       >
         <Header />
-        <main className="flex-1 overflow-y-auto pt-16">{children}</main>
+        <main className="flex-1 overflow-y-auto pt-16 [scrollbar-gutter:stable]">{children}</main>
       </body>
     </html>
   );

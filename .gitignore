@@ -16,6 +16,7 @@ apps/backend/.tmp/
 apps/backend/build/
 apps/backend/exports/
 apps/backend/src/extensions/documentation/public/
+apps/backend/src/extensions/documentation/documentation/
 
 # Logs
 *.log

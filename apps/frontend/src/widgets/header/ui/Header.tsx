@@ -9,7 +9,7 @@ export async function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="text-xl font-semibold">
-          Logo
+          EVENTLY
         </Link>
         <UserNav session={session} />
       </div>
