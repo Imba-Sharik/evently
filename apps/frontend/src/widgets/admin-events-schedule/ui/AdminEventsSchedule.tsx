@@ -10,7 +10,7 @@ import { LocationCalendar } from '@/widgets/location-calendar'
 import { DAYS } from '@/shared/mocks/locations'
 import { getDayKey } from '@/shared/lib/date'
 import type { Location } from '@/shared/api/generated/types/Location'
-import type { Event as StrapiEvent, EventTimeSlotEnumKey } from '@/shared/api/generated/types/Event'
+import type { Event as StrapiEvent, EventTimeSlotEnum2Key as EventTimeSlotEnumKey } from '@/shared/api/generated/types/Event'
 import { createEventAction, updateEventAction } from '@/entities/event/actions'
 import { EventEditorPanel } from './EventEditorPanel'
 
