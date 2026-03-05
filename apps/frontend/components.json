@@ -20,6 +20,8 @@
     "hooks": "@/shared/hooks"
   },
   "registries": {
-    "@mapcn": "https://mapcn.dev/r/{name}.json"
+    "@mapcn": "https://mapcn.dev/r/{name}.json",
+    "@shadcnblocks": "https://shadcnblocks.com/r/{name}.json",
+    "@diceui": "https://diceui.com/r/{name}.json"
   }
 }
