@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MapPin, CalendarDays, ClipboardList, DollarSign, Users } from "lucide-react";
+import { MapPin, CalendarDays, ClipboardList, DollarSign, Users, Bot, MessageSquare } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -27,16 +27,14 @@ const groups = [
     label: "Операции",
     items: [
       { href: "/admin/bookings", label: "Заявки", icon: ClipboardList },
+      { href: "/admin/chat", label: "Чат", icon: MessageSquare },
       { href: "/admin/team", label: "Команда", icon: Users },
-    ],
-  },
-  {
-    label: "Аналитика",
-    items: [
       { href: "/admin/finances", label: "Финансы", icon: DollarSign },
     ],
   },
 ];
+
+const aiItem = { href: "/admin/ai-assistant", label: "AI Ассистент", icon: Bot };
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -68,6 +66,20 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={pathname === aiItem.href} className="text-xl py-5">
+                  <Link href={aiItem.href}>
+                    <aiItem.icon className="size-5 shrink-0" />
+                    <span>{aiItem.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );

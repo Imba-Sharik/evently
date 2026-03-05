@@ -109,6 +109,9 @@ export default function LocationsPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="text-lg">
               <DropdownMenuItem>Редактировать</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/admin/locations/${row.original.id}/events`)}>
+                Мероприятия
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-600 focus:text-red-600"
@@ -121,7 +124,7 @@ export default function LocationsPage() {
         </div>
       ),
     },
-  ], [])
+  ], [router])
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({

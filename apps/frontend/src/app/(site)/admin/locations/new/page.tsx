@@ -16,7 +16,16 @@ import {
   FileUploadItemMetadata,
   FileUploadItemDelete,
 } from '@/shared/ui/file-upload'
+import { TimePicker } from '@/shared/ui/time-picker'
 import { ArrowLeft, UploadCloud, X } from 'lucide-react'
+
+const SLOT_CONFIG = [
+  { key: 'morning',   label: 'Утро',  min: '05:00', max: '13:00' },
+  { key: 'afternoon', label: 'День',  min: '10:00', max: '19:00' },
+  { key: 'evening',   label: 'Вечер', min: '16:00', max: '23:55' },
+] as const
+
+type SlotKey = typeof SLOT_CONFIG[number]['key']
 
 export default function NewLocationPage() {
   const router = useRouter()
@@ -29,6 +38,15 @@ export default function NewLocationPage() {
     lng: '',
   })
   const [files, setFiles] = useState<File[]>([])
+  const [timeSlots, setTimeSlots] = useState<Record<SlotKey, { start: string; end: string }>>({
+    morning:   { start: '08:00', end: '11:00' },
+    afternoon: { start: '12:00', end: '17:00' },
+    evening:   { start: '18:30', end: '22:00' },
+  })
+
+  function setSlot(slot: SlotKey, field: 'start' | 'end', value: string) {
+    setTimeSlots(prev => ({ ...prev, [slot]: { ...prev[slot], [field]: value } }))
+  }
 
   function set(field: string, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -168,6 +186,32 @@ export default function NewLocationPage() {
                   onChange={(e) => set('lng', e.target.value)}
                   className="border-black text-lg h-11"
                 />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-lg">Временные слоты</Label>
+              <div className="space-y-3">
+                {SLOT_CONFIG.map(slot => (
+                  <div key={slot.key} className="flex items-center gap-3">
+                    <span className="text-lg font-medium w-14 shrink-0">{slot.label}</span>
+                    <TimePicker
+                      value={timeSlots[slot.key].start}
+                      onChange={v => setSlot(slot.key, 'start', v)}
+                      min={slot.min}
+                      max={slot.max}
+                      className="border-black"
+                    />
+                    <span className="text-muted-foreground">—</span>
+                    <TimePicker
+                      value={timeSlots[slot.key].end}
+                      onChange={v => setSlot(slot.key, 'end', v)}
+                      min={slot.min}
+                      max={slot.max}
+                      className="border-black"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 

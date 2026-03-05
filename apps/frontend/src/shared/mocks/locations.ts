@@ -20,14 +20,34 @@ export type Location = {
 
 const DAYS = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'] as const
 
-const sharedSchedule: Record<string, DaySchedule> = {
-  ПН: { morning: 'Wellness-утро',  afternoon: 'Фото-маршрут',         evening: 'Listening Session'  },
-  ВТ: { morning: 'Йога + дыхание', afternoon: 'Поп-ап библиотека',    evening: 'Open Mic'           },
-  СР: { morning: 'Пилатес',        afternoon: 'Audio Walk',            evening: 'Park Talks'         },
-  ЧТ: { morning: 'Тай-чи',         afternoon: 'Street Style съёмки',   evening: 'Social Dance'       },
-  ПТ: { morning: 'Stretch',        afternoon: 'Audio Walk',            evening: 'Кино-вечер'         },
-  СБ: { morning: 'Coffee Rave',    afternoon: 'Fashion Market',        evening: 'Кино / Классика'    },
-  ВС: { morning: 'Family Yoga',    afternoon: 'Park Quest',            evening: 'Micro-performances' },
+const schedule1: Record<string, DaySchedule> = {
+  ПН: { morning: 'Wellness-утро',  afternoon: 'Фото-маршрут',        evening: 'Listening Session'  },
+  ВТ: { morning: 'Йога + дыхание', afternoon: '',                    evening: 'Open Mic'           },
+  СР: { morning: '',               afternoon: 'Audio Walk',          evening: 'Park Talks'         },
+  ЧТ: { morning: 'Тай-чи',         afternoon: 'Street Style съёмки', evening: ''                   },
+  ПТ: { morning: 'Stretch',        afternoon: '',                    evening: 'Кино-вечер'         },
+  СБ: { morning: 'Coffee Rave',    afternoon: 'Fashion Market',      evening: 'Кино / Классика'    },
+  ВС: { morning: '',               afternoon: 'Park Quest',          evening: ''                   },
+}
+
+const schedule2: Record<string, DaySchedule> = {
+  ПН: { morning: '',               afternoon: 'Поп-ап библиотека',   evening: 'Social Dance'       },
+  ВТ: { morning: 'Пилатес',        afternoon: 'Audio Walk',          evening: ''                   },
+  СР: { morning: 'Wellness-утро',  afternoon: '',                    evening: 'Park Talks'         },
+  ЧТ: { morning: 'Йога + дыхание', afternoon: 'Фото-маршрут',        evening: 'Open Mic'           },
+  ПТ: { morning: '',               afternoon: 'Fashion Market',      evening: 'Listening Session'  },
+  СБ: { morning: 'Family Yoga',    afternoon: '',                    evening: 'Micro-performances' },
+  ВС: { morning: 'Coffee Rave',    afternoon: 'Park Quest',          evening: ''                   },
+}
+
+const schedule3: Record<string, DaySchedule> = {
+  ПН: { morning: 'Тай-чи',         afternoon: '',                    evening: 'Кино-вечер'         },
+  ВТ: { morning: 'Stretch',        afternoon: 'Street Style съёмки', evening: 'Park Talks'         },
+  СР: { morning: '',               afternoon: 'Поп-ап библиотека',   evening: ''                   },
+  ЧТ: { morning: 'Coffee Rave',    afternoon: 'Audio Walk',          evening: 'Social Dance'       },
+  ПТ: { morning: 'Пилатес',        afternoon: '',                    evening: 'Open Mic'           },
+  СБ: { morning: '',               afternoon: 'Фото-маршрут',        evening: 'Listening Session'  },
+  ВС: { morning: 'Family Yoga',    afternoon: 'Fashion Market',      evening: ''                   },
 }
 
 const birchDescription =
@@ -43,7 +63,7 @@ export const locations: Location[] = [
     address: 'Москва ул. Ленинская Слобода, 26, стр. 35',
     metro: 'Авиамоторная',
     coords: { lat: 55.7482, lng: 37.7102 },
-    schedule: sharedSchedule,
+    schedule: schedule1,
   },
   {
     id: 2,
@@ -54,7 +74,7 @@ export const locations: Location[] = [
     address: 'Москва, ул. Садовая-Черногрязская, 13/3',
     metro: 'Красные Ворота',
     coords: { lat: 55.7693, lng: 37.6593 },
-    schedule: sharedSchedule,
+    schedule: schedule2,
   },
   {
     id: 3,
@@ -65,7 +85,7 @@ export const locations: Location[] = [
     address: 'Москва, Берсеневская наб., 6, стр. 3',
     metro: 'Кропоткинская',
     coords: { lat: 55.7439, lng: 37.6112 },
-    schedule: sharedSchedule,
+    schedule: schedule3,
   },
 ]
 
