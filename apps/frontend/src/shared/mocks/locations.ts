@@ -14,6 +14,7 @@ export type Location = {
   description: string
   address: string
   metro: string
+  coords: { lat: number; lng: number }
   schedule: Record<string, DaySchedule> // ключ: 'ПН' | 'ВТ' | 'СР' | 'ЧТ' | 'ПТ' | 'СБ' | 'ВС'
 }
 
@@ -41,6 +42,7 @@ export const locations: Location[] = [
     description: birchDescription,
     address: 'Москва ул. Ленинская Слобода, 26, стр. 35',
     metro: 'Авиамоторная',
+    coords: { lat: 55.7482, lng: 37.7102 },
     schedule: sharedSchedule,
   },
   {
@@ -51,6 +53,7 @@ export const locations: Location[] = [
     description: birchDescription,
     address: 'Москва, ул. Садовая-Черногрязская, 13/3',
     metro: 'Красные Ворота',
+    coords: { lat: 55.7693, lng: 37.6593 },
     schedule: sharedSchedule,
   },
   {
@@ -61,6 +64,7 @@ export const locations: Location[] = [
     description: birchDescription,
     address: 'Москва, Берсеневская наб., 6, стр. 3',
     metro: 'Кропоткинская',
+    coords: { lat: 55.7439, lng: 37.6112 },
     schedule: sharedSchedule,
   },
 ]
