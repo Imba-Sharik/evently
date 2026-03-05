@@ -1,17 +1,15 @@
-// import { auth } from "@/auth"; // TODO: раскомментировать когда бэк будет настроен
+import { auth } from "@/auth";
 import { Header } from "@/widgets/header/ui/Header";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
 import { AppSidebar } from "@/widgets/admin-sidebar/ui/AppSidebar";
 
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // TODO: заменить на auth() когда бэк будет настроен
-  // const session = await auth();
-  // const isAdmin = session?.user?.role === "admin";
-  const isAdmin = true;
+  const session = await auth();
+  const isAdmin = session?.user?.role === "manager";
 
   if (isAdmin) {
     return (
