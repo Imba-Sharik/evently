@@ -28,15 +28,19 @@ export function LocationEvents({ slots, selectedDate, locationName, locationDocu
 
   async function handleSubmit() {
     if (!booking || !bookingName || !bookingEmail) return
-    await createBookingAction({
-      customerName: bookingName,
-      customerEmail: bookingEmail,
-      quantity: booking.quantity,
-      eventDocumentId: booking.event.id,
-      locationDocumentId,
-    })
-    closeBooking()
-    toast.success('Вы успешно записались на мероприятие!')
+    try {
+      await createBookingAction({
+        customerName: bookingName,
+        customerEmail: bookingEmail,
+        quantity: booking.quantity,
+        eventDocumentId: booking.event.id,
+        locationDocumentId,
+      })
+      closeBooking()
+      toast.success('Вы успешно записались на мероприятие!')
+    } catch {
+      toast.error('Не удалось оформить запись. Попробуйте ещё раз.')
+    }
   }
 
   return (

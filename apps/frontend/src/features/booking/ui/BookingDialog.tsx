@@ -7,6 +7,7 @@ import { Separator } from '@/shared/ui/separator'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -40,6 +41,7 @@ export function BookingDialog({
       <DialogContent className="sm:max-w-sm border-black">
         <DialogHeader>
           <DialogTitle className="text-2xl">Записаться на мероприятие</DialogTitle>
+          <DialogDescription className="sr-only">Форма записи на мероприятие</DialogDescription>
           <Separator />
         </DialogHeader>
         {booking && (
