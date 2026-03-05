@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { BookingsTable } from '@/widgets/bookings-table'
 import type { BookingRecord, BookingStatus } from '@/widgets/bookings-table'
+import { BookingsDashboard } from '@/widgets/bookings-dashboard'
 
 const mockBookings: BookingRecord[] = [
   {
@@ -96,8 +97,9 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Заявки</h1>
+      <BookingsDashboard bookings={bookings} />
       <BookingsTable
         bookings={bookings}
         onStatusChange={handleStatusChange}

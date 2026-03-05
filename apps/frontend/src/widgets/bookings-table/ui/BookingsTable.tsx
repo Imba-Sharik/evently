@@ -284,7 +284,7 @@ export function BookingsTable({ bookings, onStatusChange, onDelete }: Props) {
       </div>
 
       {/* Pagination footer */}
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
+      <div className="flex items-center justify-between text-lg text-muted-foreground">
         <span>
           {totalRows === 0
             ? 'Нет заявок'
@@ -296,12 +296,12 @@ export function BookingsTable({ bookings, onStatusChange, onDelete }: Props) {
             <span>Строк на странице</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="h-8 w-16 border-black gap-1 text-sm">
+                <Button variant="outline" className="h-8 w-16 border-black gap-1 text-lg px-2">
                   {pageSize}
                   <ChevronDown className="size-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="text-lg">
                 <DropdownMenuRadioGroup
                   value={String(pageSize)}
                   onValueChange={(v) => { table.setPageSize(Number(v)); table.setPageIndex(0) }}
