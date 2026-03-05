@@ -21,6 +21,6 @@ export async function createBookingAction(params: {
         location: params.locationDocumentId,
       },
     },
-    strapiConfig(),
+    strapiConfig() as never,
   )
 }
