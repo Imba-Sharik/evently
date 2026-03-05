@@ -9,7 +9,7 @@ import type {
   RequestConfig,
   ResponseErrorConfig,
 } from "@kubb/plugin-client/clients/axios";
-import type { GetUsersCountQueryResponse } from "../types/GetUsersCount.ts";
+import type { GetUsersCountQueryResponse } from "../types/GetUsersCount";
 
 function getGetUsersCountUrl() {
   const res = { method: "GET", url: `/users/count` as const };

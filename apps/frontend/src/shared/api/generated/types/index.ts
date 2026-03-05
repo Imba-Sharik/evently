@@ -1,167 +1,295 @@
 export type {
-  DeleteUsersIdPathParams,
+  DeleteEventsId200,
+  DeleteEventsId400,
+  DeleteEventsId401,
+  DeleteEventsId403,
+  DeleteEventsId404,
+  DeleteEventsId500,
+  DeleteEventsIdMutationResponse,
+  DeleteEventsIdPathParams,
+  DeleteEventsidMutation,
+} from "./DeleteEventsid";
+export type {
+  DeleteLocationsId200,
+  DeleteLocationsId400,
+  DeleteLocationsId401,
+  DeleteLocationsId403,
+  DeleteLocationsId404,
+  DeleteLocationsId500,
+  DeleteLocationsIdMutationResponse,
+  DeleteLocationsIdPathParams,
+  DeleteLocationsidMutation,
+} from "./DeleteLocationsid";
+export type {
   DeleteUsersId200,
   DeleteUsersIdError,
-  DeleteUsersIdMutationResponse,
   DeleteUsersIdMutation,
-} from "./DeleteUsersId.ts";
+  DeleteUsersIdMutationResponse,
+  DeleteUsersIdPathParams,
+} from "./DeleteUsersId";
 export type {
-  DeleteUsersPermissionsRolesRolePathParams,
-  DeleteUsersPermissionsRolesRole200OkEnumKey,
   DeleteUsersPermissionsRolesRole200,
+  DeleteUsersPermissionsRolesRole200OkEnumKey,
   DeleteUsersPermissionsRolesRoleError,
-  DeleteUsersPermissionsRolesRoleMutationResponse,
   DeleteUsersPermissionsRolesRoleMutation,
-} from "./DeleteUsersPermissionsRolesRole.ts";
-export type { Error } from "./Error.ts";
+  DeleteUsersPermissionsRolesRoleMutationResponse,
+  DeleteUsersPermissionsRolesRolePathParams,
+} from "./DeleteUsersPermissionsRolesRole";
+export type { Error } from "./Error";
 export type {
-  GetAuthEmailConfirmationQueryParams,
+  Event,
+  EventTimeSlotEnumKey,
+  EventsTimeSlotEnumKey,
+} from "./Event";
+export type { EventListResponse } from "./EventListResponse";
+export type { DataTimeSlotEnumKey, EventRequest } from "./EventRequest";
+export type { EventResponse } from "./EventResponse";
+export type {
   GetAuthEmailConfirmation301,
   GetAuthEmailConfirmationError,
-  GetAuthEmailConfirmationQueryResponse,
   GetAuthEmailConfirmationQuery,
-} from "./GetAuthEmailConfirmation.ts";
+  GetAuthEmailConfirmationQueryParams,
+  GetAuthEmailConfirmationQueryResponse,
+} from "./GetAuthEmailConfirmation";
 export type {
-  GetAuthProviderCallbackPathParams,
   GetAuthProviderCallback200,
   GetAuthProviderCallbackError,
-  GetAuthProviderCallbackQueryResponse,
+  GetAuthProviderCallbackPathParams,
   GetAuthProviderCallbackQuery,
-} from "./GetAuthProviderCallback.ts";
+  GetAuthProviderCallbackQueryResponse,
+} from "./GetAuthProviderCallback";
 export type {
-  GetConnectProviderPathParams,
   GetConnectProvider301,
   GetConnectProviderError,
-  GetConnectProviderQueryResponse,
+  GetConnectProviderPathParams,
   GetConnectProviderQuery,
-} from "./GetConnectProvider.ts";
+  GetConnectProviderQueryResponse,
+} from "./GetConnectProvider";
+export type {
+  GetEvents200,
+  GetEvents400,
+  GetEvents401,
+  GetEvents403,
+  GetEvents404,
+  GetEvents500,
+  GetEventsQuery,
+  GetEventsQueryParams,
+  GetEventsQueryResponse,
+} from "./GetEvents";
+export type {
+  GetEventsId200,
+  GetEventsId400,
+  GetEventsId401,
+  GetEventsId403,
+  GetEventsId404,
+  GetEventsId500,
+  GetEventsIdPathParams,
+  GetEventsIdQueryResponse,
+  GetEventsidQuery,
+} from "./GetEventsid";
+export type {
+  GetLocations200,
+  GetLocations400,
+  GetLocations401,
+  GetLocations403,
+  GetLocations404,
+  GetLocations500,
+  GetLocationsQuery,
+  GetLocationsQueryParams,
+  GetLocationsQueryResponse,
+} from "./GetLocations";
+export type {
+  GetLocationsId200,
+  GetLocationsId400,
+  GetLocationsId401,
+  GetLocationsId403,
+  GetLocationsId404,
+  GetLocationsId500,
+  GetLocationsIdPathParams,
+  GetLocationsIdQueryResponse,
+  GetLocationsidQuery,
+} from "./GetLocationsid";
 export type {
   GetUsers200,
   GetUsersError,
-  GetUsersQueryResponse,
   GetUsersQuery,
-} from "./GetUsers.ts";
+  GetUsersQueryResponse,
+} from "./GetUsers";
 export type {
   GetUsersCount200,
   GetUsersCountError,
-  GetUsersCountQueryResponse,
   GetUsersCountQuery,
-} from "./GetUsersCount.ts";
+  GetUsersCountQueryResponse,
+} from "./GetUsersCount";
 export type {
-  GetUsersIdPathParams,
   GetUsersId200,
   GetUsersIdError,
-  GetUsersIdQueryResponse,
+  GetUsersIdPathParams,
   GetUsersIdQuery,
-} from "./GetUsersId.ts";
+  GetUsersIdQueryResponse,
+} from "./GetUsersId";
 export type {
   GetUsersMe200,
   GetUsersMeError,
-  GetUsersMeQueryResponse,
   GetUsersMeQuery,
-} from "./GetUsersMe.ts";
+  GetUsersMeQueryResponse,
+} from "./GetUsersMe";
 export type {
   GetUsersPermissions200,
   GetUsersPermissionsError,
-  GetUsersPermissionsQueryResponse,
   GetUsersPermissionsPermissionsQuery,
-} from "./GetUsersPermissionsPermissions.ts";
+  GetUsersPermissionsQueryResponse,
+} from "./GetUsersPermissionsPermissions";
 export type {
   GetUsersPermissionsRoles200,
   GetUsersPermissionsRolesError,
-  GetUsersPermissionsRolesQueryResponse,
   GetUsersPermissionsRolesQuery,
-} from "./GetUsersPermissionsRoles.ts";
+  GetUsersPermissionsRolesQueryResponse,
+} from "./GetUsersPermissionsRoles";
 export type {
-  GetUsersPermissionsRolesIdPathParams,
   GetUsersPermissionsRolesId200,
   GetUsersPermissionsRolesIdError,
-  GetUsersPermissionsRolesIdQueryResponse,
+  GetUsersPermissionsRolesIdPathParams,
   GetUsersPermissionsRolesIdQuery,
-} from "./GetUsersPermissionsRolesId.ts";
+  GetUsersPermissionsRolesIdQueryResponse,
+} from "./GetUsersPermissionsRolesId";
+export type { EventsTimeSlotEnum2Key, Location } from "./Location";
+export type { LocationListResponse } from "./LocationListResponse";
+export type { LocationRequest } from "./LocationRequest";
+export type { LocationResponse } from "./LocationResponse";
 export type {
   PostAuthChangePassword200,
   PostAuthChangePasswordError,
+  PostAuthChangePasswordMutation,
   PostAuthChangePasswordMutationRequest,
   PostAuthChangePasswordMutationResponse,
-  PostAuthChangePasswordMutation,
-} from "./PostAuthChangePassword.ts";
+} from "./PostAuthChangePassword";
 export type {
-  PostAuthForgotPassword200OkEnumKey,
   PostAuthForgotPassword200,
+  PostAuthForgotPassword200OkEnumKey,
   PostAuthForgotPasswordError,
+  PostAuthForgotPasswordMutation,
   PostAuthForgotPasswordMutationRequest,
   PostAuthForgotPasswordMutationResponse,
-  PostAuthForgotPasswordMutation,
-} from "./PostAuthForgotPassword.ts";
+} from "./PostAuthForgotPassword";
 export type {
   PostAuthLocal200,
   PostAuthLocalError,
+  PostAuthLocalMutation,
   PostAuthLocalMutationRequest,
   PostAuthLocalMutationResponse,
-  PostAuthLocalMutation,
-} from "./PostAuthLocal.ts";
+} from "./PostAuthLocal";
 export type {
   PostAuthLocalRegister200,
   PostAuthLocalRegisterError,
+  PostAuthLocalRegisterMutation,
   PostAuthLocalRegisterMutationRequest,
   PostAuthLocalRegisterMutationResponse,
-  PostAuthLocalRegisterMutation,
-} from "./PostAuthLocalRegister.ts";
+} from "./PostAuthLocalRegister";
 export type {
   PostAuthResetPassword200,
   PostAuthResetPasswordError,
+  PostAuthResetPasswordMutation,
   PostAuthResetPasswordMutationRequest,
   PostAuthResetPasswordMutationResponse,
-  PostAuthResetPasswordMutation,
-} from "./PostAuthResetPassword.ts";
+} from "./PostAuthResetPassword";
 export type {
-  PostAuthSendEmailConfirmation200SentEnumKey,
   PostAuthSendEmailConfirmation200,
+  PostAuthSendEmailConfirmation200SentEnumKey,
   PostAuthSendEmailConfirmationError,
+  PostAuthSendEmailConfirmationMutation,
   PostAuthSendEmailConfirmationMutationRequest,
   PostAuthSendEmailConfirmationMutationResponse,
-  PostAuthSendEmailConfirmationMutation,
-} from "./PostAuthSendEmailConfirmation.ts";
+} from "./PostAuthSendEmailConfirmation";
+export type {
+  PostEvents200,
+  PostEvents400,
+  PostEvents401,
+  PostEvents403,
+  PostEvents404,
+  PostEvents500,
+  PostEventsMutation,
+  PostEventsMutationRequest,
+  PostEventsMutationResponse,
+} from "./PostEvents";
+export type {
+  PostLocations200,
+  PostLocations400,
+  PostLocations401,
+  PostLocations403,
+  PostLocations404,
+  PostLocations500,
+  PostLocationsMutation,
+  PostLocationsMutationRequest,
+  PostLocationsMutationResponse,
+} from "./PostLocations";
 export type {
   PostUsers201,
   PostUsersError,
+  PostUsersMutation,
   PostUsersMutationRequest,
   PostUsersMutationResponse,
-  PostUsersMutation,
-} from "./PostUsers.ts";
+} from "./PostUsers";
 export type {
-  PostUsersPermissionsRoles200OkEnumKey,
   PostUsersPermissionsRoles200,
+  PostUsersPermissionsRoles200OkEnumKey,
   PostUsersPermissionsRolesError,
+  PostUsersPermissionsRolesMutation,
   PostUsersPermissionsRolesMutationRequest,
   PostUsersPermissionsRolesMutationResponse,
-  PostUsersPermissionsRolesMutation,
-} from "./PostUsersPermissionsRoles.ts";
+} from "./PostUsersPermissionsRoles";
 export type {
-  PutUsersIdPathParams,
+  PutEventsId200,
+  PutEventsId400,
+  PutEventsId401,
+  PutEventsId403,
+  PutEventsId404,
+  PutEventsId500,
+  PutEventsIdMutationRequest,
+  PutEventsIdMutationResponse,
+  PutEventsIdPathParams,
+  PutEventsidMutation,
+} from "./PutEventsid";
+export type {
+  PutLocationsId200,
+  PutLocationsId400,
+  PutLocationsId401,
+  PutLocationsId403,
+  PutLocationsId404,
+  PutLocationsId500,
+  PutLocationsIdMutationRequest,
+  PutLocationsIdMutationResponse,
+  PutLocationsIdPathParams,
+  PutLocationsidMutation,
+} from "./PutLocationsid";
+export type {
   PutUsersId200,
   PutUsersIdError,
+  PutUsersIdMutation,
   PutUsersIdMutationRequest,
   PutUsersIdMutationResponse,
-  PutUsersIdMutation,
-} from "./PutUsersId.ts";
+  PutUsersIdPathParams,
+} from "./PutUsersId";
 export type {
-  PutUsersPermissionsRolesRolePathParams,
-  PutUsersPermissionsRolesRole200OkEnumKey,
   PutUsersPermissionsRolesRole200,
+  PutUsersPermissionsRolesRole200OkEnumKey,
   PutUsersPermissionsRolesRoleError,
+  PutUsersPermissionsRolesRoleMutation,
   PutUsersPermissionsRolesRoleMutationRequest,
   PutUsersPermissionsRolesRoleMutationResponse,
-  PutUsersPermissionsRolesRoleMutation,
-} from "./PutUsersPermissionsRolesRole.ts";
-export type { UsersPermissionsPermissionsTree } from "./UsersPermissionsPermissionsTree.ts";
-export type { UsersPermissionsRole } from "./UsersPermissionsRole.ts";
-export type { UsersPermissionsRoleRequest } from "./UsersPermissionsRoleRequest.ts";
-export type { UsersPermissionsUser } from "./UsersPermissionsUser.ts";
-export type { UsersPermissionsUserRegistration } from "./UsersPermissionsUserRegistration.ts";
-export { deleteUsersPermissionsRolesRole200OkEnum } from "./DeleteUsersPermissionsRolesRole.ts";
-export { postAuthForgotPassword200OkEnum } from "./PostAuthForgotPassword.ts";
-export { postAuthSendEmailConfirmation200SentEnum } from "./PostAuthSendEmailConfirmation.ts";
-export { postUsersPermissionsRoles200OkEnum } from "./PostUsersPermissionsRoles.ts";
-export { putUsersPermissionsRolesRole200OkEnum } from "./PutUsersPermissionsRolesRole.ts";
+  PutUsersPermissionsRolesRolePathParams,
+} from "./PutUsersPermissionsRolesRole";
+export type { UsersPermissionsPermissionsTree } from "./UsersPermissionsPermissionsTree";
+export type { UsersPermissionsRole } from "./UsersPermissionsRole";
+export type { UsersPermissionsRoleRequest } from "./UsersPermissionsRoleRequest";
+export type { UsersPermissionsUser } from "./UsersPermissionsUser";
+export type { UsersPermissionsUserRegistration } from "./UsersPermissionsUserRegistration";
+export { deleteUsersPermissionsRolesRole200OkEnum } from "./DeleteUsersPermissionsRolesRole";
+export { eventTimeSlotEnum } from "./Event";
+export { eventsTimeSlotEnum } from "./Event";
+export { dataTimeSlotEnum } from "./EventRequest";
+export { eventsTimeSlotEnum2 } from "./Location";
+export { postAuthForgotPassword200OkEnum } from "./PostAuthForgotPassword";
+export { postAuthSendEmailConfirmation200SentEnum } from "./PostAuthSendEmailConfirmation";
+export { postUsersPermissionsRoles200OkEnum } from "./PostUsersPermissionsRoles";
+export { putUsersPermissionsRolesRole200OkEnum } from "./PutUsersPermissionsRolesRole";

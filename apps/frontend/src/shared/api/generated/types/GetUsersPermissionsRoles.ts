@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { Error } from "./Error.ts";
-import type { UsersPermissionsRole } from "./UsersPermissionsRole.ts";
+import type { Error } from "./Error";
+import type { UsersPermissionsRole } from "./UsersPermissionsRole";
 
 /**
  * @description Returns list of roles

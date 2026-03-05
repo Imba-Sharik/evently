@@ -12,7 +12,7 @@ import type {
 import type {
   PostAuthSendEmailConfirmationMutationRequest,
   PostAuthSendEmailConfirmationMutationResponse,
-} from "../types/PostAuthSendEmailConfirmation.ts";
+} from "../types/PostAuthSendEmailConfirmation";
 
 function getPostAuthSendEmailConfirmationUrl() {
   const res = { method: "POST", url: `/auth/send-email-confirmation` as const };
@@ -24,7 +24,7 @@ function getPostAuthSendEmailConfirmationUrl() {
  * {@link /auth/send-email-confirmation}
  */
 export async function postAuthSendEmailConfirmation(
-  data?: PostAuthSendEmailConfirmationMutationRequest,
+  data: PostAuthSendEmailConfirmationMutationRequest,
   config: Partial<
     RequestConfig<PostAuthSendEmailConfirmationMutationRequest>
   > & { client?: Client } = {},

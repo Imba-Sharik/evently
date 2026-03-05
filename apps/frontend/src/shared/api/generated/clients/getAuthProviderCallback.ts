@@ -12,7 +12,7 @@ import type {
 import type {
   GetAuthProviderCallbackQueryResponse,
   GetAuthProviderCallbackPathParams,
-} from "../types/GetAuthProviderCallback.ts";
+} from "../types/GetAuthProviderCallback";
 
 function getGetAuthProviderCallbackUrl(
   provider: GetAuthProviderCallbackPathParams["provider"],

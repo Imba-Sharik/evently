@@ -12,7 +12,7 @@ import type {
 import type {
   DeleteUsersIdMutationResponse,
   DeleteUsersIdPathParams,
-} from "../types/DeleteUsersId.ts";
+} from "../types/DeleteUsersId";
 
 function getDeleteUsersIdUrl(id: DeleteUsersIdPathParams["id"]) {
   const res = { method: "DELETE", url: `/users/${id}` as const };

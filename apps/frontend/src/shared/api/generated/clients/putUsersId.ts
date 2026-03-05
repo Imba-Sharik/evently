@@ -13,7 +13,7 @@ import type {
   PutUsersIdMutationRequest,
   PutUsersIdMutationResponse,
   PutUsersIdPathParams,
-} from "../types/PutUsersId.ts";
+} from "../types/PutUsersId";
 
 function getPutUsersIdUrl(id: PutUsersIdPathParams["id"]) {
   const res = { method: "PUT", url: `/users/${id}` as const };

@@ -1,14 +1,10 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowUpRight, ChevronDown, ChevronUp } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 import { Card } from '@/shared/ui/card'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/shared/ui/collapsible'
-import { DAYS } from '@/shared/mocks/locations'
-import { ScheduleTable } from '@/entities/location'
 import type { Location } from '@/shared/mocks/locations'
 
 type Props = {
@@ -16,7 +12,6 @@ type Props = {
 }
 
 export function LocationCard({ location }: Props) {
-  const [open, setOpen] = useState(false)
   const router = useRouter()
 
   return (
@@ -40,7 +35,7 @@ export function LocationCard({ location }: Props) {
                 {location.address}
               </span>
             </div>
-            <div className="absolute bottom-3 left-3 right-3">
+            {/* <div className="absolute bottom-3 left-3 right-3">
               <Collapsible open={open} onOpenChange={setOpen}>
                 <CollapsibleContent>
                   <div className="mb-2">
@@ -60,7 +55,7 @@ export function LocationCard({ location }: Props) {
                   </span>
                 </CollapsibleTrigger>
               </Collapsible>
-            </div>
+            </div> */}
           </div>
         </div>
       </Card>

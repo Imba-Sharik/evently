@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
@@ -18,6 +21,18 @@ import {
 } from '@/shared/ui/file-upload'
 import { TimePicker } from '@/shared/ui/time-picker'
 import { ArrowLeft, UploadCloud, X } from 'lucide-react'
+import { createLocationAction } from '@/entities/location/actions'
+
+const schema = z.object({
+  name:        z.string().min(1, 'Обязательное поле'),
+  address:     z.string().min(1, 'Обязательное поле'),
+  metro:       z.string().optional(),
+  description: z.string().optional(),
+  lat:         z.string().optional(),
+  lng:         z.string().optional(),
+})
+
+type LocationFormValues = z.infer<typeof schema>
 
 const SLOT_CONFIG = [
   { key: 'morning',   label: 'Утро',  min: '05:00', max: '13:00' },
@@ -29,34 +44,47 @@ type SlotKey = typeof SLOT_CONFIG[number]['key']
 
 export default function NewLocationPage() {
   const router = useRouter()
-  const [form, setForm] = useState({
-    name: '',
-    address: '',
-    metro: '',
-    description: '',
-    lat: '',
-    lng: '',
-  })
   const [files, setFiles] = useState<File[]>([])
   const [timeSlots, setTimeSlots] = useState<Record<SlotKey, { start: string; end: string }>>({
     morning:   { start: '08:00', end: '11:00' },
     afternoon: { start: '12:00', end: '17:00' },
     evening:   { start: '18:30', end: '22:00' },
   })
+  const [serverError, setServerError] = useState<string | null>(null)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LocationFormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { name: '', address: '', metro: '', description: '', lat: '', lng: '' },
+  })
 
   function setSlot(slot: SlotKey, field: 'start' | 'end', value: string) {
     setTimeSlots(prev => ({ ...prev, [slot]: { ...prev[slot], [field]: value } }))
   }
 
-  function set(field: string, value: string) {
-    setForm((prev) => ({ ...prev, [field]: value }))
-  }
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+  async function onSubmit(values: LocationFormValues) {
     if (files.length < 1) return
-    // TODO: save to backend
-    router.push('/admin/locations')
+    setServerError(null)
+
+    const fd = new FormData()
+    fd.append('name', values.name)
+    fd.append('address', values.address)
+    if (values.metro)       fd.append('metro', values.metro)
+    if (values.description) fd.append('description', values.description)
+    if (values.lat)         fd.append('lat', values.lat)
+    if (values.lng)         fd.append('lng', values.lng)
+    fd.append('timeSlots', JSON.stringify(timeSlots))
+    files.forEach(f => fd.append('files', f))
+
+    const result = await createLocationAction(fd)
+    if ('error' in result) {
+      setServerError(result.error)
+    } else {
+      router.push('/admin/locations')
+    }
   }
 
   return (
@@ -68,7 +96,7 @@ export default function NewLocationPage() {
         <h1 className="text-2xl font-semibold">Новая локация</h1>
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-8 items-start">
 
           {/* Левая колонка — загрузка фото */}
@@ -123,11 +151,10 @@ export default function NewLocationPage() {
               <Input
                 id="name"
                 placeholder="Локация #4"
-                value={form.name}
-                onChange={(e) => set('name', e.target.value)}
                 className="border-black text-lg h-11"
-                required
+                {...register('name')}
               />
+              {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -135,11 +162,10 @@ export default function NewLocationPage() {
               <Input
                 id="address"
                 placeholder="Москва, ул. Примерная, 1"
-                value={form.address}
-                onChange={(e) => set('address', e.target.value)}
                 className="border-black text-lg h-11"
-                required
+                {...register('address')}
               />
+              {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -147,10 +173,8 @@ export default function NewLocationPage() {
               <Input
                 id="metro"
                 placeholder="Площадь Революции"
-                value={form.metro}
-                onChange={(e) => set('metro', e.target.value)}
                 className="border-black text-lg h-11"
-                required
+                {...register('metro')}
               />
             </div>
 
@@ -159,10 +183,9 @@ export default function NewLocationPage() {
               <Textarea
                 id="description"
                 placeholder="Расскажите о локации..."
-                value={form.description}
-                onChange={(e) => set('description', e.target.value)}
                 rows={4}
                 className="border-black text-[18px] placeholder:text-[19px] resize-none min-h-28"
+                {...register('description')}
               />
             </div>
 
@@ -172,9 +195,8 @@ export default function NewLocationPage() {
                 <Input
                   id="lat"
                   placeholder="55.7558"
-                  value={form.lat}
-                  onChange={(e) => set('lat', e.target.value)}
                   className="border-black text-lg h-11"
+                  {...register('lat')}
                 />
               </div>
               <div className="flex-1 space-y-2">
@@ -182,9 +204,8 @@ export default function NewLocationPage() {
                 <Input
                   id="lng"
                   placeholder="37.6173"
-                  value={form.lng}
-                  onChange={(e) => set('lng', e.target.value)}
                   className="border-black text-lg h-11"
+                  {...register('lng')}
                 />
               </div>
             </div>
@@ -215,11 +236,24 @@ export default function NewLocationPage() {
               </div>
             </div>
 
+            {serverError && (
+              <p className="text-sm text-destructive">{serverError}</p>
+            )}
+
             <div className="flex gap-3 pt-2">
-              <Button type="submit" className="text-lg h-11 px-6" disabled={files.length < 1}>
-                Создать
+              <Button
+                type="submit"
+                className="text-lg h-11 px-6"
+                disabled={files.length < 1 || isSubmitting}
+              >
+                {isSubmitting ? 'Сохранение...' : 'Создать'}
               </Button>
-              <Button type="button" variant="outline" className="text-lg h-11 border-black" onClick={() => router.push('/admin/locations')}>
+              <Button
+                type="button"
+                variant="outline"
+                className="text-lg h-11 border-black"
+                onClick={() => router.push('/admin/locations')}
+              >
                 Отмена
               </Button>
             </div>

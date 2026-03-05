@@ -9,7 +9,7 @@ import type {
   RequestConfig,
   ResponseErrorConfig,
 } from "@kubb/plugin-client/clients/axios";
-import type { GetUsersPermissionsQueryResponse } from "../types/GetUsersPermissionsPermissions.ts";
+import type { GetUsersPermissionsQueryResponse } from "../types/GetUsersPermissionsPermissions";
 
 function getGetUsersPermissionsPermissionsUrl() {
   const res = { method: "GET", url: `/users-permissions/permissions` as const };

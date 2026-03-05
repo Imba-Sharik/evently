@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { Error } from "./Error.ts";
-import type { UsersPermissionsUser } from "./UsersPermissionsUser.ts";
+import type { Error } from "./Error";
+import type { UsersPermissionsUser } from "./UsersPermissionsUser";
 
 /**
  * @description Returns an array of users

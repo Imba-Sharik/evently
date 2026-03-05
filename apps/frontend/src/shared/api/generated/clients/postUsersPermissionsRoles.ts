@@ -12,7 +12,7 @@ import type {
 import type {
   PostUsersPermissionsRolesMutationRequest,
   PostUsersPermissionsRolesMutationResponse,
-} from "../types/PostUsersPermissionsRoles.ts";
+} from "../types/PostUsersPermissionsRoles";
 
 function getPostUsersPermissionsRolesUrl() {
   const res = { method: "POST", url: `/users-permissions/roles` as const };
@@ -24,7 +24,7 @@ function getPostUsersPermissionsRolesUrl() {
  * {@link /users-permissions/roles}
  */
 export async function postUsersPermissionsRoles(
-  data?: PostUsersPermissionsRolesMutationRequest,
+  data: PostUsersPermissionsRolesMutationRequest,
   config: Partial<RequestConfig<PostUsersPermissionsRolesMutationRequest>> & {
     client?: Client;
   } = {},

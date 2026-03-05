@@ -3,7 +3,7 @@
  * Do not edit manually.
  */
 
-import type { Error } from "./Error.ts";
+import type { Error } from "./Error";
 
 export const postAuthSendEmailConfirmation200SentEnum = {
   true: true,

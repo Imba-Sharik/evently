@@ -1,29 +1,62 @@
 'use client'
 
-import { useState } from 'react'
-import { format } from 'date-fns'
+import { useMemo, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { addDays, format, parseISO, startOfWeek } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Textarea } from '@/shared/ui/textarea'
 import { TimePicker } from '@/shared/ui/time-picker'
-import { Plus, Pencil, X } from 'lucide-react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/shared/ui/alert-dialog'
+import { Plus, Pencil, X, Trash2 } from 'lucide-react'
 import { LocationCalendar } from '@/widgets/location-calendar'
-import type { Location, TimeSlot } from '@/shared/mocks/locations'
 import { DAYS } from '@/shared/mocks/locations'
 import { getDayKey } from '@/shared/lib/date'
+import type { Location } from '@/shared/api/generated/types/Location'
+import type { Event as StrapiEvent, EventTimeSlotEnumKey } from '@/shared/api/generated/types/Event'
+import { createEventAction, updateEventAction, deleteEventAction } from '@/entities/event/actions'
 
-const TIME_SLOTS: { key: TimeSlot; label: string; time: string; min: string; max: string }[] = [
-  { key: 'morning',   label: 'Утро',  time: '08:00–11:00', min: '08:00', max: '11:00' },
-  { key: 'afternoon', label: 'День',  time: '12:00–17:00', min: '12:00', max: '17:00' },
-  { key: 'evening',   label: 'Вечер', time: '18:30–22:00', min: '18:30', max: '22:00' },
-]
+type TimeSlot = EventTimeSlotEnumKey
+
+const SLOT_LABELS: Record<TimeSlot, string> = {
+  morning:   'Утро',
+  afternoon: 'День',
+  evening:   'Вечер',
+}
+
+type SlotMeta = { key: TimeSlot; label: string; time: string; min: string; max: string }
+
+function buildTimeSlots(raw: Record<TimeSlot, { start: string; end: string }> | null | undefined): SlotMeta[] {
+  return (['morning', 'afternoon', 'evening'] as const).map(key => {
+    const slot = raw?.[key]
+    return {
+      key,
+      label: SLOT_LABELS[key],
+      time:  slot ? `${slot.start}–${slot.end}` : '',
+      min:   slot?.start ?? '00:00',
+      max:   slot?.end   ?? '23:59',
+    }
+  })
+}
 
 type SelectedSlot = {
   day: string
+  date: string // YYYY-MM-DD
   timeSlot: TimeSlot
   mode: 'create' | 'edit'
+  documentId?: string // for edit mode
 }
 
 type HoveredCell = { day: string; timeSlot: TimeSlot }
@@ -38,46 +71,94 @@ type FormState = {
 
 const emptyForm = (): FormState => ({ name: '', description: '', spots: '', startTime: '', endTime: '' })
 
+/** Strip seconds/ms from Strapi time (HH:mm:ss.SSS → HH:mm) */
+function toPickerTime(t: string | undefined | null) {
+  if (!t) return ''
+  return t.slice(0, 5)
+}
+
 export function AdminEventsClient({
   location,
   selectedDate,
+  events,
 }: {
   location: Location
   selectedDate: Date
+  events: StrapiEvent[]
 }) {
-  const [schedule, setSchedule] = useState(location.schedule)
+  const router = useRouter()
+  const TIME_SLOTS = buildTimeSlots(location.timeSlots as Record<TimeSlot, { start: string; end: string }> | null)
   const [selectedSlot, setSelectedSlot] = useState<SelectedSlot | null>(null)
   const [hoveredCell, setHoveredCell] = useState<HoveredCell | null>(null)
   const [form, setForm] = useState<FormState>(emptyForm())
+  const [isPending, startTransition] = useTransition()
 
   const selectedDayKey = getDayKey(selectedDate)
+
+  // Map events by date → timeSlot for fast lookup
+  const eventsByDate = useMemo(() => {
+    const map: Record<string, Record<TimeSlot, StrapiEvent | null>> = {}
+    for (const ev of events) {
+      if (!ev.date) continue
+      if (!map[ev.date]) map[ev.date] = { morning: null, afternoon: null, evening: null }
+      if (ev.timeSlot) map[ev.date][ev.timeSlot as TimeSlot] = ev
+    }
+    return map
+  }, [events])
+
+  // Compute ISO dates for each day of the week (Mon–Sun)
+  const weekDates = useMemo(() => {
+    const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 })
+    return DAYS.map((key, i) => ({
+      key,
+      dateStr: format(addDays(weekStart, i), 'yyyy-MM-dd'),
+    }))
+  }, [selectedDate])
 
   function setField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm(prev => ({ ...prev, [key]: value }))
   }
 
-  function openCreate(day: string, timeSlot: TimeSlot) {
+  function openCreate(day: string, dateStr: string, timeSlot: TimeSlot) {
     const slotMeta = TIME_SLOTS.find(s => s.key === timeSlot)!
-    setSelectedSlot({ day, timeSlot, mode: 'create' })
+    setSelectedSlot({ day, date: dateStr, timeSlot, mode: 'create' })
     setForm({ ...emptyForm(), startTime: slotMeta.min, endTime: slotMeta.max })
   }
 
-  function openEdit(day: string, timeSlot: TimeSlot, name: string) {
+  function openEdit(day: string, dateStr: string, timeSlot: TimeSlot, event: StrapiEvent) {
     const slotMeta = TIME_SLOTS.find(s => s.key === timeSlot)!
-    setSelectedSlot({ day, timeSlot, mode: 'edit' })
-    setForm({ name, description: '', spots: '', startTime: slotMeta.min, endTime: slotMeta.max })
+    setSelectedSlot({ day, date: dateStr, timeSlot, mode: 'edit', documentId: String(event.documentId) })
+    setForm({
+      name: event.name,
+      description: event.description ?? '',
+      spots: String(event.totalSpots),
+      startTime: toPickerTime(event.startTime) || slotMeta.min,
+      endTime: toPickerTime(event.endTime) || slotMeta.max,
+    })
   }
 
   function handleSave() {
     if (!selectedSlot || !form.name.trim()) return
-    setSchedule(prev => ({
-      ...prev,
-      [selectedSlot.day]: {
-        ...prev[selectedSlot.day],
-        [selectedSlot.timeSlot]: form.name.trim(),
-      },
-    }))
-    setSelectedSlot(null)
+    startTransition(async () => {
+      const payload = {
+        name: form.name.trim(),
+        date: selectedSlot.date,
+        timeSlot: selectedSlot.timeSlot,
+        startTime: form.startTime,
+        endTime: form.endTime,
+        totalSpots: Number(form.spots) || 0,
+        description: form.description || undefined,
+      }
+      const result = selectedSlot.mode === 'edit' && selectedSlot.documentId
+        ? await updateEventAction(selectedSlot.documentId, payload)
+        : await createEventAction({ ...payload, locationDocumentId: String(location.documentId) })
+      if ('error' in result) {
+        alert(result.error)
+        return
+      }
+      router.refresh()
+      setSelectedSlot(null)
+    })
   }
 
   function isCellHovered(day: string, timeSlot: TimeSlot) {
@@ -89,7 +170,7 @@ export function AdminEventsClient({
   }
 
   const activeSlotMeta = selectedSlot ? TIME_SLOTS.find(s => s.key === selectedSlot.timeSlot)! : null
-  const formattedDate = format(selectedDate, 'd MMMM yyyy', { locale: ru })
+  const slotDate = selectedSlot ? format(parseISO(selectedSlot.date), 'd MMMM yyyy', { locale: ru }) : ''
 
   return (
     <div className="p-6 space-y-6">
@@ -113,9 +194,10 @@ export function AdminEventsClient({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {DAYS.map(day => {
+              {weekDates.map(({ key: day, dateStr }) => {
                 const isDaySelected = day === selectedDayKey
                 const rowBg = isDaySelected ? { backgroundColor: '#498BD7' } : undefined
+                const daySlotMap = eventsByDate[dateStr]
                 return (
                   <TableRow key={day} className="border-0 hover:bg-transparent">
                     <TableCell
@@ -125,7 +207,8 @@ export function AdminEventsClient({
                       {day}
                     </TableCell>
                     {TIME_SLOTS.map((slot, idx) => {
-                      const name = schedule[day][slot.key]
+                      const event = daySlotMap?.[slot.key] ?? null
+                      const name = event?.name ?? null
                       const hovered = isCellHovered(day, slot.key)
                       const active = isCellActive(day, slot.key)
                       const isLast = idx === TIME_SLOTS.length - 1
@@ -140,7 +223,7 @@ export function AdminEventsClient({
                           <div className="flex items-center gap-2 h-7">
                             {name ? (
                               <button
-                                onClick={() => openEdit(day, slot.key, name)}
+                                onClick={() => openEdit(day, dateStr, slot.key, event!)}
                                 className="flex items-center gap-1 text-left cursor-pointer w-fit"
                               >
                                 <span className={`hover:underline ${active && selectedSlot?.mode === 'edit' ? 'underline' : ''}`}>
@@ -150,7 +233,7 @@ export function AdminEventsClient({
                               </button>
                             ) : null}
                             <button
-                              onClick={() => openCreate(day, slot.key)}
+                              onClick={() => openCreate(day, dateStr, slot.key)}
                               className={`flex items-center gap-0.5 text-sm text-white/60 hover:text-white/90 transition-colors cursor-pointer shrink-0 ${(hovered || active) ? 'visible' : 'invisible'}`}
                             >
                               <Plus className="size-3" />
@@ -177,8 +260,8 @@ export function AdminEventsClient({
               <h3 className="text-xl font-semibold">
                 {selectedSlot.mode === 'create' ? 'Новое мероприятие' : 'Редактировать мероприятие'}
               </h3>
-              <p className="text-muted-foreground text-sm mt-0.5">
-                {formattedDate}
+              <p className="text-muted-foreground mt-0.5" style={{ fontSize: 18 }}>
+                {slotDate}
                 {' · '}
                 {selectedSlot.day}
                 {' · '}
@@ -253,9 +336,47 @@ export function AdminEventsClient({
             </div>
           </div>
 
-          <Button onClick={handleSave} disabled={!form.name.trim()} className="h-10 text-base">
-            Сохранить
-          </Button>
+          <div className="flex items-center justify-between">
+            <Button onClick={handleSave} disabled={!form.name.trim() || isPending} className="h-10 text-lg">
+              {isPending
+                ? (selectedSlot?.mode === 'edit' ? 'Обновление...' : 'Сохранение...')
+                : (selectedSlot?.mode === 'edit' ? 'Обновить' : 'Сохранить')}
+            </Button>
+
+            {selectedSlot?.mode === 'edit' && selectedSlot.documentId && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" disabled={isPending}>
+                    <Trash2 className="size-5" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="text-lg">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-lg">Удалить мероприятие?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-lg">
+                      Это действие нельзя отменить. Мероприятие «{form.name}» будет удалено безвозвратно.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="sm:justify-start">
+                    <AlertDialogCancel className="text-lg">Отмена</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="text-lg bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      onClick={() => {
+                        startTransition(async () => {
+                          const result = await deleteEventAction(selectedSlot.documentId!)
+                          if ('error' in result) { alert(result.error); return }
+                          router.refresh()
+                          setSelectedSlot(null)
+                        })
+                      }}
+                    >
+                      Удалить
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -3,7 +3,7 @@
  * Do not edit manually.
  */
 
-import type { UsersPermissionsPermissionsTree } from "./UsersPermissionsPermissionsTree.ts";
+import type { UsersPermissionsPermissionsTree } from "./UsersPermissionsPermissionsTree";
 
 export type UsersPermissionsRoleRequest = {
   /**

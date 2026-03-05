@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "required": ["data"],
+  "properties": {
+    "data": {
+      "required": ["name", "address"],
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "address": { "type": "string" },
+        "metro": { "type": "string" },
+        "description": { "type": "string" },
+        "lat": { "type": "number", "format": "float" },
+        "lng": { "type": "number", "format": "float" },
+        "timeSlots": {},
+        "image": {
+          "oneOf": [{ "type": "integer" }, { "type": "string" }],
+          "example": "string or id"
+        },
+        "gallery": {
+          "type": "array",
+          "items": {
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "example": "string or id"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "example": "string or id"
+          }
+        },
+        "locale": { "type": "string" },
+        "localizations": {
+          "type": "array",
+          "items": {
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "example": "string or id"
+          }
+        }
+      }
+    }
+  },
+  "x-readme-ref-name": "LocationRequest"
+}

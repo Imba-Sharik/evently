@@ -3,9 +3,9 @@
  * Do not edit manually.
  */
 
-import type { Error } from "./Error.ts";
-import type { UsersPermissionsRole } from "./UsersPermissionsRole.ts";
-import type { UsersPermissionsUser } from "./UsersPermissionsUser.ts";
+import type { Error } from "./Error";
+import type { UsersPermissionsRole } from "./UsersPermissionsRole";
+import type { UsersPermissionsUser } from "./UsersPermissionsUser";
 
 export type PutUsersIdPathParams = {
   /**

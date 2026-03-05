@@ -12,7 +12,7 @@ import type {
 import type {
   PostAuthLocalMutationRequest,
   PostAuthLocalMutationResponse,
-} from "../types/PostAuthLocal.ts";
+} from "../types/PostAuthLocal";
 
 function getPostAuthLocalUrl() {
   const res = { method: "POST", url: `/auth/local` as const };
@@ -25,7 +25,7 @@ function getPostAuthLocalUrl() {
  * {@link /auth/local}
  */
 export async function postAuthLocal(
-  data?: PostAuthLocalMutationRequest,
+  data: PostAuthLocalMutationRequest,
   config: Partial<RequestConfig<PostAuthLocalMutationRequest>> & {
     client?: Client;
   } = {},

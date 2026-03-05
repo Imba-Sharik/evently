@@ -12,7 +12,7 @@ import type {
 import type {
   GetAuthEmailConfirmationQueryResponse,
   GetAuthEmailConfirmationQueryParams,
-} from "../types/GetAuthEmailConfirmation.ts";
+} from "../types/GetAuthEmailConfirmation";
 
 function getGetAuthEmailConfirmationUrl() {
   const res = { method: "GET", url: `/auth/email-confirmation` as const };

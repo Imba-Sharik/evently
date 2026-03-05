@@ -1,7 +1,6 @@
 "use client"
 
-import { usePathname } from "next/navigation"
-import { locations } from "@/shared/mocks/locations"
+import { usePathname, useSearchParams } from "next/navigation"
 
 const TITLES: Record<string, string> = {
   "/admin/locations": "Локации",
@@ -14,17 +13,19 @@ const TITLES: Record<string, string> = {
   "/profile": "Профиль",
 }
 
-function getTitle(pathname: string): string {
-  if (TITLES[pathname]) return TITLES[pathname]
-  const eventsMatch = pathname.match(/^\/admin\/locations\/(\d+)\/events$/)
-  if (eventsMatch) {
-    const location = locations.find((l) => l.id === Number(eventsMatch[1]))
-    return location ? `${location.name} / Мероприятия` : "Мероприятия"
-  }
-  return ""
-}
-
 export function PageTitle() {
   const pathname = usePathname()
-  return <span className="text-xl font-semibold">{getTitle(pathname)}</span>
+  const searchParams = useSearchParams()
+
+  if (TITLES[pathname]) {
+    return <span className="text-xl font-semibold">{TITLES[pathname]}</span>
+  }
+
+  if (/^\/admin\/locations\/[^/]+\/events$/.test(pathname)) {
+    const name = searchParams.get("name")
+    const title = name ? `${name} / Мероприятия` : "Мероприятия"
+    return <span className="text-xl font-semibold">{title}</span>
+  }
+
+  return null
 }

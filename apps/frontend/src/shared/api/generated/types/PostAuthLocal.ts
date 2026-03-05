@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { Error } from "./Error.ts";
-import type { UsersPermissionsUserRegistration } from "./UsersPermissionsUserRegistration.ts";
+import type { Error } from "./Error";
+import type { UsersPermissionsUserRegistration } from "./UsersPermissionsUserRegistration";
 
 /**
  * @description Connection

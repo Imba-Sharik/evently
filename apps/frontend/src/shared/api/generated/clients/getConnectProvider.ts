@@ -12,7 +12,7 @@ import type {
 import type {
   GetConnectProviderQueryResponse,
   GetConnectProviderPathParams,
-} from "../types/GetConnectProvider.ts";
+} from "../types/GetConnectProvider";
 
 function getGetConnectProviderUrl(
   provider: GetConnectProviderPathParams["provider"],

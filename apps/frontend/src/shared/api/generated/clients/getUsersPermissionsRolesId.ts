@@ -12,7 +12,7 @@ import type {
 import type {
   GetUsersPermissionsRolesIdQueryResponse,
   GetUsersPermissionsRolesIdPathParams,
-} from "../types/GetUsersPermissionsRolesId.ts";
+} from "../types/GetUsersPermissionsRolesId";
 
 function getGetUsersPermissionsRolesIdUrl(
   id: GetUsersPermissionsRolesIdPathParams["id"],

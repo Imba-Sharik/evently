@@ -12,7 +12,7 @@ import type {
 import type {
   PostUsersMutationRequest,
   PostUsersMutationResponse,
-} from "../types/PostUsers.ts";
+} from "../types/PostUsers";
 
 function getPostUsersUrl() {
   const res = { method: "POST", url: `/users` as const };

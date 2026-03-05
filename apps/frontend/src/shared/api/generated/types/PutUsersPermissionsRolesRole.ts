@@ -3,8 +3,8 @@
  * Do not edit manually.
  */
 
-import type { Error } from "./Error.ts";
-import type { UsersPermissionsPermissionsTree } from "./UsersPermissionsPermissionsTree.ts";
+import type { Error } from "./Error";
+import type { UsersPermissionsPermissionsTree } from "./UsersPermissionsPermissionsTree";
 
 export type PutUsersPermissionsRolesRolePathParams = {
   /**

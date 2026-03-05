@@ -12,7 +12,7 @@ import type {
 import type {
   DeleteUsersPermissionsRolesRoleMutationResponse,
   DeleteUsersPermissionsRolesRolePathParams,
-} from "../types/DeleteUsersPermissionsRolesRole.ts";
+} from "../types/DeleteUsersPermissionsRolesRole";
 
 function getDeleteUsersPermissionsRolesRoleUrl(
   role: DeleteUsersPermissionsRolesRolePathParams["role"],

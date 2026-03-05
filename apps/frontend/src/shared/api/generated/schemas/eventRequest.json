@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "required": ["data"],
+  "properties": {
+    "data": {
+      "required": [
+        "name",
+        "date",
+        "startTime",
+        "endTime",
+        "timeSlot",
+        "totalSpots"
+      ],
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "startTime": {
+          "type": "string",
+          "format": "time",
+          "example": "12:54.000"
+        },
+        "endTime": {
+          "type": "string",
+          "format": "time",
+          "example": "12:54.000"
+        },
+        "timeSlot": {
+          "type": "string",
+          "enum": ["morning", "afternoon", "evening"]
+        },
+        "totalSpots": { "type": "integer" },
+        "description": { "type": "string" },
+        "location": {
+          "oneOf": [{ "type": "integer" }, { "type": "string" }],
+          "example": "string or id"
+        },
+        "locale": { "type": "string" },
+        "localizations": {
+          "type": "array",
+          "items": {
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "example": "string or id"
+          }
+        }
+      }
+    }
+  },
+  "x-readme-ref-name": "EventRequest"
+}

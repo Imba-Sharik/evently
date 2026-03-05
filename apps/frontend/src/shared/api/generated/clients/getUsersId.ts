@@ -12,7 +12,7 @@ import type {
 import type {
   GetUsersIdQueryResponse,
   GetUsersIdPathParams,
-} from "../types/GetUsersId.ts";
+} from "../types/GetUsersId";
 
 function getGetUsersIdUrl(id: GetUsersIdPathParams["id"]) {
   const res = { method: "GET", url: `/users/${id}` as const };

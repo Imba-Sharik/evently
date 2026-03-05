@@ -12,7 +12,7 @@ import type {
 import type {
   PostAuthResetPasswordMutationRequest,
   PostAuthResetPasswordMutationResponse,
-} from "../types/PostAuthResetPassword.ts";
+} from "../types/PostAuthResetPassword";
 
 function getPostAuthResetPasswordUrl() {
   const res = { method: "POST", url: `/auth/reset-password` as const };
@@ -24,7 +24,7 @@ function getPostAuthResetPasswordUrl() {
  * {@link /auth/reset-password}
  */
 export async function postAuthResetPassword(
-  data?: PostAuthResetPasswordMutationRequest,
+  data: PostAuthResetPasswordMutationRequest,
   config: Partial<RequestConfig<PostAuthResetPasswordMutationRequest>> & {
     client?: Client;
   } = {},

@@ -12,7 +12,7 @@ import type {
 import type {
   PostAuthChangePasswordMutationRequest,
   PostAuthChangePasswordMutationResponse,
-} from "../types/PostAuthChangePassword.ts";
+} from "../types/PostAuthChangePassword";
 
 function getPostAuthChangePasswordUrl() {
   const res = { method: "POST", url: `/auth/change-password` as const };

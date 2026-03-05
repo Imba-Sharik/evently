@@ -12,7 +12,7 @@ import type {
 import type {
   PostAuthForgotPasswordMutationRequest,
   PostAuthForgotPasswordMutationResponse,
-} from "../types/PostAuthForgotPassword.ts";
+} from "../types/PostAuthForgotPassword";
 
 function getPostAuthForgotPasswordUrl() {
   const res = { method: "POST", url: `/auth/forgot-password` as const };
@@ -24,7 +24,7 @@ function getPostAuthForgotPasswordUrl() {
  * {@link /auth/forgot-password}
  */
 export async function postAuthForgotPassword(
-  data?: PostAuthForgotPasswordMutationRequest,
+  data: PostAuthForgotPasswordMutationRequest,
   config: Partial<RequestConfig<PostAuthForgotPasswordMutationRequest>> & {
     client?: Client;
   } = {},

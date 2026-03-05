@@ -3,7 +3,7 @@
  * Do not edit manually.
  */
 
-import type { UsersPermissionsUser } from "./UsersPermissionsUser.ts";
+import type { UsersPermissionsUser } from "./UsersPermissionsUser";
 
 export type UsersPermissionsUserRegistration = {
   /**

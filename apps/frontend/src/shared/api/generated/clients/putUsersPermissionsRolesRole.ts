@@ -13,7 +13,7 @@ import type {
   PutUsersPermissionsRolesRoleMutationRequest,
   PutUsersPermissionsRolesRoleMutationResponse,
   PutUsersPermissionsRolesRolePathParams,
-} from "../types/PutUsersPermissionsRolesRole.ts";
+} from "../types/PutUsersPermissionsRolesRole";
 
 function getPutUsersPermissionsRolesRoleUrl(
   role: PutUsersPermissionsRolesRolePathParams["role"],
@@ -31,7 +31,7 @@ function getPutUsersPermissionsRolesRoleUrl(
  */
 export async function putUsersPermissionsRolesRole(
   role: PutUsersPermissionsRolesRolePathParams["role"],
-  data?: PutUsersPermissionsRolesRoleMutationRequest,
+  data: PutUsersPermissionsRolesRoleMutationRequest,
   config: Partial<
     RequestConfig<PutUsersPermissionsRolesRoleMutationRequest>
   > & { client?: Client } = {},
