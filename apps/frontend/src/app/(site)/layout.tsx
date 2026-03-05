@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { Header } from "@/widgets/header/ui/Header";
+import { PageTitle } from "@/widgets/header/ui/PageTitle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
 import { AppSidebar } from "@/widgets/admin-sidebar/ui/AppSidebar";
 
@@ -16,7 +17,7 @@ export default async function SiteLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <Header className="sticky top-0 z-10 rounded-t-xl" leftSlot={<SidebarTrigger />} />
+          <Header className="sticky top-0 z-10 rounded-t-xl" leftSlot={<><SidebarTrigger /><PageTitle /></>} showLogo={false} />
           <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
             {children}
           </main>

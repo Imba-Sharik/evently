@@ -98,7 +98,6 @@ export default function BookingsPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Заявки</h1>
       <BookingsDashboard bookings={bookings} />
       <BookingsTable
         bookings={bookings}
