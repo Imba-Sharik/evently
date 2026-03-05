@@ -1,4 +1,24 @@
 export type {
+  Booking,
+  BookingStatusEnumKey,
+  BookingsStatusEnumKey,
+  EventTimeSlotEnumKey,
+} from "./Booking";
+export type { BookingListResponse } from "./BookingListResponse";
+export type { BookingRequest, DataStatusEnumKey } from "./BookingRequest";
+export type { BookingResponse } from "./BookingResponse";
+export type {
+  DeleteBookingsId200,
+  DeleteBookingsId400,
+  DeleteBookingsId401,
+  DeleteBookingsId403,
+  DeleteBookingsId404,
+  DeleteBookingsId500,
+  DeleteBookingsIdMutationResponse,
+  DeleteBookingsIdPathParams,
+  DeleteBookingsidMutation,
+} from "./DeleteBookingsid";
+export type {
   DeleteEventsId200,
   DeleteEventsId400,
   DeleteEventsId401,
@@ -37,8 +57,9 @@ export type {
 } from "./DeleteUsersPermissionsRolesRole";
 export type { Error } from "./Error";
 export type {
+  BookingsStatusEnum2Key,
   Event,
-  EventTimeSlotEnumKey,
+  EventTimeSlotEnum2Key,
   EventsTimeSlotEnumKey,
 } from "./Event";
 export type { EventListResponse } from "./EventListResponse";
@@ -58,6 +79,28 @@ export type {
   GetAuthProviderCallbackQuery,
   GetAuthProviderCallbackQueryResponse,
 } from "./GetAuthProviderCallback";
+export type {
+  GetBookings200,
+  GetBookings400,
+  GetBookings401,
+  GetBookings403,
+  GetBookings404,
+  GetBookings500,
+  GetBookingsQuery,
+  GetBookingsQueryParams,
+  GetBookingsQueryResponse,
+} from "./GetBookings";
+export type {
+  GetBookingsId200,
+  GetBookingsId400,
+  GetBookingsId401,
+  GetBookingsId403,
+  GetBookingsId404,
+  GetBookingsId500,
+  GetBookingsIdPathParams,
+  GetBookingsIdQueryResponse,
+  GetBookingsidQuery,
+} from "./GetBookingsid";
 export type {
   GetConnectProvider301,
   GetConnectProviderError,
@@ -153,7 +196,11 @@ export type {
   GetUsersPermissionsRolesIdQuery,
   GetUsersPermissionsRolesIdQueryResponse,
 } from "./GetUsersPermissionsRolesId";
-export type { EventsTimeSlotEnum2Key, Location } from "./Location";
+export type {
+  BookingsStatusEnum3Key,
+  EventsTimeSlotEnum2Key,
+  Location,
+} from "./Location";
 export type { LocationListResponse } from "./LocationListResponse";
 export type { LocationRequest } from "./LocationRequest";
 export type { LocationResponse } from "./LocationResponse";
@@ -202,6 +249,17 @@ export type {
   PostAuthSendEmailConfirmationMutationResponse,
 } from "./PostAuthSendEmailConfirmation";
 export type {
+  PostBookings200,
+  PostBookings400,
+  PostBookings401,
+  PostBookings403,
+  PostBookings404,
+  PostBookings500,
+  PostBookingsMutation,
+  PostBookingsMutationRequest,
+  PostBookingsMutationResponse,
+} from "./PostBookings";
+export type {
   PostEvents200,
   PostEvents400,
   PostEvents401,
@@ -238,6 +296,18 @@ export type {
   PostUsersPermissionsRolesMutationRequest,
   PostUsersPermissionsRolesMutationResponse,
 } from "./PostUsersPermissionsRoles";
+export type {
+  PutBookingsId200,
+  PutBookingsId400,
+  PutBookingsId401,
+  PutBookingsId403,
+  PutBookingsId404,
+  PutBookingsId500,
+  PutBookingsIdMutationRequest,
+  PutBookingsIdMutationResponse,
+  PutBookingsIdPathParams,
+  PutBookingsidMutation,
+} from "./PutBookingsid";
 export type {
   PutEventsId200,
   PutEventsId400,
@@ -284,10 +354,16 @@ export type { UsersPermissionsRole } from "./UsersPermissionsRole";
 export type { UsersPermissionsRoleRequest } from "./UsersPermissionsRoleRequest";
 export type { UsersPermissionsUser } from "./UsersPermissionsUser";
 export type { UsersPermissionsUserRegistration } from "./UsersPermissionsUserRegistration";
+export { bookingStatusEnum } from "./Booking";
+export { bookingsStatusEnum } from "./Booking";
+export { eventTimeSlotEnum } from "./Booking";
+export { dataStatusEnum } from "./BookingRequest";
 export { deleteUsersPermissionsRolesRole200OkEnum } from "./DeleteUsersPermissionsRolesRole";
-export { eventTimeSlotEnum } from "./Event";
+export { bookingsStatusEnum2 } from "./Event";
+export { eventTimeSlotEnum2 } from "./Event";
 export { eventsTimeSlotEnum } from "./Event";
 export { dataTimeSlotEnum } from "./EventRequest";
+export { bookingsStatusEnum3 } from "./Location";
 export { eventsTimeSlotEnum2 } from "./Location";
 export { postAuthForgotPassword200OkEnum } from "./PostAuthForgotPassword";
 export { postAuthSendEmailConfirmation200SentEnum } from "./PostAuthSendEmailConfirmation";

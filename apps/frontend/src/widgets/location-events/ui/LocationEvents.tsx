@@ -1,7 +1,9 @@
 'use client'
 
+import { toast } from 'sonner'
 import { EventCard } from '@/entities/event'
 import { useBooking, BookingDialog } from '@/features/booking'
+import { createBookingAction } from '@/entities/booking/actions'
 import type { EventDetail } from '@/shared/mocks/events'
 
 type EventSlot = {
@@ -13,15 +15,29 @@ type Props = {
   slots: EventSlot[]
   selectedDate: Date
   locationName: string
+  locationDocumentId: string
 }
 
-export function LocationEvents({ slots, selectedDate, locationName }: Props) {
+export function LocationEvents({ slots, selectedDate, locationName, locationDocumentId }: Props) {
   const {
     booking, bookingName, bookingEmail,
     setBookingName, setBookingEmail,
     getQuantity, changeQuantity,
     openBooking, closeBooking,
   } = useBooking()
+
+  async function handleSubmit() {
+    if (!booking || !bookingName || !bookingEmail) return
+    await createBookingAction({
+      customerName: bookingName,
+      customerEmail: bookingEmail,
+      quantity: booking.quantity,
+      eventDocumentId: booking.event.id,
+      locationDocumentId,
+    })
+    closeBooking()
+    toast.success('Вы успешно записались на мероприятие!')
+  }
 
   return (
     <>
@@ -47,7 +63,7 @@ export function LocationEvents({ slots, selectedDate, locationName }: Props) {
         bookingEmail={bookingEmail}
         onNameChange={setBookingName}
         onEmailChange={setBookingEmail}
-        onSubmit={closeBooking}
+        onSubmit={handleSubmit}
         onCancel={closeBooking}
       />
     </>

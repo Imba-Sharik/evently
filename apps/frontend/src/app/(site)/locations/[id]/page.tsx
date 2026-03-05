@@ -1,42 +1,99 @@
-import { use } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Info } from 'lucide-react'
-import { parseISO, isValid } from 'date-fns'
+import { parseISO, isValid, format, startOfWeek, endOfWeek } from 'date-fns'
 
-import { locations, TIME_LABELS } from '@/shared/mocks/locations'
+import { getLocationsid } from '@/shared/api/generated/clients/getLocationsid'
+import { getEvents } from '@/shared/api/generated/clients/getEvents'
+import { strapiConfig } from '@/shared/api/strapi'
 import { getDayKey } from '@/shared/lib/date'
-import { getEventByName } from '@/entities/event'
+import { DAYS, TIME_LABELS } from '@/shared/mocks/locations'
+import type { EventDetail } from '@/shared/mocks/events'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip'
 import { LocationCalendar } from '@/widgets/location-calendar'
 import { LocationSchedule } from '@/widgets/location-schedule'
 import { LocationEvents } from '@/widgets/location-events'
 import { LocationInfo } from '@/widgets/location-info'
 
-export default function LocationPage({
+type DayRow = { morning: string; afternoon: string; evening: string }
+
+function formatTime(t?: string): string {
+  return t ? t.slice(0, 5) : ''
+}
+
+export default async function LocationPage({
   params,
   searchParams,
 }: {
   params: Promise<{ id: string }>
   searchParams: Promise<{ date?: string }>
 }) {
-  const { id } = use(params)
-  const { date } = use(searchParams)
-
-  const location = locations.find(l => l.id === Number(id))
-  if (!location) notFound()
+  const { id } = await params
+  const { date } = await searchParams
 
   const parsed = date ? parseISO(date) : null
   const selectedDate = parsed && isValid(parsed) ? parsed : new Date()
 
-  const selectedDayKey = getDayKey(selectedDate)
-  const daySchedule = location.schedule[selectedDayKey]
+  const config = strapiConfig()
 
-  const slots = [
-    { label: TIME_LABELS.morning, event: getEventByName(daySchedule.morning, 'morning') },
-    { label: TIME_LABELS.afternoon, event: getEventByName(daySchedule.afternoon, 'afternoon') },
-    { label: TIME_LABELS.evening, event: getEventByName(daySchedule.evening, 'evening') },
-  ]
+  const locationRes = await getLocationsid(id as never, {
+    ...config,
+    params: { 'populate[0]': 'image', 'populate[1]': 'gallery' },
+  } as never)
+  const location = locationRes?.data
+  if (!location) notFound()
+
+  const weekStart = format(startOfWeek(selectedDate, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+  const weekEnd = format(endOfWeek(selectedDate, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+
+  const eventsRes = await getEvents({
+    'filters[location][documentId][$eq]': id,
+    'filters[date][$gte]': weekStart,
+    'filters[date][$lte]': weekEnd,
+    'pagination[limit]': 100,
+    sort: 'startTime:asc',
+  } as never, config)
+  const weekEvents = eventsRes?.data ?? []
+
+  // Build schedule table from week events
+  const schedule: Record<string, DayRow> = Object.fromEntries(
+    DAYS.map(day => [day, { morning: '', afternoon: '', evening: '' }])
+  )
+  for (const ev of weekEvents) {
+    if (!ev.date || !ev.timeSlot || !ev.name) continue
+    const dayKey = getDayKey(parseISO(ev.date))
+    if (dayKey && schedule[dayKey]) {
+      schedule[dayKey][ev.timeSlot as keyof DayRow] = ev.name
+    }
+  }
+
+  const selectedDayKey = getDayKey(selectedDate)
+  const selectedDateStr = format(selectedDate, 'yyyy-MM-dd')
+  const dayEvents = weekEvents.filter(e => e.date === selectedDateStr)
+
+  const slots = (['morning', 'afternoon', 'evening'] as const).map(slot => {
+    const ev = dayEvents.find(e => e.timeSlot === slot)
+    const event: EventDetail = ev
+      ? {
+          id: String(ev.documentId ?? ev.id ?? slot),
+          name: ev.name ?? '',
+          timeSlot: slot,
+          timeRange: `${formatTime(ev.startTime)} – ${formatTime(ev.endTime)}`,
+          totalSpots: ev.totalSpots ?? 0,
+          spotsLeft: ev.totalSpots ?? 0,
+          description: ev.description ?? '',
+        }
+      : {
+          id: `empty-${slot}`,
+          name: '',
+          timeSlot: slot,
+          timeRange: slot === 'morning' ? '08:00 – 11:00' : slot === 'afternoon' ? '12:00 – 17:00' : '18:30 – 22:00',
+          totalSpots: 0,
+          spotsLeft: 0,
+          description: '',
+        }
+    return { label: TIME_LABELS[slot], event }
+  })
 
   return (
     <div className="bg-background min-h-screen p-8">
@@ -73,11 +130,16 @@ export default function LocationPage({
             <LocationCalendar selectedDate={selectedDate} />
           </div>
           <div className="mb-8 flex flex-col">
-            <LocationSchedule schedule={location.schedule} selectedDayKey={selectedDayKey} />
+            <LocationSchedule schedule={schedule} selectedDayKey={selectedDayKey} />
           </div>
 
           {/* ── ROW 2 ────────────────────────────────────────────────── */}
-          <LocationEvents slots={slots} selectedDate={selectedDate} locationName={location.name} />
+          <LocationEvents
+            slots={slots}
+            selectedDate={selectedDate}
+            locationName={location.name ?? ''}
+            locationDocumentId={location.documentId ?? id}
+          />
           <LocationInfo location={location} />
 
         </div>

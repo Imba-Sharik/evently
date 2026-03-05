@@ -12,6 +12,15 @@ export const eventsTimeSlotEnum2 = {
 export type EventsTimeSlotEnum2Key =
   (typeof eventsTimeSlotEnum2)[keyof typeof eventsTimeSlotEnum2];
 
+export const bookingsStatusEnum3 = {
+  pending: "pending",
+  confirmed: "confirmed",
+  cancelled: "cancelled",
+} as const;
+
+export type BookingsStatusEnum3Key =
+  (typeof bookingsStatusEnum3)[keyof typeof bookingsStatusEnum3];
+
 export type Location = {
   id?: string | number;
   /**
@@ -1095,6 +1104,98 @@ export type Location = {
         documentId?: string;
       }[];
       /**
+       * @type array | undefined
+       */
+      bookings?: {
+        id?: string | number;
+        /**
+         * @type string | undefined
+         */
+        documentId?: string;
+        /**
+         * @type string | undefined
+         */
+        customerName?: string;
+        /**
+         * @type string | undefined, email
+         */
+        customerEmail?: string;
+        /**
+         * @type integer | undefined
+         */
+        quantity?: number;
+        /**
+         * @type string | undefined
+         */
+        status?: BookingsStatusEnum3Key;
+        /**
+         * @type object | undefined
+         */
+        event?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type object | undefined
+         */
+        location?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type string | undefined, date-time
+         */
+        createdAt?: string;
+        /**
+         * @type string | undefined, date-time
+         */
+        updatedAt?: string;
+        /**
+         * @type string | undefined, date-time
+         */
+        publishedAt?: string;
+        /**
+         * @type object | undefined
+         */
+        createdBy?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type object | undefined
+         */
+        updatedBy?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type string | undefined
+         */
+        locale?: string;
+        /**
+         * @type array | undefined
+         */
+        localizations?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        }[];
+      }[];
+      /**
        * @type string | undefined, date-time
        */
       createdAt?: string;
@@ -1142,6 +1243,16 @@ export type Location = {
       }[];
     };
     /**
+     * @type array | undefined
+     */
+    bookings?: {
+      id?: string | number;
+      /**
+       * @type string | undefined
+       */
+      documentId?: string;
+    }[];
+    /**
      * @type string | undefined, date-time
      */
     createdAt?: string;
@@ -1187,6 +1298,16 @@ export type Location = {
        */
       documentId?: string;
     }[];
+  }[];
+  /**
+   * @type array | undefined
+   */
+  bookings?: {
+    id?: string | number;
+    /**
+     * @type string | undefined
+     */
+    documentId?: string;
   }[];
   /**
    * @type string | undefined, date-time

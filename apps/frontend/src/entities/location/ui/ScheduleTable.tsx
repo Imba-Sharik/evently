@@ -1,8 +1,9 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
-import type { Location } from '@/shared/mocks/locations'
+
+type DayRow = { morning: string; afternoon: string; evening: string }
 
 type Props = {
-  schedule: Location['schedule']
+  schedule: Record<string, DayRow>
   days: readonly string[]
   selectedDayKey?: string
   size?: 'sm' | 'lg'

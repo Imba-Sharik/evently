@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bookings",
+  "info": {
+    "singularName": "booking",
+    "pluralName": "bookings",
+    "displayName": "Booking",
+    "description": "Customer booking for an event"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
+    "customerEmail": {
+      "type": "email",
+      "required": true
+    },
+    "quantity": {
+      "type": "integer",
+      "required": true,
+      "default": 1,
+      "min": 1
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": ["pending", "confirmed", "cancelled"],
+      "required": true,
+      "default": "pending"
+    },
+    "event": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::event.event",
+      "inversedBy": "bookings"
+    },
+    "location": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::location.location",
+      "inversedBy": "bookings"
+    }
+  }
+}

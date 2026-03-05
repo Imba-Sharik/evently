@@ -1,4 +1,24 @@
 export type {
+  Booking,
+  BookingStatusEnumKey,
+  BookingsStatusEnumKey,
+  EventTimeSlotEnumKey,
+} from "./types/Booking";
+export type { BookingListResponse } from "./types/BookingListResponse";
+export type { BookingRequest, DataStatusEnumKey } from "./types/BookingRequest";
+export type { BookingResponse } from "./types/BookingResponse";
+export type {
+  DeleteBookingsId200,
+  DeleteBookingsId400,
+  DeleteBookingsId401,
+  DeleteBookingsId403,
+  DeleteBookingsId404,
+  DeleteBookingsId500,
+  DeleteBookingsIdMutationResponse,
+  DeleteBookingsIdPathParams,
+  DeleteBookingsidMutation,
+} from "./types/DeleteBookingsid";
+export type {
   DeleteEventsId200,
   DeleteEventsId400,
   DeleteEventsId401,
@@ -37,8 +57,9 @@ export type {
 } from "./types/DeleteUsersPermissionsRolesRole";
 export type { Error } from "./types/Error";
 export type {
+  BookingsStatusEnum2Key,
   Event,
-  EventTimeSlotEnumKey,
+  EventTimeSlotEnum2Key,
   EventsTimeSlotEnumKey,
 } from "./types/Event";
 export type { EventListResponse } from "./types/EventListResponse";
@@ -58,6 +79,28 @@ export type {
   GetAuthProviderCallbackQuery,
   GetAuthProviderCallbackQueryResponse,
 } from "./types/GetAuthProviderCallback";
+export type {
+  GetBookings200,
+  GetBookings400,
+  GetBookings401,
+  GetBookings403,
+  GetBookings404,
+  GetBookings500,
+  GetBookingsQuery,
+  GetBookingsQueryParams,
+  GetBookingsQueryResponse,
+} from "./types/GetBookings";
+export type {
+  GetBookingsId200,
+  GetBookingsId400,
+  GetBookingsId401,
+  GetBookingsId403,
+  GetBookingsId404,
+  GetBookingsId500,
+  GetBookingsIdPathParams,
+  GetBookingsIdQueryResponse,
+  GetBookingsidQuery,
+} from "./types/GetBookingsid";
 export type {
   GetConnectProvider301,
   GetConnectProviderError,
@@ -153,7 +196,11 @@ export type {
   GetUsersPermissionsRolesIdQuery,
   GetUsersPermissionsRolesIdQueryResponse,
 } from "./types/GetUsersPermissionsRolesId";
-export type { EventsTimeSlotEnum2Key, Location } from "./types/Location";
+export type {
+  BookingsStatusEnum3Key,
+  EventsTimeSlotEnum2Key,
+  Location,
+} from "./types/Location";
 export type { LocationListResponse } from "./types/LocationListResponse";
 export type { LocationRequest } from "./types/LocationRequest";
 export type { LocationResponse } from "./types/LocationResponse";
@@ -202,6 +249,17 @@ export type {
   PostAuthSendEmailConfirmationMutationResponse,
 } from "./types/PostAuthSendEmailConfirmation";
 export type {
+  PostBookings200,
+  PostBookings400,
+  PostBookings401,
+  PostBookings403,
+  PostBookings404,
+  PostBookings500,
+  PostBookingsMutation,
+  PostBookingsMutationRequest,
+  PostBookingsMutationResponse,
+} from "./types/PostBookings";
+export type {
   PostEvents200,
   PostEvents400,
   PostEvents401,
@@ -238,6 +296,18 @@ export type {
   PostUsersPermissionsRolesMutationRequest,
   PostUsersPermissionsRolesMutationResponse,
 } from "./types/PostUsersPermissionsRoles";
+export type {
+  PutBookingsId200,
+  PutBookingsId400,
+  PutBookingsId401,
+  PutBookingsId403,
+  PutBookingsId404,
+  PutBookingsId500,
+  PutBookingsIdMutationRequest,
+  PutBookingsIdMutationResponse,
+  PutBookingsIdPathParams,
+  PutBookingsidMutation,
+} from "./types/PutBookingsid";
 export type {
   PutEventsId200,
   PutEventsId400,
@@ -284,12 +354,15 @@ export type { UsersPermissionsRole } from "./types/UsersPermissionsRole";
 export type { UsersPermissionsRoleRequest } from "./types/UsersPermissionsRoleRequest";
 export type { UsersPermissionsUser } from "./types/UsersPermissionsUser";
 export type { UsersPermissionsUserRegistration } from "./types/UsersPermissionsUserRegistration";
+export { deleteBookingsid } from "./clients/deleteBookingsid";
 export { deleteEventsid } from "./clients/deleteEventsid";
 export { deleteLocationsid } from "./clients/deleteLocationsid";
 export { deleteUsersId } from "./clients/deleteUsersId";
 export { deleteUsersPermissionsRolesRole } from "./clients/deleteUsersPermissionsRolesRole";
 export { getAuthEmailConfirmation } from "./clients/getAuthEmailConfirmation";
 export { getAuthProviderCallback } from "./clients/getAuthProviderCallback";
+export { getBookings } from "./clients/getBookings";
+export { getBookingsid } from "./clients/getBookingsid";
 export { getConnectProvider } from "./clients/getConnectProvider";
 export { getEvents } from "./clients/getEvents";
 export { getEventsid } from "./clients/getEventsid";
@@ -308,18 +381,26 @@ export { postAuthLocal } from "./clients/postAuthLocal";
 export { postAuthLocalRegister } from "./clients/postAuthLocalRegister";
 export { postAuthResetPassword } from "./clients/postAuthResetPassword";
 export { postAuthSendEmailConfirmation } from "./clients/postAuthSendEmailConfirmation";
+export { postBookings } from "./clients/postBookings";
 export { postEvents } from "./clients/postEvents";
 export { postLocations } from "./clients/postLocations";
 export { postUsers } from "./clients/postUsers";
 export { postUsersPermissionsRoles } from "./clients/postUsersPermissionsRoles";
+export { putBookingsid } from "./clients/putBookingsid";
 export { putEventsid } from "./clients/putEventsid";
 export { putLocationsid } from "./clients/putLocationsid";
 export { putUsersId } from "./clients/putUsersId";
 export { putUsersPermissionsRolesRole } from "./clients/putUsersPermissionsRolesRole";
+export { bookingStatusEnum } from "./types/Booking";
+export { bookingsStatusEnum } from "./types/Booking";
+export { eventTimeSlotEnum } from "./types/Booking";
+export { dataStatusEnum } from "./types/BookingRequest";
 export { deleteUsersPermissionsRolesRole200OkEnum } from "./types/DeleteUsersPermissionsRolesRole";
-export { eventTimeSlotEnum } from "./types/Event";
+export { bookingsStatusEnum2 } from "./types/Event";
+export { eventTimeSlotEnum2 } from "./types/Event";
 export { eventsTimeSlotEnum } from "./types/Event";
 export { dataTimeSlotEnum } from "./types/EventRequest";
+export { bookingsStatusEnum3 } from "./types/Location";
 export { eventsTimeSlotEnum2 } from "./types/Location";
 export { postAuthForgotPassword200OkEnum } from "./types/PostAuthForgotPassword";
 export { postAuthSendEmailConfirmation200SentEnum } from "./types/PostAuthSendEmailConfirmation";

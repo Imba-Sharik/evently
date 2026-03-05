@@ -47,6 +47,10 @@ export type EventRequest = {
     description?: string;
     location?: number | string;
     /**
+     * @type array | undefined
+     */
+    bookings?: (number | string)[];
+    /**
      * @type string | undefined
      */
     locale?: string;

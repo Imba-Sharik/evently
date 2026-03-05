@@ -44,6 +44,12 @@
       "relation": "manyToOne",
       "target": "api::location.location",
       "inversedBy": "events"
+    },
+    "bookings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::booking.booking",
+      "mappedBy": "event"
     }
   }
 }

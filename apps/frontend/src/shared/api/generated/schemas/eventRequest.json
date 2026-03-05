@@ -35,6 +35,13 @@
           "oneOf": [{ "type": "integer" }, { "type": "string" }],
           "example": "string or id"
         },
+        "bookings": {
+          "type": "array",
+          "items": {
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "example": "string or id"
+          }
+        },
         "locale": { "type": "string" },
         "localizations": {
           "type": "array",

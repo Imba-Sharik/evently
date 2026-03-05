@@ -3,6 +3,7 @@ import { Header } from "@/widgets/header/ui/Header";
 import { PageTitle } from "@/widgets/header/ui/PageTitle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/shared/ui/sidebar";
 import { AppSidebar } from "@/widgets/admin-sidebar/ui/AppSidebar";
+import { Toaster } from "@/shared/ui/sonner";
 
 export default async function SiteLayout({
   children,
@@ -32,6 +33,7 @@ export default async function SiteLayout({
       <main className="flex-1 overflow-y-auto pt-16 [scrollbar-gutter:stable]">
         {children}
       </main>
+      <Toaster />
     </>
   );
 }

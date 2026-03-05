@@ -4,7 +4,7 @@ import { auth } from '@/auth'
 import { getLocationsid } from '@/shared/api/generated/clients/getLocationsid'
 import { getEvents } from '@/shared/api/generated/clients/getEvents'
 import { strapiConfig } from '@/shared/api/strapi'
-import { AdminEventsClient } from './AdminEventsClient'
+import { AdminEventsSchedule } from '@/widgets/admin-events-schedule'
 
 export default async function LocationEventsPage({
   params,
@@ -38,5 +38,5 @@ export default async function LocationEventsPage({
   } as never, config)
   const events = eventsRes?.data ?? []
 
-  return <AdminEventsClient location={location} selectedDate={selectedDate} events={events} />
+  return <AdminEventsSchedule location={location} selectedDate={selectedDate} events={events} />
 }

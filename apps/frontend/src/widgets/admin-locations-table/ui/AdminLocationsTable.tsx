@@ -44,6 +44,7 @@ import {
 } from 'lucide-react'
 import type { Location } from '@/shared/api/generated/types/Location'
 import { deleteLocationAction } from '@/entities/location/actions'
+import { ConfirmDialog } from '@/shared/ui/confirm-dialog'
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20]
 
@@ -106,21 +107,30 @@ export function AdminLocationsTable({ data }: Props) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="text-lg">
-              <DropdownMenuItem>Редактировать</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/admin/locations/${row.original.documentId}/edit`)}>
+                Редактировать
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push(`/admin/locations/${row.original.documentId}/events?name=${encodeURIComponent(row.original.name ?? '')}`)}>
                 Мероприятия
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-red-600 focus:text-red-600"
-                disabled={isPending}
-                onClick={() => startTransition(async () => {
+              <ConfirmDialog
+                title="Удалить локацию?"
+                description={`Это действие нельзя отменить. Локация «${row.original.name ?? ''}» будет удалена безвозвратно.`}
+                onConfirm={() => startTransition(async () => {
                   await deleteLocationAction(String(row.original.documentId))
                   router.refresh()
                 })}
-              >
-                Удалить
-              </DropdownMenuItem>
+                trigger={
+                  <DropdownMenuItem
+                    className="text-red-600 focus:text-red-600"
+                    disabled={isPending}
+                    onSelect={e => e.preventDefault()}
+                  >
+                    Удалить
+                  </DropdownMenuItem>
+                }
+              />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

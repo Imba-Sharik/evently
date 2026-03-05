@@ -3,14 +3,14 @@
  * Do not edit manually.
  */
 
-export const eventTimeSlotEnum = {
+export const eventTimeSlotEnum2 = {
   morning: "morning",
   afternoon: "afternoon",
   evening: "evening",
 } as const;
 
-export type EventTimeSlotEnumKey =
-  (typeof eventTimeSlotEnum)[keyof typeof eventTimeSlotEnum];
+export type EventTimeSlotEnum2Key =
+  (typeof eventTimeSlotEnum2)[keyof typeof eventTimeSlotEnum2];
 
 export const eventsTimeSlotEnum = {
   morning: "morning",
@@ -20,6 +20,15 @@ export const eventsTimeSlotEnum = {
 
 export type EventsTimeSlotEnumKey =
   (typeof eventsTimeSlotEnum)[keyof typeof eventsTimeSlotEnum];
+
+export const bookingsStatusEnum2 = {
+  pending: "pending",
+  confirmed: "confirmed",
+  cancelled: "cancelled",
+} as const;
+
+export type BookingsStatusEnum2Key =
+  (typeof bookingsStatusEnum2)[keyof typeof bookingsStatusEnum2];
 
 export type Event = {
   id?: string | number;
@@ -46,7 +55,7 @@ export type Event = {
   /**
    * @type string
    */
-  timeSlot: EventTimeSlotEnumKey;
+  timeSlot: EventTimeSlotEnum2Key;
   /**
    * @type integer
    */
@@ -845,6 +854,98 @@ export type Event = {
         documentId?: string;
       };
       /**
+       * @type array | undefined
+       */
+      bookings?: {
+        id?: string | number;
+        /**
+         * @type string | undefined
+         */
+        documentId?: string;
+        /**
+         * @type string | undefined
+         */
+        customerName?: string;
+        /**
+         * @type string | undefined, email
+         */
+        customerEmail?: string;
+        /**
+         * @type integer | undefined
+         */
+        quantity?: number;
+        /**
+         * @type string | undefined
+         */
+        status?: BookingsStatusEnum2Key;
+        /**
+         * @type object | undefined
+         */
+        event?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type object | undefined
+         */
+        location?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type string | undefined, date-time
+         */
+        createdAt?: string;
+        /**
+         * @type string | undefined, date-time
+         */
+        updatedAt?: string;
+        /**
+         * @type string | undefined, date-time
+         */
+        publishedAt?: string;
+        /**
+         * @type object | undefined
+         */
+        createdBy?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type object | undefined
+         */
+        updatedBy?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        };
+        /**
+         * @type string | undefined
+         */
+        locale?: string;
+        /**
+         * @type array | undefined
+         */
+        localizations?: {
+          id?: string | number;
+          /**
+           * @type string | undefined
+           */
+          documentId?: string;
+        }[];
+      }[];
+      /**
        * @type string | undefined, date-time
        */
       createdAt?: string;
@@ -890,6 +991,16 @@ export type Event = {
          */
         documentId?: string;
       }[];
+    }[];
+    /**
+     * @type array | undefined
+     */
+    bookings?: {
+      id?: string | number;
+      /**
+       * @type string | undefined
+       */
+      documentId?: string;
     }[];
     /**
      * @type string | undefined, date-time
@@ -938,6 +1049,16 @@ export type Event = {
       documentId?: string;
     }[];
   };
+  /**
+   * @type array | undefined
+   */
+  bookings?: {
+    id?: string | number;
+    /**
+     * @type string | undefined
+     */
+    documentId?: string;
+  }[];
   /**
    * @type string | undefined, date-time
    */

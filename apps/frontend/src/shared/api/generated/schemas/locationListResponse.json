@@ -838,6 +838,107 @@
                         }
                       }
                     },
+                    "bookings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "oneOf": [
+                              { "type": "string" },
+                              { "type": "number" }
+                            ]
+                          },
+                          "documentId": { "type": "string" },
+                          "customerName": { "type": "string" },
+                          "customerEmail": {
+                            "type": "string",
+                            "format": "email"
+                          },
+                          "quantity": { "type": "integer" },
+                          "status": {
+                            "type": "string",
+                            "enum": ["pending", "confirmed", "cancelled"]
+                          },
+                          "event": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "oneOf": [
+                                  { "type": "string" },
+                                  { "type": "number" }
+                                ]
+                              },
+                              "documentId": { "type": "string" }
+                            }
+                          },
+                          "location": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "oneOf": [
+                                  { "type": "string" },
+                                  { "type": "number" }
+                                ]
+                              },
+                              "documentId": { "type": "string" }
+                            }
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "publishedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "createdBy": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "oneOf": [
+                                  { "type": "string" },
+                                  { "type": "number" }
+                                ]
+                              },
+                              "documentId": { "type": "string" }
+                            }
+                          },
+                          "updatedBy": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "oneOf": [
+                                  { "type": "string" },
+                                  { "type": "number" }
+                                ]
+                              },
+                              "documentId": { "type": "string" }
+                            }
+                          },
+                          "locale": { "type": "string" },
+                          "localizations": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "oneOf": [
+                                    { "type": "string" },
+                                    { "type": "number" }
+                                  ]
+                                },
+                                "documentId": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
                     "createdAt": { "type": "string", "format": "date-time" },
                     "updatedAt": { "type": "string", "format": "date-time" },
                     "publishedAt": { "type": "string", "format": "date-time" },
@@ -877,6 +978,18 @@
                     }
                   }
                 },
+                "bookings": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "oneOf": [{ "type": "string" }, { "type": "number" }]
+                      },
+                      "documentId": { "type": "string" }
+                    }
+                  }
+                },
                 "createdAt": { "type": "string", "format": "date-time" },
                 "updatedAt": { "type": "string", "format": "date-time" },
                 "publishedAt": { "type": "string", "format": "date-time" },
@@ -911,6 +1024,16 @@
                     }
                   }
                 }
+              }
+            }
+          },
+          "bookings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
+                "documentId": { "type": "string" }
               }
             }
           },

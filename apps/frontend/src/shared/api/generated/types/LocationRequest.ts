@@ -43,6 +43,10 @@ export type LocationRequest = {
      */
     events?: (number | string)[];
     /**
+     * @type array | undefined
+     */
+    bookings?: (number | string)[];
+    /**
      * @type string | undefined
      */
     locale?: string;

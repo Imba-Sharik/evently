@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "required": ["data"],
+  "properties": {
+    "data": {
+      "required": ["customerName", "customerEmail", "quantity", "status"],
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string", "format": "email" },
+        "quantity": { "type": "integer" },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "confirmed", "cancelled"]
+        },
+        "event": {
+          "oneOf": [{ "type": "integer" }, { "type": "string" }],
+          "example": "string or id"
+        },
+        "location": {
+          "oneOf": [{ "type": "integer" }, { "type": "string" }],
+          "example": "string or id"
+        },
+        "locale": { "type": "string" },
+        "localizations": {
+          "type": "array",
+          "items": {
+            "oneOf": [{ "type": "integer" }, { "type": "string" }],
+            "example": "string or id"
+          }
+        }
+      }
+    }
+  },
+  "x-readme-ref-name": "BookingRequest"
+}
