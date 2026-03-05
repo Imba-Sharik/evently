@@ -56,16 +56,17 @@ type Props = {
   bookings: BookingRecord[]
   onStatusChange: (id: string, status: BookingStatus) => void
   onDelete: (id: string) => void
+  locationFilter: string
+  onLocationFilterChange: (value: string) => void
 }
 
-export function BookingsTable({ bookings, onStatusChange, onDelete }: Props) {
+export function BookingsTable({ bookings, onStatusChange, onDelete, locationFilter, onLocationFilterChange }: Props) {
   'use no memo'
 
   const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: true }])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState<BookingStatus | 'all'>('all')
-  const [locationFilter, setLocationFilter] = useState('all')
 
   const locations = Array.from(new Set(bookings.map((b) => b.locationName)))
 
@@ -239,7 +240,7 @@ export function BookingsTable({ bookings, onStatusChange, onDelete }: Props) {
           <DropdownMenuContent align="end" className="text-lg">
             <DropdownMenuRadioGroup
               value={locationFilter}
-              onValueChange={(v) => { setLocationFilter(v); table.setPageIndex(0) }}
+              onValueChange={(v) => { onLocationFilterChange(v); table.setPageIndex(0) }}
             >
               <DropdownMenuRadioItem value="all">Все локации</DropdownMenuRadioItem>
               {locations.map((loc) => (
