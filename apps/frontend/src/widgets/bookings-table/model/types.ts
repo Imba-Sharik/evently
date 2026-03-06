@@ -7,6 +7,7 @@ export type BookingRecord = {
   eventName: string
   locationName: string
   date: string
+  rawDate?: string // ISO YYYY-MM-DD, для группировки по датам
   timeRange: string
   quantity: number
   status: BookingStatus

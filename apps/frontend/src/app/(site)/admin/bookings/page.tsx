@@ -1,124 +1,88 @@
-'use client'
-
-import { useState } from 'react'
-import { BookingsTable } from '@/widgets/bookings-table'
+import { auth } from '@/auth'
+import { STRAPI_API_URL } from '@/shared/api/strapi'
+import type { Booking } from '@/shared/api/generated/types/Booking'
 import type { BookingRecord, BookingStatus } from '@/widgets/bookings-table'
-import { BookingsDashboard } from '@/widgets/bookings-dashboard'
-import { BookingsMap } from '@/widgets/bookings-map/ui/BookingsMap'
+import type { MapLocation } from '@/widgets/bookings-map/ui/BookingsMap'
+import { BookingsPageClient } from './BookingsPageClient'
 
-const mockBookings: BookingRecord[] = [
-  {
-    id: '1',
-    name: 'Иванова Мария Сергеевна',
-    email: 'ivanova@gmail.com',
-    eventName: 'Wellness-утро',
-    locationName: 'Локация #1',
-    date: '5 марта 2026',
-    timeRange: '08:00 – 11:00',
-    quantity: 2,
-    status: 'new',
-  },
-  {
-    id: '2',
-    name: 'Петров Алексей Игоревич',
-    email: 'petrov@mail.ru',
-    eventName: 'Open Mic',
-    locationName: 'Локация #2',
-    date: '5 марта 2026',
-    timeRange: '19:00 – 22:00',
-    quantity: 1,
-    status: 'confirmed',
-  },
-  {
-    id: '3',
-    name: 'Смирнова Анна Дмитриевна',
-    email: 'smirnova@yandex.ru',
-    eventName: 'Social Dance',
-    locationName: 'Локация #3',
-    date: '6 марта 2026',
-    timeRange: '18:30 – 22:00',
-    quantity: 3,
-    status: 'cancelled',
-  },
-  {
-    id: '4',
-    name: 'Козлов Дмитрий Викторович',
-    email: 'kozlov@gmail.com',
-    eventName: 'Фото-маршрут',
-    locationName: 'Локация #1',
-    date: '6 марта 2026',
-    timeRange: '12:00 – 17:00',
-    quantity: 1,
-    status: 'new',
-  },
-  {
-    id: '5',
-    name: 'Новикова Елена Павловна',
-    email: 'novikova@mail.ru',
-    eventName: 'Park Quest',
-    locationName: 'Локация #2',
-    date: '7 марта 2026',
-    timeRange: '13:00 – 16:00',
-    quantity: 4,
-    status: 'confirmed',
-  },
-  {
-    id: '6',
-    name: 'Федоров Сергей Александрович',
-    email: 'fedorov@yandex.ru',
-    eventName: 'Кино-вечер',
-    locationName: 'Локация #3',
-    date: '7 марта 2026',
-    timeRange: '19:00 – 22:00',
-    quantity: 2,
-    status: 'new',
-  },
-  {
-    id: '7',
-    name: 'Морозова Ксения Олеговна',
-    email: 'morozova@gmail.com',
-    eventName: 'Йога + дыхание',
-    locationName: 'Локация #1',
-    date: '8 марта 2026',
-    timeRange: '08:00 – 11:00',
-    quantity: 1,
-    status: 'confirmed',
-  },
+const MONTHS_RU = [
+  'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+  'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
 ]
 
-export default function BookingsPage() {
-  const [bookings, setBookings] = useState(mockBookings)
-  const [locationFilter, setLocationFilter] = useState('all')
+function formatDate(dateStr: string): string {
+  const [year, month, day] = dateStr.split('-')
+  return `${parseInt(day)} ${MONTHS_RU[parseInt(month) - 1]} ${year}`
+}
 
-  function handleStatusChange(id: string, status: BookingStatus) {
-    setBookings((prev) => prev.map((b) => b.id === id ? { ...b, status } : b))
+function formatTimeRange(start?: string, end?: string): string {
+  const fmt = (t: string) => t.slice(0, 5)
+  if (start && end) return `${fmt(start)} – ${fmt(end)}`
+  if (start) return fmt(start)
+  return '—'
+}
+
+function mapStatus(status: string): BookingStatus {
+  if (status === 'confirmed') return 'confirmed'
+  if (status === 'cancelled') return 'cancelled'
+  return 'new'
+}
+
+function toBookingRecord(b: Booking): BookingRecord {
+  return {
+    id: b.documentId ?? String(b.id),
+    name: b.customerName,
+    email: b.customerEmail,
+    eventName: b.event?.name ?? '—',
+    locationName: b.event?.location?.name ?? '—',
+    date: b.event?.date ? formatDate(b.event.date) : '—',
+    rawDate: b.event?.date,
+    timeRange: formatTimeRange(b.event?.startTime, b.event?.endTime),
+    quantity: b.quantity,
+    status: mapStatus(b.status),
+  }
+}
+
+export default async function BookingsPage() {
+  const session = await auth()
+  let bookings: BookingRecord[] = []
+  let mapLocations: MapLocation[] = []
+
+  if (session?.strapiJwt) {
+    const params = new URLSearchParams({
+      'populate[0]': 'event',
+      'populate[1]': 'event.location',
+      'pagination[pageSize]': '100',
+      sort: 'createdAt:desc',
+    })
+
+    const res = await fetch(`${STRAPI_API_URL}/bookings?${params}`, {
+      headers: { Authorization: `Bearer ${session.strapiJwt}` },
+      cache: 'no-store',
+    })
+
+    if (res.ok) {
+      const json = await res.json()
+      const data: Booking[] = json.data ?? []
+      bookings = data.map(toBookingRecord)
+
+      const locationMap = new Map<string, MapLocation>()
+      for (const b of data) {
+        const loc = b.event?.location
+        if (loc?.documentId && loc.lat != null && loc.lng != null) {
+          locationMap.set(loc.documentId, {
+            documentId: loc.documentId,
+            name: loc.name ?? '',
+            address: loc.address,
+            metro: loc.metro,
+            lat: loc.lat,
+            lng: loc.lng,
+          })
+        }
+      }
+      mapLocations = Array.from(locationMap.values())
+    }
   }
 
-  function handleDelete(id: string) {
-    setBookings((prev) => prev.filter((b) => b.id !== id))
-  }
-
-  return (
-    <div className="p-6 space-y-6">
-      <BookingsDashboard bookings={bookings} />
-      <div className="flex flex-col xl:flex-row gap-6">
-        <div className="flex-1 min-w-0">
-          <BookingsTable
-            bookings={bookings}
-            onStatusChange={handleStatusChange}
-            onDelete={handleDelete}
-            locationFilter={locationFilter}
-            onLocationFilterChange={setLocationFilter}
-          />
-        </div>
-        <div className="w-full h-64 xl:w-96 xl:h-auto shrink-0 xl:sticky xl:top-20 bg-black rounded-xl p-px">
-          <BookingsMap
-            bookings={bookings}
-            selectedLocation={locationFilter}
-            onLocationSelect={setLocationFilter}
-          />
-        </div>
-      </div>
-    </div>
-  )
+  return <BookingsPageClient initialBookings={bookings} locations={mapLocations} />
 }

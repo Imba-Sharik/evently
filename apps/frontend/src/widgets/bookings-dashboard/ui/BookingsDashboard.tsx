@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import {
-  TrendingUp,
-  TrendingDown,
-  Users,
-  CheckCircle2,
-  XCircle,
-  Star,
-} from "lucide-react";
+import { Users, CheckCircle2, XCircle, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import {
@@ -23,65 +16,68 @@ type Period = "7d" | "30d" | "3m";
 
 const CHART_COLOR = "#498BD7";
 
-function seededRand(seed: number) {
-  let s = seed;
-  return () => {
-    s = (s * 1664525 + 1013904223) & 0xffffffff;
-    return (s >>> 0) / 0xffffffff;
-  };
+const MONTHS_SHORT = [
+  "янв", "фев", "мар", "апр", "май", "июн",
+  "июл", "авг", "сен", "окт", "ноя", "дек",
+];
+
+function getPeriodCutoff(period: Period): Date {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (period === "7d") {
+    const d = new Date(today);
+    d.setDate(today.getDate() - 6);
+    return d;
+  }
+  if (period === "30d") {
+    const d = new Date(today);
+    d.setDate(today.getDate() - 29);
+    return d;
+  }
+  const d = new Date(today);
+  d.setDate(today.getDate() - 12 * 7);
+  return d;
 }
 
-function generateChartData(
+function buildChartData(
+  bookings: BookingRecord[],
   period: Period,
 ): { date: string; bookings: number }[] {
-  const MONTHS = [
-    "янв",
-    "фев",
-    "мар",
-    "апр",
-    "май",
-    "июн",
-    "июл",
-    "авг",
-    "сен",
-    "окт",
-    "ноя",
-    "дек",
-  ];
-  const today = new Date(2026, 2, 5);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  if (period === "7d") {
-    const rand = seededRand(42);
-    return Array.from({ length: 7 }, (_, i) => {
+  if (period === "7d" || period === "30d") {
+    const days = period === "7d" ? 7 : 30;
+    const counts: Record<string, number> = {};
+    for (const b of bookings) {
+      if (b.rawDate) counts[b.rawDate] = (counts[b.rawDate] ?? 0) + 1;
+    }
+    return Array.from({ length: days }, (_, i) => {
       const d = new Date(today);
-      d.setDate(today.getDate() - 6 + i);
+      d.setDate(today.getDate() - (days - 1) + i);
+      const key = d.toISOString().slice(0, 10);
       return {
-        date: `${d.getDate()} ${MONTHS[d.getMonth()]}`,
-        bookings: Math.round(2 + rand() * 10),
+        date: `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`,
+        bookings: counts[key] ?? 0,
       };
     });
   }
 
-  if (period === "30d") {
-    const rand = seededRand(42);
-    return Array.from({ length: 30 }, (_, i) => {
-      const d = new Date(today);
-      d.setDate(today.getDate() - 29 + i);
-      return {
-        date: `${d.getDate()} ${MONTHS[d.getMonth()]}`,
-        bookings: Math.round(2 + rand() * 12),
-      };
-    });
+  // 3m — 13 weekly buckets
+  const weekCounts: number[] = Array(13).fill(0);
+  for (const b of bookings) {
+    if (!b.rawDate) continue;
+    const d = new Date(b.rawDate);
+    const diffDays = Math.floor((today.getTime() - d.getTime()) / 86400000);
+    const weekIdx = 12 - Math.floor(diffDays / 7);
+    if (weekIdx >= 0 && weekIdx < 13) weekCounts[weekIdx]++;
   }
-
-  // 3m: weekly points (~13 weeks)
-  const rand = seededRand(42);
   return Array.from({ length: 13 }, (_, i) => {
     const d = new Date(today);
-    d.setDate(today.getDate() - 12 * 7 + i * 7);
+    d.setDate(today.getDate() - (12 - i) * 7);
     return {
-      date: `${d.getDate()} ${MONTHS[d.getMonth()]}`,
-      bookings: Math.round(15 + rand() * 40),
+      date: `${d.getDate()} ${MONTHS_SHORT[d.getMonth()]}`,
+      bookings: weekCounts[i],
     };
   });
 }
@@ -93,13 +89,18 @@ type Props = {
 export function BookingsDashboard({ bookings }: Props) {
   const [period, setPeriod] = useState<Period>("7d");
 
-  const chartData = generateChartData(period);
-  const total = chartData.reduce((s, d) => s + d.bookings, 0);
-  const confirmed = Math.round(total * 0.65);
-  const cancelled = Math.round(total * 0.12);
+  const cutoff = getPeriodCutoff(period);
+  const inPeriod = bookings.filter(
+    (b) => b.rawDate && new Date(b.rawDate) >= cutoff,
+  );
+
+  const total = inPeriod.length;
+  const confirmed = inPeriod.filter((b) => b.status === "confirmed").length;
+  const cancelled = inPeriod.filter((b) => b.status === "cancelled").length;
 
   const eventCounts = bookings.reduce<Record<string, number>>((acc, b) => {
-    acc[b.eventName] = (acc[b.eventName] ?? 0) + 1;
+    if (b.eventName && b.eventName !== "—")
+      acc[b.eventName] = (acc[b.eventName] ?? 0) + 1;
     return acc;
   }, {});
   const topEventEntry = Object.entries(eventCounts).sort(
@@ -108,39 +109,35 @@ export function BookingsDashboard({ bookings }: Props) {
   const topEvent = topEventEntry?.[0] ?? "—";
   const topEventCount = topEventEntry?.[1] ?? 0;
 
+  const chartData = buildChartData(inPeriod, period);
+
+  const periodLabel =
+    period === "7d" ? "за 7 дней" : period === "30d" ? "за 30 дней" : "за 3 месяца";
+
   const stats = [
     {
       label: "Всего заявок",
       value: total,
-      sub:
-        period === "7d"
-          ? "за 7 дней"
-          : period === "30d"
-            ? "за 30 дней"
-            : "за 3 месяца",
+      sub: periodLabel,
       icon: Users,
-      trend: +12,
     },
     {
       label: "Подтверждено",
       value: confirmed,
-      sub: `${Math.round((confirmed / total) * 100)}% от заявок`,
+      sub: total > 0 ? `${Math.round((confirmed / total) * 100)}% от заявок` : "—",
       icon: CheckCircle2,
-      trend: +5,
     },
     {
       label: "Отменено",
       value: cancelled,
-      sub: `${Math.round((cancelled / total) * 100)}% от заявок`,
+      sub: total > 0 ? `${Math.round((cancelled / total) * 100)}% от заявок` : "—",
       icon: XCircle,
-      trend: -3,
     },
     {
       label: "Топ событие",
       value: topEvent,
       sub: `${topEventCount} бронирований`,
       icon: Star,
-      trend: null,
     },
   ];
 
@@ -161,21 +158,6 @@ export function BookingsDashboard({ bookings }: Props) {
                 <span className="text-lg text-muted-foreground truncate">
                   {s.sub}
                 </span>
-                {s.trend !== null && (
-                  <span
-                    className={`flex items-center text-lg font-medium shrink-0 ${
-                      s.trend > 0 ? "text-green-600" : "text-red-500"
-                    }`}
-                  >
-                    {s.trend > 0 ? (
-                      <TrendingUp className="size-4 mr-0.5" />
-                    ) : (
-                      <TrendingDown className="size-4 mr-0.5" />
-                    )}
-                    {s.trend > 0 ? "+" : ""}
-                    {s.trend}%
-                  </span>
-                )}
               </div>
             </CardContent>
           </Card>

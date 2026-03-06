@@ -2,12 +2,20 @@
 
 import { useState } from 'react'
 import { Map, MapMarker, MarkerContent, MarkerTooltip, MapPopup } from '@/shared/ui/map'
-import { locations } from '@/shared/mocks/locations'
-import type { Location } from '@/shared/mocks/locations'
 import type { BookingRecord } from '@/widgets/bookings-table'
+
+export type MapLocation = {
+  documentId: string
+  name: string
+  address?: string
+  metro?: string
+  lat: number
+  lng: number
+}
 
 type Props = {
   bookings: BookingRecord[]
+  locations: MapLocation[]
   selectedLocation: string
   onLocationSelect: (locationName: string) => void
 }
@@ -23,7 +31,7 @@ function BookingMarker({
   selected,
   onSelect,
 }: {
-  location: Location
+  location: MapLocation
   count: number
   maxCount: number
   selected: boolean
@@ -42,8 +50,8 @@ function BookingMarker({
   return (
     <>
       <MapMarker
-        longitude={location.coords.lng}
-        latitude={location.coords.lat}
+        longitude={location.lng}
+        latitude={location.lat}
         onClick={handleClick}
       >
         <MarkerContent>
@@ -76,15 +84,15 @@ function BookingMarker({
 
       {open && (
         <MapPopup
-          longitude={location.coords.lng}
-          latitude={location.coords.lat}
+          longitude={location.lng}
+          latitude={location.lat}
           onClose={() => setOpen(false)}
           closeButton={false}
         >
           <div className="space-y-1 min-w-36">
             <p className="font-semibold text-foreground">{location.name}</p>
-            <p className="text-lg text-muted-foreground">{location.address}</p>
-            <p className="text-lg text-muted-foreground">{location.metro}</p>
+            {location.address && <p className="text-lg text-muted-foreground">{location.address}</p>}
+            {location.metro && <p className="text-lg text-muted-foreground">{location.metro}</p>}
             <div className="pt-1 border-t border-border">
               <p className="text-lg font-medium text-foreground">
                 Заявок: <span className="text-orange-500">{count}</span>
@@ -97,7 +105,7 @@ function BookingMarker({
   )
 }
 
-export function BookingsMap({ bookings, selectedLocation, onLocationSelect }: Props) {
+export function BookingsMap({ bookings, locations, selectedLocation, onLocationSelect }: Props) {
   const counts = bookings.reduce<Record<string, number>>((acc, b) => {
     acc[b.locationName] = (acc[b.locationName] ?? 0) + 1
     return acc
@@ -117,7 +125,7 @@ export function BookingsMap({ bookings, selectedLocation, onLocationSelect }: Pr
     >
       {locations.map((location) => (
         <BookingMarker
-          key={location.id}
+          key={location.documentId}
           location={location}
           count={counts[location.name] ?? 0}
           maxCount={maxCount}
