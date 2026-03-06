@@ -13,23 +13,15 @@ function FitBounds({ locations }: { locations: Location[] }) {
   const { map, isLoaded } = useMap()
 
   useEffect(() => {
-    if (!map || !isLoaded) return
+    if (!map || !isLoaded || locations.length === 0) return
 
-    const valid = locations.filter(l =>
-      l.lat != null && l.lng != null &&
-      l.lat >= -90 && l.lat <= 90 &&
-      l.lng >= -180 && l.lng <= 180
-    )
-
-    if (valid.length === 0) return
-
-    if (valid.length === 1) {
-      map.flyTo({ center: [valid[0].lng!, valid[0].lat!], zoom: 14 })
+    if (locations.length === 1) {
+      map.flyTo({ center: [locations[0].lng!, locations[0].lat!], zoom: 14 })
       return
     }
 
-    const lngs = valid.map(l => l.lng!)
-    const lats = valid.map(l => l.lat!)
+    const lngs = locations.map(l => l.lng!)
+    const lats = locations.map(l => l.lat!)
     map.fitBounds(
       [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
       { padding: 60, maxZoom: 14 }
@@ -40,6 +32,13 @@ function FitBounds({ locations }: { locations: Location[] }) {
 }
 
 export function AdminLocationsMap({ locations }: Props) {
+  const validLocations = locations.filter(l =>
+    l.lat != null && l.lng != null &&
+    !isNaN(l.lat) && !isNaN(l.lng) &&
+    l.lat >= -90 && l.lat <= 90 &&
+    l.lng >= -180 && l.lng <= 180
+  )
+
   return (
     <div className="w-96 shrink-0 sticky top-20 bg-black rounded-xl p-px">
       <Map
@@ -48,8 +47,8 @@ export function AdminLocationsMap({ locations }: Props) {
         interactive={false}
         viewport={{ center: [37.6173, 55.7558], zoom: 10 }}
       >
-        <FitBounds locations={locations} />
-        {locations.map((location) => (
+        <FitBounds locations={validLocations} />
+        {validLocations.map((location) => (
           <LocationMarker key={location.id} location={location} />
         ))}
       </Map>

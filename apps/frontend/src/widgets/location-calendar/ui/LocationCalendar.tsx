@@ -1,7 +1,7 @@
 'use client'
 
 import { useOptimistic, useTransition } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { Calendar } from '@/shared/ui/calendar'
@@ -11,12 +11,15 @@ export function LocationCalendar({ selectedDate }: { selectedDate: Date }) {
   const [, startTransition] = useTransition()
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   function handleSelect(date: Date | undefined) {
     if (!date) return
     startTransition(() => {
       setOptimisticDate(date)
-      router.replace(`${pathname}?date=${format(date, 'yyyy-MM-dd')}`, { scroll: false })
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('date', format(date, 'yyyy-MM-dd'))
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
     })
   }
 
