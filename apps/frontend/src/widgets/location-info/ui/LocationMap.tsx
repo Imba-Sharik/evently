@@ -58,6 +58,10 @@ function MarkerWithZoom({ location }: { location: Location }) {
 export function LocationMap({ location }: { location: Location }) {
   const lng = location.lng ?? 0
   const lat = location.lat ?? 0
+  const hasValidCoords = lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180 && (lat !== 0 || lng !== 0)
+
+  if (!hasValidCoords) return null
+
   return (
     <Map
       className="h-72 w-full rounded-xl overflow-hidden"

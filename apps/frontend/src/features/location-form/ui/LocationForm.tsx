@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import { Textarea } from '@/shared/ui/textarea'
+import { AddressSearch } from '@/shared/ui/address-search'
 import {
   FileUpload,
   FileUploadDropzone,
@@ -21,6 +22,7 @@ import {
   FileUploadItemDelete,
 } from '@/shared/ui/file-upload'
 import { TimePicker } from '@/shared/ui/time-picker'
+import { Map, MapMarker, MarkerContent } from '@/shared/ui/map'
 import { UploadCloud, X } from 'lucide-react'
 import { createLocationAction, updateLocationAction } from '@/entities/location/actions'
 import type { Location } from '@/shared/api/generated/types/Location'
@@ -75,8 +77,9 @@ export function LocationForm(props: Props) {
   })
 
   const [serverError, setServerError] = useState<string | null>(null)
+  const [mapKey, setMapKey] = useState(0)
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       name:        initial?.name        ?? '',
@@ -87,6 +90,10 @@ export function LocationForm(props: Props) {
       lng:         initial?.lng != null  ? String(initial.lng)  : '',
     },
   })
+
+  const addressValue = useWatch({ control, name: 'address' })
+  const latValue = useWatch({ control, name: 'lat' })
+  const lngValue = useWatch({ control, name: 'lng' })
 
   function setSlot(slot: SlotKey, field: 'start' | 'end', value: string) {
     setTimeSlots(prev => ({ ...prev, [slot]: { ...prev[slot], [field]: value } }))
@@ -218,9 +225,48 @@ export function LocationForm(props: Props) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-lg">Адрес</Label>
-            <Input id="address" placeholder="Москва, ул. Примерная, 1" className="border-black text-lg h-11" {...register('address')} />
+            <Label className="text-lg">Адрес</Label>
+            <AddressSearch
+              value={addressValue}
+              onChange={v => setValue('address', v, { shouldValidate: true })}
+              onSelect={s => {
+                setValue('address', s.label, { shouldValidate: true })
+                setValue('lat', String(s.lat))
+                setValue('lng', String(s.lng))
+                setMapKey(k => k + 1)
+              }}
+              placeholder="Москва, ул. Примерная, 1"
+              className="border-black text-lg h-11"
+            />
             {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
+            {(() => {
+              const lat = parseFloat(latValue ?? '')
+              const lng = parseFloat(lngValue ?? '')
+              const valid = !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180
+              if (!valid) return null
+              return (
+                <Map
+                  key={mapKey}
+                  className="h-48 w-full rounded-xl overflow-hidden border border-black mt-2"
+                  theme="light"
+                  viewport={{ center: [lng, lat], zoom: 14 }}
+                >
+                  <MapMarker
+                    longitude={lng}
+                    latitude={lat}
+                    draggable
+                    onDragEnd={({ lng: newLng, lat: newLat }) => {
+                      setValue('lat', String(newLat))
+                      setValue('lng', String(newLng))
+                    }}
+                  >
+                    <MarkerContent>
+                      <div className="size-4 rounded-full bg-primary border-2 border-white shadow-lg cursor-grab" />
+                    </MarkerContent>
+                  </MapMarker>
+                </Map>
+              )
+            })()}
           </div>
 
           <div className="space-y-2">
@@ -237,17 +283,6 @@ export function LocationForm(props: Props) {
               className="border-black text-[18px] placeholder:text-[19px] resize-none min-h-28"
               {...register('description')}
             />
-          </div>
-
-          <div className="flex gap-4">
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="lat" className="text-lg">Широта</Label>
-              <Input id="lat" placeholder="55.7558" className="border-black text-lg h-11" {...register('lat')} />
-            </div>
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="lng" className="text-lg">Долгота</Label>
-              <Input id="lng" placeholder="37.6173" className="border-black text-lg h-11" {...register('lng')} />
-            </div>
           </div>
 
           <div className="space-y-2">

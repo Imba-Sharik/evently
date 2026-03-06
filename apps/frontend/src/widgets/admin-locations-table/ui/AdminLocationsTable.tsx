@@ -84,7 +84,12 @@ export function AdminLocationsTable({ data }: Props) {
     {
       accessorKey: 'address',
       header: 'Адрес',
-      cell: ({ getValue }) => <span className="text-muted-foreground">{getValue<string>()}</span>,
+      cell: ({ getValue }) => {
+        const v = getValue<string>()
+        return (
+          <span className="text-muted-foreground truncate block max-w-xs" title={v}>{v}</span>
+        )
+      },
     },
     {
       accessorKey: 'metro',
