@@ -24,14 +24,15 @@ import {
 import { TimePicker } from '@/shared/ui/time-picker'
 import { Map, MapMarker, MarkerContent } from '@/shared/ui/map'
 import { UploadCloud, X } from 'lucide-react'
+import { toast } from 'sonner'
 import { createLocationAction, updateLocationAction } from '@/entities/location/actions'
 import type { Location } from '@/shared/api/generated/types/Location'
 
 const schema = z.object({
   name:        z.string().min(1, 'Обязательное поле'),
   address:     z.string().min(1, 'Обязательное поле'),
-  metro:       z.string().optional(),
-  description: z.string().optional(),
+  metro:       z.string().min(1, 'Обязательное поле'),
+  description: z.string().min(1, 'Обязательное поле'),
   lat:         z.string().optional(),
   lng:         z.string().optional(),
 })
@@ -79,8 +80,9 @@ export function LocationForm(props: Props) {
   const [serverError, setServerError] = useState<string | null>(null)
   const [mapKey, setMapKey] = useState(0)
 
-  const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting, isValid } } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    mode: 'onTouched',
     defaultValues: {
       name:        initial?.name        ?? '',
       address:     initial?.address     ?? '',
@@ -91,7 +93,6 @@ export function LocationForm(props: Props) {
     },
   })
 
-  const addressValue = useWatch({ control, name: 'address' })
   const latValue = useWatch({ control, name: 'lat' })
   const lngValue = useWatch({ control, name: 'lng' })
 
@@ -110,8 +111,8 @@ export function LocationForm(props: Props) {
     const fd = new FormData()
     fd.append('name', values.name)
     fd.append('address', values.address)
-    if (values.metro)       fd.append('metro', values.metro)
-    if (values.description) fd.append('description', values.description)
+    fd.append('metro', values.metro)
+    fd.append('description', values.description)
     if (values.lat)         fd.append('lat', values.lat)
     if (values.lng)         fd.append('lng', values.lng)
     fd.append('timeSlots', JSON.stringify(timeSlots))
@@ -125,12 +126,13 @@ export function LocationForm(props: Props) {
     if ('error' in result) {
       setServerError(result.error)
     } else {
+      toast.success(isEdit ? 'Локация обновлена' : 'Локация создана')
       router.push('/admin/locations')
     }
   }
 
   const requirePhoto = !isEdit
-  const canSubmit = requirePhoto ? newFiles.length > 0 : true
+  const canSubmit = isValid && (requirePhoto ? newFiles.length > 0 : true)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -227,13 +229,22 @@ export function LocationForm(props: Props) {
           <div className="space-y-2">
             <Label className="text-lg">Адрес</Label>
             <AddressSearch
-              value={addressValue}
-              onChange={v => setValue('address', v, { shouldValidate: true })}
+              defaultValue={
+                isEdit && initial?.address && initial?.lat != null && initial?.lng != null
+                  ? { label: initial.address, lat: initial.lat, lng: initial.lng }
+                  : undefined
+              }
               onSelect={s => {
-                setValue('address', s.label, { shouldValidate: true })
-                setValue('lat', String(s.lat))
-                setValue('lng', String(s.lng))
-                setMapKey(k => k + 1)
+                if (s) {
+                  setValue('address', s.label, { shouldValidate: true })
+                  setValue('lat', String(s.lat))
+                  setValue('lng', String(s.lng))
+                  setMapKey(k => k + 1)
+                } else {
+                  setValue('address', '', { shouldValidate: true })
+                  setValue('lat', '')
+                  setValue('lng', '')
+                }
               }}
               placeholder="Москва, ул. Примерная, 1"
               className="border-black text-lg h-11"
@@ -272,6 +283,7 @@ export function LocationForm(props: Props) {
           <div className="space-y-2">
             <Label htmlFor="metro" className="text-lg">Метро</Label>
             <Input id="metro" placeholder="Площадь Революции" className="border-black text-lg h-11" {...register('metro')} />
+            {errors.metro && <p className="text-sm text-destructive">{errors.metro.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -283,6 +295,7 @@ export function LocationForm(props: Props) {
               className="border-black text-[18px] placeholder:text-[19px] resize-none min-h-28"
               {...register('description')}
             />
+            {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
           </div>
 
           <div className="space-y-2">

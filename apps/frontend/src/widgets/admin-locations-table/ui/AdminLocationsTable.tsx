@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import Image from 'next/image'
 import {
   type ColumnDef,
@@ -123,7 +124,9 @@ export function AdminLocationsTable({ data }: Props) {
                 title="Удалить локацию?"
                 description={`Это действие нельзя отменить. Локация «${row.original.name ?? ''}» будет удалена безвозвратно.`}
                 onConfirm={() => startTransition(async () => {
-                  await deleteLocationAction(String(row.original.documentId))
+                  const result = await deleteLocationAction(String(row.original.documentId))
+                  if ('error' in result) { toast.error(result.error); return }
+                  toast.success('Локация удалена')
                   router.refresh()
                 })}
                 trigger={

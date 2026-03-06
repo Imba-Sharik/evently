@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useCallback, useRef, useEffect } from 'react'
-import { Loader2 } from 'lucide-react'
+import { useState, useCallback, useRef } from 'react'
+import { Loader2, X } from 'lucide-react'
 import { Input } from '@/shared/ui/input'
 import { cn } from '@/shared/lib/utils'
 
@@ -12,19 +12,19 @@ export type AddressSuggestion = {
 }
 
 type Props = {
-  value: string
-  onChange: (value: string) => void
-  onSelect: (suggestion: AddressSuggestion) => void
+  defaultValue?: AddressSuggestion
+  onSelect: (suggestion: AddressSuggestion | null) => void
   placeholder?: string
   className?: string
 }
 
-export function AddressSearch({ value, onChange, onSelect, placeholder, className }: Props) {
+export function AddressSearch({ defaultValue, onSelect, placeholder, className }: Props) {
+  const [selected, setSelected] = useState<AddressSuggestion | null>(defaultValue ?? null)
+  const [inputValue, setInputValue] = useState(defaultValue?.label ?? '')
   const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
 
   const fetchSuggestions = useCallback(async (q: string) => {
     if (q.length < 3) { setSuggestions([]); setOpen(false); return }
@@ -53,41 +53,64 @@ export function AddressSearch({ value, onChange, onSelect, placeholder, classNam
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value
-    onChange(val)
+    setInputValue(val)
+    if (!val.trim()) {
+      setSelected(null)
+      onSelect(null)
+      setSuggestions([])
+      setOpen(false)
+    }
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => fetchSuggestions(val), 400)
   }
 
   function handleSelect(s: AddressSuggestion) {
-    onChange(s.label)
+    setSelected(s)
+    setInputValue(s.label)
     onSelect(s)
     setOpen(false)
     setSuggestions([])
   }
 
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
+  function handleBlur() {
+    // delay to allow mousedown on suggestion to fire first
+    setTimeout(() => {
+      setInputValue(selected?.label ?? '')
+      setOpen(false)
+    }, 150)
+  }
+
+  function handleClear() {
+    setSelected(null)
+    setInputValue('')
+    setSuggestions([])
+    setOpen(false)
+    onSelect(null)
+  }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div className="relative">
       <div className="relative">
         <Input
-          value={value}
+          value={inputValue}
           onChange={handleChange}
           onFocus={() => suggestions.length > 0 && setOpen(true)}
+          onBlur={handleBlur}
           placeholder={placeholder}
-          className={cn(className)}
+          className={cn(className, (selected || loading) && 'pr-9')}
           autoComplete="off"
         />
         {loading && (
           <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 size-4 animate-spin text-muted-foreground" />
+        )}
+        {!loading && selected && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="size-4" />
+          </button>
         )}
       </div>
 

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { addDays, format, parseISO, startOfWeek } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
@@ -134,6 +135,7 @@ export function AdminEventsSchedule({
         ? await updateEventAction(selectedSlot.documentId, payload)
         : await createEventAction({ ...payload, locationDocumentId: String(location.documentId) })
       if ('error' in result) { alert(result.error); return }
+      toast.success(selectedSlot.mode === 'edit' ? 'Мероприятие обновлено' : 'Мероприятие создано')
       router.refresh()
       setSelectedSlot(null)
     })

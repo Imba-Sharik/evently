@@ -1,6 +1,7 @@
 'use client'
 
 import { useTransition } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Textarea } from '@/shared/ui/textarea'
@@ -38,6 +39,7 @@ export function EventEditorPanel({
     startDeleteTransition(async () => {
       const result = await deleteEventAction(selectedSlot.documentId!)
       if ('error' in result) { alert(result.error); return }
+      toast.success('Мероприятие удалено')
       onDeleted()
     })
   }
