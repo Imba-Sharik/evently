@@ -19,9 +19,9 @@ export function LocationCard({ location }: Props) {
       className="group outline-none cursor-pointer"
       onClick={() => router.push(`/locations/${location.documentId}`)}
     >
-      <Card className="cursor-pointer border-transparent p-0 gap-0">
-        <div className="h-125 border border-black rounded-xl p-1.5">
-          <div className="relative h-full rounded-lg overflow-hidden border border-black">
+      <Card className="cursor-pointer border-transparent p-0 gap-0 rounded-[35px]">
+        <div className="h-125 border border-black p-1.5 rounded-[35px]">
+          <div className="relative h-full overflow-hidden border border-black rounded-[27px]">
             <Image
               src={location.image?.url ?? '/location_1.png'}
               alt={location.name ?? ''}
