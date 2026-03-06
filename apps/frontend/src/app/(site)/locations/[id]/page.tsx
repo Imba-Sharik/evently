@@ -15,7 +15,7 @@ import { LocationSchedule } from '@/widgets/location-schedule'
 import { LocationEvents } from '@/widgets/location-events'
 import { LocationInfo } from '@/widgets/location-info'
 
-type DayRow = { morning: string; afternoon: string; evening: string }
+type DayRow = { morning: string[]; afternoon: string[]; evening: string[] }
 
 function formatTime(t?: string): string {
   return t ? t.slice(0, 5) : ''
@@ -57,13 +57,13 @@ export default async function LocationPage({
 
   // Build schedule table from week events
   const schedule: Record<string, DayRow> = Object.fromEntries(
-    DAYS.map(day => [day, { morning: '', afternoon: '', evening: '' }])
+    DAYS.map(day => [day, { morning: [], afternoon: [], evening: [] }])
   )
   for (const ev of weekEvents) {
     if (!ev.date || !ev.timeSlot || !ev.name) continue
     const dayKey = getDayKey(parseISO(ev.date))
     if (dayKey && schedule[dayKey]) {
-      schedule[dayKey][ev.timeSlot as keyof DayRow] = ev.name
+      schedule[dayKey][ev.timeSlot as keyof DayRow].push(ev.name)
     }
   }
 

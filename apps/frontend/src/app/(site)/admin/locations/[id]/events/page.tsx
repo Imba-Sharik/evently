@@ -38,5 +38,9 @@ export default async function LocationEventsPage({
   } as never, config)
   const events = eventsRes?.data ?? []
 
-  return <AdminEventsSchedule location={location} selectedDate={selectedDate} events={events} />
+  return (
+    <div className="mx-auto max-w-7xl w-full">
+      <AdminEventsSchedule location={location} selectedDate={selectedDate} events={events} />
+    </div>
+  )
 }

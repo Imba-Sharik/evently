@@ -79,11 +79,11 @@ export function AdminEventsSchedule({
   const selectedDayKey = getDayKey(selectedDate)
 
   const eventsByDate = useMemo(() => {
-    const map: Record<string, Record<TimeSlot, StrapiEvent | null>> = {}
+    const map: Record<string, Record<TimeSlot, StrapiEvent[]>> = {}
     for (const ev of events) {
       if (!ev.date) continue
-      if (!map[ev.date]) map[ev.date] = { morning: null, afternoon: null, evening: null }
-      if (ev.timeSlot) map[ev.date][ev.timeSlot as TimeSlot] = ev
+      if (!map[ev.date]) map[ev.date] = { morning: [], afternoon: [], evening: [] }
+      if (ev.timeSlot) map[ev.date][ev.timeSlot as TimeSlot].push(ev)
     }
     return map
   }, [events])
@@ -143,11 +143,12 @@ export function AdminEventsSchedule({
   const slotDate = selectedSlot ? format(parseISO(selectedSlot.date), 'd MMMM yyyy', { locale: ru }) : ''
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+      {/* Левая колонка: календарь + таблица */}
+      <div className="flex flex-col gap-4 min-w-0 w-full md:flex-1 md:max-w-3xl">
         <LocationCalendar selectedDate={selectedDate} />
 
-        <div className="bg-linear-to-br from-[#1F1F1F] to-[#666666] rounded-xl px-3 pt-2 pb-2 flex-1 border border-black">
+        <div className="bg-linear-to-br from-[#1F1F1F] to-[#666666] rounded-xl px-3 pt-2 pb-2 border border-black overflow-x-auto">
           <Table className="border-separate border-spacing-0">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
@@ -176,8 +177,7 @@ export function AdminEventsSchedule({
                       {day}
                     </TableCell>
                     {TIME_SLOTS.map((slot, idx) => {
-                      const event = daySlotMap?.[slot.key] ?? null
-                      const name = event?.name ?? null
+                      const slotEvents = daySlotMap?.[slot.key] ?? []
                       const hovered = hoveredCell?.day === day && hoveredCell?.timeSlot === slot.key
                       const active = selectedSlot?.day === day && selectedSlot?.timeSlot === slot.key
                       const isLast = idx === TIME_SLOTS.length - 1
@@ -189,18 +189,22 @@ export function AdminEventsSchedule({
                           onMouseEnter={() => setHoveredCell({ day, timeSlot: slot.key })}
                           onMouseLeave={() => setHoveredCell(null)}
                         >
-                          <div className="flex items-center gap-2 h-7">
-                            {name ? (
-                              <button
-                                onClick={() => openEdit(day, dateStr, slot.key, event!)}
-                                className="flex items-center gap-1 text-left cursor-pointer w-fit"
-                              >
-                                <span className={`hover:underline ${active && selectedSlot?.mode === 'edit' ? 'underline' : ''}`}>
-                                  {name}
-                                </span>
-                                <Pencil className={`size-3 shrink-0 opacity-60 ${hovered ? 'visible' : 'invisible'}`} />
-                              </button>
-                            ) : null}
+                          <div className="flex flex-col gap-0.5 min-h-7 justify-center">
+                            {slotEvents.map(event => {
+                              const isActiveEvent = active && selectedSlot?.mode === 'edit' && selectedSlot?.documentId === String(event.documentId)
+                              return (
+                                <button
+                                  key={String(event.documentId)}
+                                  onClick={() => openEdit(day, dateStr, slot.key, event)}
+                                  className="flex items-center gap-1 text-left cursor-pointer w-fit"
+                                >
+                                  <span className={`hover:underline ${isActiveEvent ? 'underline' : ''}`}>
+                                    {event.name}
+                                  </span>
+                                  <Pencil className={`size-3 shrink-0 opacity-60 ${hovered ? 'visible' : 'invisible'}`} />
+                                </button>
+                              )
+                            })}
                             <button
                               onClick={() => openCreate(day, dateStr, slot.key)}
                               className={`flex items-center gap-0.5 text-sm text-white/60 hover:text-white/90 transition-colors cursor-pointer shrink-0 ${(hovered || active) ? 'visible' : 'invisible'}`}
@@ -220,6 +224,7 @@ export function AdminEventsSchedule({
         </div>
       </div>
 
+      {/* Правая колонка: панель редактора */}
       {selectedSlot && activeSlotMeta && (
         <EventEditorPanel
           selectedSlot={selectedSlot}

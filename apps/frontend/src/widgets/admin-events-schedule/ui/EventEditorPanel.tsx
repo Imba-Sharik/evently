@@ -43,7 +43,7 @@ export function EventEditorPanel({
   }
 
   return (
-    <div className="border border-black rounded-xl p-5 space-y-5">
+    <div className="border border-black rounded-xl p-5 space-y-5 w-full md:w-80 md:shrink-0">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-xl font-semibold">

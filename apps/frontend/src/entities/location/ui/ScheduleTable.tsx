@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
 
-type DayRow = { morning: string; afternoon: string; evening: string }
+type DayRow = { morning: string[]; afternoon: string[]; evening: string[] }
 
 type Props = {
   schedule: Record<string, DayRow>
@@ -49,16 +49,16 @@ export function ScheduleTable({ schedule, days, selectedDayKey = '', size = 'lg'
                   {day}
                 </TableCell>
                 <TableCell className={`${cellBase} ${cellColor} border-y border-transparent`} style={bg}>
-                  {schedule[day].morning}
+                  <div className="flex flex-col gap-0.5">{schedule[day].morning.map((n, i) => <span key={i}>{n}</span>)}</div>
                 </TableCell>
                 <TableCell className={`${cellBase} ${cellColor} border-y border-transparent`} style={bg}>
-                  {schedule[day].afternoon}
+                  <div className="flex flex-col gap-0.5">{schedule[day].afternoon.map((n, i) => <span key={i}>{n}</span>)}</div>
                 </TableCell>
                 <TableCell
                   className={`${cellBase} ${cellColor} rounded-r-lg border-y border-r border-transparent`}
                   style={bg}
                 >
-                  {schedule[day].evening}
+                  <div className="flex flex-col gap-0.5">{schedule[day].evening.map((n, i) => <span key={i}>{n}</span>)}</div>
                 </TableCell>
               </TableRow>
             )
