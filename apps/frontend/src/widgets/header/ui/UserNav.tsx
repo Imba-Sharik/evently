@@ -22,10 +22,10 @@ export function UserNav({ session }: UserNavProps) {
     return (
       <div className="flex gap-2">
         <Button variant="ghost" className="text-lg" asChild>
-          <Link href="/login">Log in</Link>
+          <Link href="/login">Войти</Link>
         </Button>
         <Button className="text-lg" asChild>
-          <Link href="/register">Sign up</Link>
+          <Link href="/register">Регистрация</Link>
         </Button>
       </div>
     )
@@ -44,20 +44,20 @@ export function UserNav({ session }: UserNavProps) {
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-48 text-lg">
         <div className="px-2 py-1.5">
-          <p className="text-sm font-medium">{session.user?.name}</p>
-          <p className="text-xs text-muted-foreground">{session.user?.email}</p>
+          <p className="text-lg font-medium">{session.user?.name}</p>
+          <p className="text-lg text-muted-foreground">{session.user?.email}</p>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile">Profile</Link>
+          <Link href="/profile">Профиль</Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => signOut({ callbackUrl: '/' })}
         >
-          Log out
+          Выйти
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -142,7 +142,7 @@ export function LocationForm(props: Props) {
         <div className="w-full xl:w-80 xl:shrink-0 space-y-3">
           <div className="flex items-baseline justify-between">
             <Label className="text-lg">Фотографии</Label>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-lg text-muted-foreground">
               {keptImages.length + newFiles.length} / 5
             </span>
           </div>
@@ -159,7 +159,7 @@ export function LocationForm(props: Props) {
                     height={48}
                     className="size-12 rounded object-cover shrink-0"
                   />
-                  <span className="flex-1 text-sm text-muted-foreground truncate">
+                  <span className="flex-1 text-lg text-muted-foreground truncate">
                     {img.url.split('/').pop()}
                   </span>
                   <Button
@@ -223,7 +223,7 @@ export function LocationForm(props: Props) {
           <div className="space-y-2">
             <Label htmlFor="name" className="text-lg">Название</Label>
             <Input id="name" placeholder="Локация #4" className="border-black text-lg h-11" {...register('name')} />
-            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+            {errors.name && <p className="text-lg text-destructive">{errors.name.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -249,7 +249,7 @@ export function LocationForm(props: Props) {
               placeholder="Москва, ул. Примерная, 1"
               className="border-black text-lg h-11"
             />
-            {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
+            {errors.address && <p className="text-lg text-destructive">{errors.address.message}</p>}
             {(() => {
               const lat = parseFloat(latValue ?? '')
               const lng = parseFloat(lngValue ?? '')
@@ -283,7 +283,7 @@ export function LocationForm(props: Props) {
           <div className="space-y-2">
             <Label htmlFor="metro" className="text-lg">Метро</Label>
             <Input id="metro" placeholder="Площадь Революции" className="border-black text-lg h-11" {...register('metro')} />
-            {errors.metro && <p className="text-sm text-destructive">{errors.metro.message}</p>}
+            {errors.metro && <p className="text-lg text-destructive">{errors.metro.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -295,7 +295,7 @@ export function LocationForm(props: Props) {
               className="border-black text-[18px] placeholder:text-[19px] resize-none min-h-28"
               {...register('description')}
             />
-            {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
+            {errors.description && <p className="text-lg text-destructive">{errors.description.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -324,7 +324,7 @@ export function LocationForm(props: Props) {
             </div>
           </div>
 
-          {serverError && <p className="text-sm text-destructive">{serverError}</p>}
+          {serverError && <p className="text-lg text-destructive">{serverError}</p>}
 
           <div className="flex gap-3 pt-2">
             <Button type="submit" className="text-lg h-11 px-6" disabled={!canSubmit || isSubmitting}>

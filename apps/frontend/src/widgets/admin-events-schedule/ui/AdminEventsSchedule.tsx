@@ -209,7 +209,7 @@ export function AdminEventsSchedule({
                             })}
                             <button
                               onClick={() => openCreate(day, dateStr, slot.key)}
-                              className={`flex items-center gap-0.5 text-sm text-white/60 hover:text-white/90 transition-colors cursor-pointer shrink-0 ${(hovered || active) ? 'visible' : 'invisible'}`}
+                              className={`flex items-center gap-0.5 text-lg text-white/60 hover:text-white/90 transition-colors cursor-pointer shrink-0 ${(hovered || active) ? 'visible' : 'invisible'}`}
                             >
                               <Plus className="size-3" />
                               <span>добавить</span>

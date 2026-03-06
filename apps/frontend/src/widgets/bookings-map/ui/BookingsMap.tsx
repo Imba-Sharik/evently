@@ -83,10 +83,10 @@ function BookingMarker({
         >
           <div className="space-y-1 min-w-36">
             <p className="font-semibold text-foreground">{location.name}</p>
-            <p className="text-xs text-muted-foreground">{location.address}</p>
-            <p className="text-xs text-muted-foreground">{location.metro}</p>
+            <p className="text-lg text-muted-foreground">{location.address}</p>
+            <p className="text-lg text-muted-foreground">{location.metro}</p>
             <div className="pt-1 border-t border-border">
-              <p className="text-sm font-medium text-foreground">
+              <p className="text-lg font-medium text-foreground">
                 Заявок: <span className="text-orange-500">{count}</span>
               </p>
             </div>

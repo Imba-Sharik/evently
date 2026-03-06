@@ -158,12 +158,12 @@ export function BookingsDashboard({ bookings }: Props) {
             <CardContent className="px-4 pt-0 -mt-4 -pb-4 space-y-1">
               <div className="text-3xl font-bold truncate">{s.value}</div>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-base text-muted-foreground truncate">
+                <span className="text-lg text-muted-foreground truncate">
                   {s.sub}
                 </span>
                 {s.trend !== null && (
                   <span
-                    className={`flex items-center text-base font-medium shrink-0 ${
+                    className={`flex items-center text-lg font-medium shrink-0 ${
                       s.trend > 0 ? "text-green-600" : "text-red-500"
                     }`}
                   >

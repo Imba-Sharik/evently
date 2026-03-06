@@ -34,7 +34,7 @@ export function LocationCalendar({ selectedDate }: { selectedDate: Date }) {
         classNames={{
           root: 'w-full',
           caption_label: 'font-medium select-none text-lg',
-          weekday: 'flex-1 rounded-md text-base font-normal text-white/60 select-none',
+          weekday: 'flex-1 rounded-md text-lg font-normal text-white/60 select-none',
           outside: 'text-white/30 aria-selected:text-white/30',
         }}
       />

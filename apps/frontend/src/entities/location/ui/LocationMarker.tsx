@@ -27,8 +27,8 @@ export function LocationMarker({ location }: Props) {
         <MapPopup longitude={lng} latitude={lat} onClose={() => setOpen(false)} closeButton={false}>
           <div className="space-y-1 min-w-36">
             <p className="font-semibold text-foreground">{location.name}</p>
-            <p className="text-xs text-muted-foreground">{location.address}</p>
-            {location.metro && <p className="text-xs text-muted-foreground">{location.metro}</p>}
+            <p className="text-lg text-muted-foreground">{location.address}</p>
+            {location.metro && <p className="text-lg text-muted-foreground">{location.metro}</p>}
           </div>
         </MapPopup>
       )}

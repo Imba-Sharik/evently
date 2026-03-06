@@ -35,8 +35,8 @@ const Example = () => {
           <div className="flex items-center justify-center rounded-full border p-2.5">
             <Upload className="size-6 text-muted-foreground" />
           </div>
-          <p className="font-medium text-sm">Upload files</p>
-          <p className="text-muted-foreground text-xs">Up to 10 files</p>
+          <p className="font-medium text-lg">Upload files</p>
+          <p className="text-muted-foreground text-lg">Up to 10 files</p>
         </div>
         <FileUploadTrigger asChild>
           <Button variant="outline" size="sm" className="mt-2">
@@ -45,7 +45,7 @@ const Example = () => {
         </FileUploadTrigger>
       </FileUploadDropzone>
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">
+        <span className="text-lg text-muted-foreground">
           {files.length} file{files.length !== 1 ? "s" : ""} selected
         </span>
         <FileUploadClear asChild>

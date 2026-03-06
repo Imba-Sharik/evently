@@ -46,8 +46,8 @@ function MarkerWithZoom({ location }: { location: Location }) {
         >
           <div className="space-y-1">
             <p className="font-medium text-foreground">{location.name}</p>
-            <p className="text-xs text-muted-foreground">{location.address}</p>
-            <p className="text-xs text-muted-foreground">{location.metro}</p>
+            <p className="text-lg text-muted-foreground">{location.address}</p>
+            <p className="text-lg text-muted-foreground">{location.metro}</p>
           </div>
         </MapPopup>
       )}

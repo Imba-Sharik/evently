@@ -120,7 +120,7 @@ export function BookingsTable({ bookings, onStatusChange, onDelete, locationFilt
       cell: ({ getValue }) => {
         const status = getValue<BookingStatus>()
         return (
-          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_CLASSES[status]}`}>
+          <span className={`px-2 py-0.5 rounded-full text-lg font-medium ${STATUS_CLASSES[status]}`}>
             {STATUS_LABELS[status]}
           </span>
         )

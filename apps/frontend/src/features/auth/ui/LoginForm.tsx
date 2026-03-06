@@ -30,13 +30,13 @@ export function LoginForm({
     >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Login to your account</h1>
+          <h1 className="text-2xl font-bold">Вход в аккаунт</h1>
           <p className="text-muted-foreground text-lg text-balance">
-            Enter your email below to login to your account
+            Введите email для входа в аккаунт
           </p>
         </div>
         <Field>
-          <FieldLabel className="text-lg" htmlFor="email">Email</FieldLabel>
+          <FieldLabel className="text-lg" htmlFor="email">Почта</FieldLabel>
           <Input
             id="email"
             name="identifier"
@@ -48,12 +48,12 @@ export function LoginForm({
         </Field>
         <Field>
           <div className="flex items-center">
-            <FieldLabel className="text-lg" htmlFor="password">Password</FieldLabel>
+            <FieldLabel className="text-lg" htmlFor="password">Пароль</FieldLabel>
             <a
               href="#"
               className="ml-auto text-lg underline-offset-4 hover:underline"
             >
-              Forgot your password?
+              Забыли пароль?
             </a>
           </div>
           <PasswordInput id="password" name="password" className="text-lg h-11" required />
@@ -61,12 +61,12 @@ export function LoginForm({
         <Field>
           {state?.error && <FieldError>{state.error}</FieldError>}
           <Button type="submit" className="text-lg h-11" disabled={isPending}>
-            {isPending ? "Logging in..." : "Log in"}
+            {isPending ? "Входим..." : "Войти"}
           </Button>
         </Field>
         <FieldDescription className="text-center text-lg">
-          Don&apos;t have an account?{" "}
-          <Link href="/register">Sign up</Link>
+          Нет аккаунта?{" "}
+          <Link href="/register">Зарегистрироваться</Link>
         </FieldDescription>
         {/* TODO: OAuth — uncomment when provider is configured
         <FieldSeparator>Or continue with</FieldSeparator>

@@ -81,7 +81,7 @@ export function TimePicker({ value, onChange, min, max, className }: Props) {
         <div className="flex divide-x">
           {/* Hours */}
           <div className="flex-1 flex flex-col">
-            <div className="px-2 py-1.5 text-base font-medium text-muted-foreground border-b">Часы</div>
+            <div className="px-2 py-1.5 text-lg font-medium text-muted-foreground border-b">Часы</div>
             <div ref={hourListRef} className="h-48 overflow-y-auto">
               {hours.map(h => (
                 <button
@@ -101,7 +101,7 @@ export function TimePicker({ value, onChange, min, max, className }: Props) {
 
           {/* Minutes */}
           <div className="flex-1 flex flex-col">
-            <div className="px-2 py-1.5 text-base font-medium text-muted-foreground border-b">Мин</div>
+            <div className="px-2 py-1.5 text-lg font-medium text-muted-foreground border-b">Мин</div>
             <div ref={minListRef} className="h-48 overflow-y-auto">
               {minutes.map(m => (
                 <button
