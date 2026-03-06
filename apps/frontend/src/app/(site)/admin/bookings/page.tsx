@@ -101,7 +101,7 @@ export default function BookingsPage() {
   return (
     <div className="p-6 space-y-6">
       <BookingsDashboard bookings={bookings} />
-      <div className="flex gap-6">
+      <div className="flex flex-col xl:flex-row gap-6">
         <div className="flex-1 min-w-0">
           <BookingsTable
             bookings={bookings}
@@ -111,7 +111,7 @@ export default function BookingsPage() {
             onLocationFilterChange={setLocationFilter}
           />
         </div>
-        <div className="w-96 shrink-0 sticky top-20 bg-black rounded-xl p-px">
+        <div className="w-full h-64 xl:w-96 xl:h-auto shrink-0 xl:sticky xl:top-20 bg-black rounded-xl p-px">
           <BookingsMap
             bookings={bookings}
             selectedLocation={locationFilter}

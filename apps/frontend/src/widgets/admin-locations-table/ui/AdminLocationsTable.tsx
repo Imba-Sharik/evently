@@ -226,16 +226,16 @@ export function AdminLocationsTable({ data }: Props) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between text-lg text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-lg text-muted-foreground">
         <span>
           {totalRows === 0
             ? 'Нет локаций'
             : `${pageIndex * pageSize + 1}–${Math.min((pageIndex + 1) * pageSize, totalRows)} из ${totalRows}`}
         </span>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <span>Строк на странице</span>
+            <span className="hidden sm:inline">Строк на странице</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="h-8 w-16 border-black gap-1 text-lg px-2">

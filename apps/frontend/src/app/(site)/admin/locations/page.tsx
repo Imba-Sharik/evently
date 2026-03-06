@@ -13,7 +13,7 @@ export default async function LocationsPage() {
   const locations = res?.data ?? []
 
   return (
-    <div className="p-6 flex gap-6">
+    <div className="p-6 flex flex-col xl:flex-row gap-6">
       <AdminLocationsTable data={locations} />
       <AdminLocationsMap locations={locations} />
     </div>

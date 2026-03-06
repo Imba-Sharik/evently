@@ -136,10 +136,10 @@ export function LocationForm(props: Props) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex gap-8 items-start">
+      <div className="flex flex-col xl:flex-row gap-8 items-start">
 
         {/* Левая колонка — фотографии */}
-        <div className="w-80 shrink-0 space-y-3">
+        <div className="w-full xl:w-80 xl:shrink-0 space-y-3">
           <div className="flex items-baseline justify-between">
             <Label className="text-lg">Фотографии</Label>
             <span className="text-sm text-muted-foreground">
@@ -219,7 +219,7 @@ export function LocationForm(props: Props) {
         </div>
 
         {/* Правая колонка — поля */}
-        <div className="flex-1 max-w-md space-y-4">
+        <div className="w-full xl:flex-1 xl:max-w-md space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-lg">Название</Label>
             <Input id="name" placeholder="Локация #4" className="border-black text-lg h-11" {...register('name')} />

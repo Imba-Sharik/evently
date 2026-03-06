@@ -199,8 +199,8 @@ export function BookingsTable({ bookings, onStatusChange, onDelete, locationFilt
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="flex gap-3">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-wrap gap-3">
+        <div className="relative flex-1 min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
           <Input
             placeholder="Поиск по имени, email, мероприятию..."
@@ -252,7 +252,7 @@ export function BookingsTable({ bookings, onStatusChange, onDelete, locationFilt
       </div>
 
       {/* Table */}
-      <div className="border border-black rounded-md overflow-hidden">
+      <div className="border border-black rounded-md overflow-x-auto">
         <Table className="text-lg">
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (
@@ -285,16 +285,16 @@ export function BookingsTable({ bookings, onStatusChange, onDelete, locationFilt
       </div>
 
       {/* Pagination footer */}
-      <div className="flex items-center justify-between text-lg text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-lg text-muted-foreground">
         <span>
           {totalRows === 0
             ? 'Нет заявок'
             : `${pageIndex * pageSize + 1}–${Math.min((pageIndex + 1) * pageSize, totalRows)} из ${totalRows}`}
         </span>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <span>Строк на странице</span>
+            <span className="hidden sm:inline">Строк на странице</span>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="h-8 w-16 border-black gap-1 text-lg px-2">

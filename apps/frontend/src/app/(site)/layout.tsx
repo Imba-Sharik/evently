@@ -17,9 +17,9 @@ export default async function SiteLayout({
     return (
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset>
+        <SidebarInset className="min-w-0">
           <Header className="sticky top-0 z-10 rounded-t-xl" leftSlot={<><SidebarTrigger /><PageTitle /></>} showLogo={false} />
-          <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+          <main className="flex-1 overflow-y-auto overflow-x-hidden [scrollbar-gutter:stable]">
             {children}
           </main>
         </SidebarInset>

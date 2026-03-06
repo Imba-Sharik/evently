@@ -145,9 +145,9 @@ export function AdminEventsSchedule({
   const slotDate = selectedSlot ? format(parseISO(selectedSlot.date), 'd MMMM yyyy', { locale: ru }) : ''
 
   return (
-    <div className="p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+    <div className="p-4 xl:p-6 flex flex-col xl:flex-row gap-4 xl:gap-6 items-start">
       {/* Левая колонка: календарь + таблица */}
-      <div className="flex flex-col gap-4 min-w-0 w-full md:flex-1 md:max-w-3xl">
+      <div className="flex flex-col gap-4 min-w-0 w-full xl:flex-1 xl:max-w-3xl">
         <LocationCalendar selectedDate={selectedDate} />
 
         <div className="bg-linear-to-br from-[#1F1F1F] to-[#666666] rounded-xl px-3 pt-2 pb-2 border border-black overflow-x-auto">

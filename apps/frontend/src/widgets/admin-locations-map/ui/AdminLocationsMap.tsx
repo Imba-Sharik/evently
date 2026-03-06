@@ -40,7 +40,7 @@ export function AdminLocationsMap({ locations }: Props) {
   )
 
   return (
-    <div className="w-96 shrink-0 sticky top-20 bg-black rounded-xl p-px">
+    <div className="w-full h-64 xl:w-96 xl:h-auto shrink-0 xl:sticky xl:top-20 bg-black rounded-xl p-px">
       <Map
         className="h-full w-full rounded-xl overflow-hidden"
         theme="light"

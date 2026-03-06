@@ -146,7 +146,7 @@ export function BookingsDashboard({ bookings }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         {stats.map((s) => (
           <Card key={s.label} className="border-black">
             <CardHeader className="pb-0 -pt-4 px-4">
@@ -212,7 +212,7 @@ export function BookingsDashboard({ bookings }: Props) {
         <CardContent>
           <ChartContainer
             config={{ bookings: { label: "Заявки", color: CHART_COLOR } }}
-            className="h-[200px] w-full"
+            className="h-50 w-full"
           >
             <AreaChart
               data={chartData}

@@ -5,6 +5,15 @@ import { Loader2, X } from 'lucide-react'
 import { Input } from '@/shared/ui/input'
 import { cn } from '@/shared/lib/utils'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function buildShortLabel(a: any): string {
+  const road = a?.road ?? a?.pedestrian ?? a?.footway ?? a?.path ?? ''
+  const house = a?.house_number ?? ''
+  const city = a?.city ?? a?.town ?? a?.village ?? a?.municipality ?? a?.county ?? ''
+  const parts = [road && house ? `${road}, ${house}` : road || house, city].filter(Boolean)
+  return parts.join(', ')
+}
+
 export type AddressSuggestion = {
   label: string
   lat: number
@@ -31,13 +40,13 @@ export function AddressSearch({ defaultValue, onSelect, placeholder, className }
     setLoading(true)
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=ru&countrycodes=ru`,
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&accept-language=ru&countrycodes=ru&addressdetails=1`,
         { headers: { 'Accept': 'application/json', 'User-Agent': 'evently-app' } }
       )
       const data = await res.json()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const items: AddressSuggestion[] = (data ?? []).map((f: any) => ({
-        label: f.display_name,
+        label: buildShortLabel(f.address),
         lat: parseFloat(f.lat),
         lng: parseFloat(f.lon),
       }))
