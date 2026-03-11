@@ -8,16 +8,9 @@ import type { Location } from '@/shared/api/generated/types/Location'
 import { createEventAction } from '@/entities/event/actions'
 import { EventCard } from '@/entities/event/ui/EventCard'
 import { EventEditorPanel } from './EventEditorPanel'
+import { type FormState, emptyForm } from '@/entities/event/model/types'
 
-export type FormState = {
-  name: string
-  description: string
-  spots: string
-  startTime: string
-  endTime: string
-}
-
-const emptyForm = (): FormState => ({ name: '', description: '', spots: '', startTime: '', endTime: '' })
+export type { FormState }
 
 export function AdminEventsSchedule({
   location,

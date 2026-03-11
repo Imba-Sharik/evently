@@ -10,7 +10,7 @@ import { TimePicker } from '@/shared/ui/time-picker'
 import { Calendar } from '@/shared/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover'
 import { CalendarIcon, X } from 'lucide-react'
-import type { FormState } from './AdminEventsSchedule'
+import type { FormState } from '@/entities/event/model/types'
 
 function pluralDates(n: number) {
   if (n % 10 === 1 && n % 100 !== 11) return `${n} дата`
