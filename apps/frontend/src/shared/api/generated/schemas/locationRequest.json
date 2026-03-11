@@ -12,7 +12,10 @@
         "description": { "type": "string" },
         "lat": { "type": "number", "format": "float" },
         "lng": { "type": "number", "format": "float" },
-        "timeSlots": {},
+        "place_id": { "type": "string" },
+        "city_place_id": { "type": "string" },
+        "city_name": { "type": "string" },
+        "country_code": { "type": "string" },
         "image": {
           "oneOf": [{ "type": "integer" }, { "type": "string" }],
           "example": "string or id"

@@ -527,6 +527,9 @@ export interface ApiLocationLocation extends Struct.CollectionTypeSchema {
   attributes: {
     address: Schema.Attribute.String & Schema.Attribute.Required;
     bookings: Schema.Attribute.Relation<'oneToMany', 'api::booking.booking'>;
+    city_name: Schema.Attribute.String;
+    city_place_id: Schema.Attribute.String;
+    country_code: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -544,8 +547,8 @@ export interface ApiLocationLocation extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     metro: Schema.Attribute.String;
     name: Schema.Attribute.String & Schema.Attribute.Required;
+    place_id: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
-    timeSlots: Schema.Attribute.JSON;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

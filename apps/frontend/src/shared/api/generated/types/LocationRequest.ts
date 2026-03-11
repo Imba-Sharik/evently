@@ -32,7 +32,22 @@ export type LocationRequest = {
      * @type number | undefined, float
      */
     lng?: number;
-    timeSlots?: any;
+    /**
+     * @type string | undefined
+     */
+    place_id?: string;
+    /**
+     * @type string | undefined
+     */
+    city_place_id?: string;
+    /**
+     * @type string | undefined
+     */
+    city_name?: string;
+    /**
+     * @type string | undefined
+     */
+    country_code?: string;
     image?: number | string;
     /**
      * @type array | undefined

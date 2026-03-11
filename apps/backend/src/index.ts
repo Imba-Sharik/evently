@@ -42,7 +42,17 @@ async function seedManagerPermissions(strapi: Core.Strapi) {
 }
 
 export default {
-  register() {},
+  register({ strapi }: { strapi: Core.Strapi }) {
+    // Windows: temp file cleanup after S3 upload throws EBUSY (file still locked by OS/AV).
+    // Upload already succeeded (201 sent to client) — safe to swallow this error.
+    process.on('uncaughtException', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EBUSY' || err.code === 'EPERM') {
+        strapi.log.warn(`[upload] Temp cleanup failed (${err.code}): ${err.message}`)
+        return
+      }
+      throw err
+    })
+  },
 
   async bootstrap({ strapi }: { strapi: Core.Strapi }) {
     await seedManagerPermissions(strapi)

@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2026-03-06T01:56:00.156Z"
+    "x-generation-date": "2026-03-11T08:10:47.208Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -3030,7 +3030,18 @@
                     "type": "number",
                     "format": "float"
                   },
-                  "timeSlots": {},
+                  "place_id": {
+                    "type": "string"
+                  },
+                  "city_place_id": {
+                    "type": "string"
+                  },
+                  "city_name": {
+                    "type": "string"
+                  },
+                  "country_code": {
+                    "type": "string"
+                  },
                   "image": {
                     "type": "object",
                     "properties": {
@@ -4676,7 +4687,18 @@
                 "type": "number",
                 "format": "float"
               },
-              "timeSlots": {},
+              "place_id": {
+                "type": "string"
+              },
+              "city_place_id": {
+                "type": "string"
+              },
+              "city_name": {
+                "type": "string"
+              },
+              "country_code": {
+                "type": "string"
+              },
               "image": {
                 "type": "object",
                 "properties": {
@@ -6185,7 +6207,18 @@
                 "type": "number",
                 "format": "float"
               },
-              "timeSlots": {},
+              "place_id": {
+                "type": "string"
+              },
+              "city_place_id": {
+                "type": "string"
+              },
+              "city_name": {
+                "type": "string"
+              },
+              "country_code": {
+                "type": "string"
+              },
               "image": {
                 "oneOf": [
                   {
@@ -6335,7 +6368,18 @@
             "type": "number",
             "format": "float"
           },
-          "timeSlots": {},
+          "place_id": {
+            "type": "string"
+          },
+          "city_place_id": {
+            "type": "string"
+          },
+          "city_name": {
+            "type": "string"
+          },
+          "country_code": {
+            "type": "string"
+          },
           "image": {
             "type": "object",
             "properties": {
@@ -7406,7 +7450,18 @@
                       "type": "number",
                       "format": "float"
                     },
-                    "timeSlots": {},
+                    "place_id": {
+                      "type": "string"
+                    },
+                    "city_place_id": {
+                      "type": "string"
+                    },
+                    "city_name": {
+                      "type": "string"
+                    },
+                    "country_code": {
+                      "type": "string"
+                    },
                     "image": {
                       "type": "object",
                       "properties": {

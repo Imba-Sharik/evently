@@ -1,55 +1,46 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Label } from '@/shared/ui/label'
 import { Textarea } from '@/shared/ui/textarea'
-import { AddressSearch } from '@/shared/ui/address-search'
+import dynamic from 'next/dynamic'
+import type { AddressValue } from '@/features/address-input'
+const AddressInput = dynamic(
+  () => import('@/features/address-input').then(m => m.AddressInput),
+  { ssr: false }
+)
 import {
   FileUpload,
   FileUploadDropzone,
   FileUploadTrigger,
-  FileUploadList,
-  FileUploadItem,
-  FileUploadItemPreview,
-  FileUploadItemMetadata,
-  FileUploadItemDelete,
 } from '@/shared/ui/file-upload'
-import { TimePicker } from '@/shared/ui/time-picker'
-import { Map, MapMarker, MarkerContent } from '@/shared/ui/map'
-import { UploadCloud, X } from 'lucide-react'
+import { GripVertical, UploadCloud, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { createLocationAction, updateLocationAction } from '@/entities/location/actions'
 import type { Location } from '@/shared/api/generated/types/Location'
 
 const schema = z.object({
   name:        z.string().min(1, 'Обязательное поле'),
-  address:     z.string().min(1, 'Обязательное поле'),
   metro:       z.string().min(1, 'Обязательное поле'),
   description: z.string().min(1, 'Обязательное поле'),
-  lat:         z.string().optional(),
-  lng:         z.string().optional(),
 })
 
 type FormValues = z.infer<typeof schema>
 
-const SLOT_CONFIG = [
-  { key: 'morning',   label: 'Утро',  min: '05:00', max: '13:00' },
-  { key: 'afternoon', label: 'День',  min: '10:00', max: '19:00' },
-  { key: 'evening',   label: 'Вечер', min: '16:00', max: '23:55' },
-] as const
-
-type SlotKey = typeof SLOT_CONFIG[number]['key']
-
 type Props =
   | { mode: 'create' }
   | { mode: 'edit'; documentId: string; initialData: Location }
+
+type KeptImage = { kind: 'kept'; id: number; url: string }
+type NewImage  = { kind: 'new'; file: File }
+type ImageItem = KeptImage | NewImage
 
 export function LocationForm(props: Props) {
   const isEdit = props.mode === 'edit'
@@ -57,67 +48,115 @@ export function LocationForm(props: Props) {
 
   const router = useRouter()
 
-  // Existing gallery items (edit mode) — user can remove any
-  const [keptImages, setKeptImages] = useState<{ id: number; url: string }[]>(() => {
+  const [images, setImages] = useState<ImageItem[]>(() => {
     if (!isEdit || !initial) return []
     const gallery = initial.gallery ?? []
     return gallery
       .filter(g => g.id != null && g.url)
-      .map(g => ({ id: Number(g.id), url: g.url! }))
+      .map(g => ({ kind: 'kept' as const, id: Number(g.id), url: g.url! }))
   })
 
-  const [newFiles, setNewFiles] = useState<File[]>([])
-
-  const [timeSlots, setTimeSlots] = useState<Record<SlotKey, { start: string; end: string }>>(() => {
-    const ts = initial?.timeSlots as Record<SlotKey, { start: string; end: string }> | null | undefined
+  const [addressValue, setAddressValue] = useState<AddressValue | undefined>(() => {
+    if (!isEdit || !initial?.lat || !initial?.lng) return undefined
     return {
-      morning:   ts?.morning   ?? { start: '08:00', end: '11:00' },
-      afternoon: ts?.afternoon ?? { start: '12:00', end: '17:00' },
-      evening:   ts?.evening   ?? { start: '18:30', end: '22:00' },
+      provider: 'mapbox',
+      feature_type: 'address',
+      place_id: initial.place_id ?? '',
+      city_place_id: initial.city_place_id ?? '',
+      lat: initial.lat,
+      lng: initial.lng,
+      name: initial.address ?? '',
+      city_name: initial.city_name ?? '',
+      country_code: initial.country_code ?? '',
     }
   })
 
   const [serverError, setServerError] = useState<string | null>(null)
-  const [mapKey, setMapKey] = useState(0)
 
-  const { register, handleSubmit, setValue, control, formState: { errors, isSubmitting, isValid } } = useForm<FormValues>({
+  const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: 'onTouched',
     defaultValues: {
       name:        initial?.name        ?? '',
-      address:     initial?.address     ?? '',
       metro:       initial?.metro       ?? '',
       description: initial?.description ?? '',
-      lat:         initial?.lat != null  ? String(initial.lat)  : '',
-      lng:         initial?.lng != null  ? String(initial.lng)  : '',
     },
   })
 
-  const latValue = useWatch({ control, name: 'lat' })
-  const lngValue = useWatch({ control, name: 'lng' })
-
-  function setSlot(slot: SlotKey, field: 'start' | 'end', value: string) {
-    setTimeSlots(prev => ({ ...prev, [slot]: { ...prev[slot], [field]: value } }))
+  // Sync FileUpload controlled value with our images state
+  function handleFileChange(files: File[]) {
+    setImages(prev => {
+      const prevNew = prev.filter(i => i.kind === 'new') as NewImage[]
+      const added = files
+        .filter(f => !prevNew.some(e => e.file.name === f.name && e.file.size === f.size))
+        .map(f => ({ kind: 'new' as const, file: f }))
+      const removed = prevNew.filter(e =>
+        !files.some(f => f.name === e.file.name && f.size === e.file.size)
+      )
+      return [
+        ...prev.filter(i => {
+          if (i.kind === 'kept') return true
+          return !removed.some(r => r.file.name === (i as NewImage).file.name && r.file.size === (i as NewImage).file.size)
+        }),
+        ...added,
+      ]
+    })
   }
 
-  function removeKept(id: number) {
-    setKeptImages(prev => prev.filter(img => img.id !== id))
+  function removeImage(index: number) {
+    setImages(prev => prev.filter((_, i) => i !== index))
+  }
+
+  // Drag and drop
+  const dragIndex = useRef<number | null>(null)
+  const [dragging, setDragging] = useState<number | null>(null)
+
+  function onDragStart(index: number) {
+    dragIndex.current = index
+    setDragging(index)
+  }
+
+  function onDragOver(e: React.DragEvent, index: number) {
+    e.preventDefault()
+    const from = dragIndex.current
+    if (from === null || from === index) return
+    setImages(prev => {
+      const next = [...prev]
+      const [item] = next.splice(from, 1)
+      next.splice(index, 0, item)
+      return next
+    })
+    dragIndex.current = index
+    setDragging(index)
+  }
+
+  function onDragEnd() {
+    dragIndex.current = null
+    setDragging(null)
   }
 
   async function onSubmit(values: FormValues) {
-    if (!isEdit && newFiles.length < 1 && keptImages.length < 1) return
+    if (!isEdit && images.length < 1) return
     setServerError(null)
 
     const fd = new FormData()
     fd.append('name', values.name)
-    fd.append('address', values.address)
     fd.append('metro', values.metro)
     fd.append('description', values.description)
-    if (values.lat)         fd.append('lat', values.lat)
-    if (values.lng)         fd.append('lng', values.lng)
-    fd.append('timeSlots', JSON.stringify(timeSlots))
-    newFiles.forEach(f => fd.append('files', f))
-    keptImages.forEach(img => fd.append('keepGalleryId', String(img.id)))
+    if (addressValue) {
+      fd.append('address', addressValue.name)
+      fd.append('lat', String(addressValue.lat))
+      fd.append('lng', String(addressValue.lng))
+      fd.append('place_id', addressValue.place_id)
+      fd.append('city_place_id', addressValue.city_place_id)
+      fd.append('city_name', addressValue.city_name)
+      fd.append('country_code', addressValue.country_code)
+    }
+    // Preserve order: send in the order images are arranged
+    images.forEach(item => {
+      if (item.kind === 'kept') fd.append('keepGalleryId', String(item.id))
+      else fd.append('files', item.file)
+    })
 
     const result = isEdit
       ? await updateLocationAction(props.documentId, fd)
@@ -131,8 +170,9 @@ export function LocationForm(props: Props) {
     }
   }
 
+  const newFiles = images.filter(i => i.kind === 'new').map(i => (i as NewImage).file)
   const requirePhoto = !isEdit
-  const canSubmit = isValid && (requirePhoto ? newFiles.length > 0 : true)
+  const canSubmit = isValid && !!addressValue && (requirePhoto ? images.length > 0 : true)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -143,31 +183,53 @@ export function LocationForm(props: Props) {
           <div className="flex items-baseline justify-between">
             <Label className="text-lg">Фотографии</Label>
             <span className="text-lg text-muted-foreground">
-              {keptImages.length + newFiles.length} / 5
+              {images.length} / 5
             </span>
           </div>
 
-          {/* Существующие фото (edit mode) */}
-          {keptImages.length > 0 && (
+          {/* Unified draggable image list */}
+          {images.length > 0 && (
             <div className="space-y-2">
-              {keptImages.map(img => (
-                <div key={img.id} className="flex items-center gap-2 border border-black rounded-md p-2">
-                  <Image
-                    src={img.url}
-                    alt=""
-                    width={48}
-                    height={48}
-                    className="size-12 rounded object-cover shrink-0"
-                  />
-                  <span className="flex-1 text-lg text-muted-foreground truncate">
-                    {img.url.split('/').pop()}
-                  </span>
+              {images.map((item, index) => (
+                <div
+                  key={item.kind === 'kept' ? `kept-${item.id}` : `new-${item.file.name}-${item.file.size}`}
+                  draggable
+                  onDragStart={() => onDragStart(index)}
+                  onDragOver={e => onDragOver(e, index)}
+                  onDragEnd={onDragEnd}
+                  className={`flex items-center gap-2 border rounded-md p-2 cursor-grab active:cursor-grabbing transition-opacity ${dragging === index ? 'opacity-40' : 'opacity-100'} ${index === 0 ? 'border-primary' : 'border-black'}`}
+                >
+                  <GripVertical className="size-4 shrink-0 text-muted-foreground" />
+                  {item.kind === 'kept' ? (
+                    <Image
+                      src={item.url}
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="size-12 rounded object-cover shrink-0"
+                    />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={URL.createObjectURL(item.file)}
+                      alt=""
+                      className="size-12 rounded object-cover shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <span className="text-lg text-muted-foreground truncate block">
+                      {item.kind === 'kept' ? item.url.split('/').pop() : item.file.name}
+                    </span>
+                    {index === 0 && (
+                      <span className="text-xs font-medium text-primary">Обложка</span>
+                    )}
+                  </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
-                    onClick={() => removeKept(img.id)}
+                    onClick={() => removeImage(index)}
                   >
                     <X className="size-4" />
                   </Button>
@@ -176,46 +238,31 @@ export function LocationForm(props: Props) {
             </div>
           )}
 
-          {/* Новые файлы */}
-          <FileUpload
-            accept="image/*"
-            maxFiles={5 - keptImages.length}
-            multiple
-            onValueChange={setNewFiles}
-          >
-            <FileUploadDropzone className="border-black gap-3 py-8">
-              <UploadCloud className="size-8 text-muted-foreground" />
-              <div className="space-y-1 text-center">
-                <p className="text-[18px] font-medium">
-                  {isEdit ? 'Добавить новые фото' : 'Перетащите изображения сюда'}
-                </p>
-                <p className="text-[18px] text-muted-foreground">PNG, JPG, WEBP · до 10 МБ</p>
-              </div>
-              <FileUploadTrigger asChild>
-                <Button type="button" variant="outline" size="sm" className="border-black">
-                  Выбрать файлы
-                </Button>
-              </FileUploadTrigger>
-            </FileUploadDropzone>
-            <FileUploadList>
-              {newFiles.map((file) => (
-                <FileUploadItem key={`${file.name}-${file.size}`} value={file} className="border-black">
-                  <FileUploadItemPreview className="size-12 rounded" />
-                  <FileUploadItemMetadata size="sm" />
-                  <FileUploadItemDelete asChild>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 ml-auto shrink-0 text-muted-foreground hover:text-destructive"
-                    >
-                      <X className="size-4" />
-                    </Button>
-                  </FileUploadItemDelete>
-                </FileUploadItem>
-              ))}
-            </FileUploadList>
-          </FileUpload>
+          {/* FileUpload dropzone for adding new files */}
+          {images.length < 5 && (
+            <FileUpload
+              accept="image/*"
+              maxFiles={5 - images.length}
+              multiple
+              value={newFiles}
+              onValueChange={handleFileChange}
+            >
+              <FileUploadDropzone className="border-black gap-3 py-8">
+                <UploadCloud className="size-8 text-muted-foreground" />
+                <div className="space-y-1 text-center">
+                  <p className="text-[18px] font-medium">
+                    {isEdit ? 'Добавить новые фото' : 'Перетащите изображения сюда'}
+                  </p>
+                  <p className="text-[18px] text-muted-foreground">PNG, JPG, WEBP · до 10 МБ</p>
+                </div>
+                <FileUploadTrigger asChild>
+                  <Button type="button" variant="outline" size="sm" className="border-black">
+                    Выбрать файлы
+                  </Button>
+                </FileUploadTrigger>
+              </FileUploadDropzone>
+            </FileUpload>
+          )}
         </div>
 
         {/* Правая колонка — поля */}
@@ -228,56 +275,16 @@ export function LocationForm(props: Props) {
 
           <div className="space-y-2">
             <Label className="text-lg">Адрес</Label>
-            <AddressSearch
-              defaultValue={
-                isEdit && initial?.address && initial?.lat != null && initial?.lng != null
-                  ? { label: initial.address, lat: initial.lat, lng: initial.lng }
-                  : undefined
-              }
-              onSelect={s => {
-                if (s) {
-                  setValue('address', s.label, { shouldValidate: true })
-                  setValue('lat', String(s.lat))
-                  setValue('lng', String(s.lng))
-                  setMapKey(k => k + 1)
-                } else {
-                  setValue('address', '', { shouldValidate: true })
-                  setValue('lat', '')
-                  setValue('lng', '')
-                }
-              }}
+            <AddressInput
+              accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
+              language="ru"
               placeholder="Москва, ул. Примерная, 1"
-              className="border-black text-lg h-11"
+              value={addressValue}
+              onChange={setAddressValue}
+              onClear={() => setAddressValue(undefined)}
+              mapClassName="h-48 w-full rounded-xl overflow-hidden border border-black"
             />
-            {errors.address && <p className="text-lg text-destructive">{errors.address.message}</p>}
-            {(() => {
-              const lat = parseFloat(latValue ?? '')
-              const lng = parseFloat(lngValue ?? '')
-              const valid = !isNaN(lat) && !isNaN(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180
-              if (!valid) return null
-              return (
-                <Map
-                  key={mapKey}
-                  className="h-48 w-full rounded-xl overflow-hidden border border-black mt-2"
-                  theme="light"
-                  viewport={{ center: [lng, lat], zoom: 14 }}
-                >
-                  <MapMarker
-                    longitude={lng}
-                    latitude={lat}
-                    draggable
-                    onDragEnd={({ lng: newLng, lat: newLat }) => {
-                      setValue('lat', String(newLat))
-                      setValue('lng', String(newLng))
-                    }}
-                  >
-                    <MarkerContent>
-                      <div className="size-4 rounded-full bg-primary border-2 border-white shadow-lg cursor-grab" />
-                    </MarkerContent>
-                  </MapMarker>
-                </Map>
-              )
-            })()}
+            {!addressValue && <p className="text-lg text-muted-foreground">Выберите адрес из списка</p>}
           </div>
 
           <div className="space-y-2">
@@ -298,37 +305,11 @@ export function LocationForm(props: Props) {
             {errors.description && <p className="text-lg text-destructive">{errors.description.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-lg">Временные слоты</Label>
-            <div className="space-y-3">
-              {SLOT_CONFIG.map(slot => (
-                <div key={slot.key} className="flex items-center gap-3">
-                  <span className="text-lg font-medium w-14 shrink-0">{slot.label}</span>
-                  <TimePicker
-                    value={timeSlots[slot.key].start}
-                    onChange={v => setSlot(slot.key, 'start', v)}
-                    min={slot.min}
-                    max={slot.max}
-                    className="border-black"
-                  />
-                  <span className="text-muted-foreground">—</span>
-                  <TimePicker
-                    value={timeSlots[slot.key].end}
-                    onChange={v => setSlot(slot.key, 'end', v)}
-                    min={slot.min}
-                    max={slot.max}
-                    className="border-black"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
           {serverError && <p className="text-lg text-destructive">{serverError}</p>}
 
           <div className="flex gap-3 pt-2">
             <Button type="submit" className="text-lg h-11 px-6" disabled={!canSubmit || isSubmitting}>
-              {isSubmitting ? 'Сохранение...' : isEdit ? 'Сохранить' : 'Создать'}
+              {isSubmitting ? (isEdit ? 'Обновление...' : 'Создание...') : isEdit ? 'Обновить' : 'Создать'}
             </Button>
             <Button
               type="button"

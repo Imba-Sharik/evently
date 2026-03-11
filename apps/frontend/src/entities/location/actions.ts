@@ -40,7 +40,6 @@ export async function createLocationAction(formData: FormData): Promise<CreateLo
   // 2. Создаём локацию
   const latRaw = formData.get('lat') as string
   const lngRaw = formData.get('lng') as string
-  const timeSlotsRaw = formData.get('timeSlots') as string
 
   const body = {
     data: {
@@ -50,7 +49,10 @@ export async function createLocationAction(formData: FormData): Promise<CreateLo
       description: formData.get('description') || null,
       lat: latRaw ? parseFloat(latRaw) : null,
       lng: lngRaw ? parseFloat(lngRaw) : null,
-      timeSlots: timeSlotsRaw ? JSON.parse(timeSlotsRaw) : null,
+      place_id: formData.get('place_id') || null,
+      city_place_id: formData.get('city_place_id') || null,
+      city_name: formData.get('city_name') || null,
+      country_code: formData.get('country_code') || null,
       image: imageId,
       gallery: galleryIds,
     },
@@ -105,7 +107,6 @@ export async function updateLocationAction(documentId: string, formData: FormDat
 
   const latRaw = formData.get('lat') as string
   const lngRaw = formData.get('lng') as string
-  const timeSlotsRaw = formData.get('timeSlots') as string
 
   const res = await fetch(`${STRAPI_API_URL}/locations/${documentId}`, {
     method: 'PUT',
@@ -118,7 +119,10 @@ export async function updateLocationAction(documentId: string, formData: FormDat
         description: formData.get('description') || null,
         lat: latRaw ? parseFloat(latRaw) : null,
         lng: lngRaw ? parseFloat(lngRaw) : null,
-        timeSlots: timeSlotsRaw ? JSON.parse(timeSlotsRaw) : null,
+        place_id: formData.get('place_id') || null,
+        city_place_id: formData.get('city_place_id') || null,
+        city_name: formData.get('city_name') || null,
+        country_code: formData.get('country_code') || null,
         image: imageId,
         gallery: galleryIds,
       },

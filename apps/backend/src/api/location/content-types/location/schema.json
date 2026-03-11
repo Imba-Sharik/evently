@@ -31,8 +31,17 @@
     "lng": {
       "type": "decimal"
     },
-    "timeSlots": {
-      "type": "json"
+    "place_id": {
+      "type": "string"
+    },
+    "city_place_id": {
+      "type": "string"
+    },
+    "city_name": {
+      "type": "string"
+    },
+    "country_code": {
+      "type": "string"
     },
     "image": {
       "type": "media",
