@@ -1,4 +1,3 @@
-export type TimeSlot = 'morning' | 'afternoon' | 'evening'
 
 export type DaySchedule = {
   morning: string   // 08:00–11:00
@@ -89,10 +88,5 @@ export const locations: Location[] = [
   },
 ]
 
-export const TIME_LABELS = {
-  morning:   'Утро (08:00–11:00)',
-  afternoon: 'День (12:00–17:00)',
-  evening:   'Вечер (18:30–22:00)',
-} satisfies Record<TimeSlot, string>
 
 export { DAYS }

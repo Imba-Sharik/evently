@@ -1,9 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table'
 
-type DayRow = { morning: string[]; afternoon: string[]; evening: string[] }
-
 type Props = {
-  schedule: Record<string, DayRow>
+  schedule: Record<string, string[]>
   days: readonly string[]
   selectedDayKey?: string
   size?: 'sm' | 'lg'
@@ -20,18 +18,10 @@ export function ScheduleTable({ schedule, days, selectedDayKey = '', size = 'lg'
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className={`text-white ${text} ${pad} font-normal`}>День</TableHead>
-            <TableHead className={`text-white ${text} ${pad} font-normal`}>
-              Утро <span className="text-white/50">(08:00–11:00)</span>
-            </TableHead>
-            <TableHead className={`text-white ${text} ${pad} font-normal`}>
-              День <span className="text-white/50">(12:00–17:00)</span>
-            </TableHead>
-            <TableHead className={`text-white ${text} ${pad} font-normal`}>
-              Вечер <span className="text-white/50">(18:30–22:00)</span>
-            </TableHead>
+            <TableHead className={`text-white ${text} ${pad} font-normal`}>Мероприятия</TableHead>
           </TableRow>
           <TableRow className="hover:bg-transparent">
-            <TableHead colSpan={4} className="h-px p-0" style={{ backgroundColor: 'rgba(168,162,167,0.38)' }} />
+            <TableHead colSpan={2} className="h-px p-0" style={{ backgroundColor: 'rgba(168,162,167,0.38)' }} />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -40,6 +30,7 @@ export function ScheduleTable({ schedule, days, selectedDayKey = '', size = 'lg'
             const cellBase = `${text} ${pad}`
             const cellColor = isSelected ? 'text-white' : 'text-white/90'
             const bg = isSelected ? { backgroundColor: '#498BD7' } : undefined
+            const names = schedule[day] ?? []
             return (
               <TableRow key={day} className="border-0 hover:bg-transparent">
                 <TableCell
@@ -48,17 +39,13 @@ export function ScheduleTable({ schedule, days, selectedDayKey = '', size = 'lg'
                 >
                   {day}
                 </TableCell>
-                <TableCell className={`${cellBase} ${cellColor} border-y border-transparent`} style={bg}>
-                  <div className="flex flex-col gap-0.5">{schedule[day].morning.map((n, i) => <span key={i}>{n}</span>)}</div>
-                </TableCell>
-                <TableCell className={`${cellBase} ${cellColor} border-y border-transparent`} style={bg}>
-                  <div className="flex flex-col gap-0.5">{schedule[day].afternoon.map((n, i) => <span key={i}>{n}</span>)}</div>
-                </TableCell>
                 <TableCell
                   className={`${cellBase} ${cellColor} rounded-r-lg border-y border-r border-transparent`}
                   style={bg}
                 >
-                  <div className="flex flex-col gap-0.5">{schedule[day].evening.map((n, i) => <span key={i}>{n}</span>)}</div>
+                  <div className="flex flex-col gap-0.5">
+                    {names.map((n, i) => <span key={i}>{n}</span>)}
+                  </div>
                 </TableCell>
               </TableRow>
             )

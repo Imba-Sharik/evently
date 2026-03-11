@@ -531,10 +531,6 @@
             "format": "time",
             "example": "12:54.000"
           },
-          "timeSlot": {
-            "type": "string",
-            "enum": ["morning", "afternoon", "evening"]
-          },
           "totalSpots": { "type": "integer" },
           "description": { "type": "string" },
           "location": {

@@ -502,10 +502,6 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     startTime: Schema.Attribute.Time & Schema.Attribute.Required;
-    timeSlot: Schema.Attribute.Enumeration<
-      ['morning', 'afternoon', 'evening']
-    > &
-      Schema.Attribute.Required;
     totalSpots: Schema.Attribute.Integer & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

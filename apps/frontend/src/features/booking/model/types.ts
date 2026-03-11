@@ -1,7 +1,7 @@
-import type { EventDetail } from '@/shared/mocks/events'
+import type { Event } from '@/shared/api/generated/types/Event'
 
 export type BookingState = {
-  event: EventDetail
+  event: Event
   date: Date
   quantity: number
 }

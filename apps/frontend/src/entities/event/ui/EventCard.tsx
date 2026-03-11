@@ -5,23 +5,30 @@ import { Button } from '@/shared/ui/button'
 import { Card } from '@/shared/ui/card'
 import { formatDate } from '@/shared/lib/date'
 import { splitDescription } from '../lib/split-description'
-import type { EventDetail } from '@/shared/mocks/events'
+import type { Event } from '@/shared/api/generated/types/Event'
+
+function formatTime(t?: string) {
+  return t ? t.slice(0, 5) : ''
+}
 
 export function EventCard({
   event,
   date,
+  locationName,
   quantity,
   onQuantityChange,
   onBook,
 }: {
-  event: EventDetail
+  event: Event
   date: Date
+  locationName?: string
   quantity: number
   onQuantityChange: (delta: number) => void
   onBook: () => void
 }) {
-  const available = event.spotsLeft > 0
-  const [bold, rest] = splitDescription(event.description)
+  const available = event.totalSpots > 0
+  const [bold, rest] = splitDescription(event.description ?? '')
+  const timeRange = `${formatTime(event.startTime)} – ${formatTime(event.endTime)}`
 
   return (
     <Card className="rounded-2xl px-5 py-4 gap-0 border-black">
@@ -31,13 +38,14 @@ export function EventCard({
           <p className="font-semibold text-xl leading-tight">{event.name}</p>
           <p className="text-lg text-muted-foreground mt-0.5">
             {available
-              ? `Осталось ${event.spotsLeft} мест`
+              ? `Осталось ${event.totalSpots} мест`
               : 'Не осталось мест :('}
           </p>
         </div>
         <div className="text-right text-lg text-muted-foreground shrink-0">
           <p>{formatDate(date)}</p>
-          <p>{event.timeRange}</p>
+          <p>{timeRange}</p>
+          {locationName && <p>{locationName}</p>}
         </div>
       </div>
 
@@ -76,7 +84,7 @@ export function EventCard({
               size="icon"
               className="h-7 w-7 border-black"
               onClick={() => onQuantityChange(1)}
-              disabled={quantity >= event.spotsLeft}
+              disabled={quantity >= event.totalSpots}
             >
               <Plus className="size-3" />
             </Button>

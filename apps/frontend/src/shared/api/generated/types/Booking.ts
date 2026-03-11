@@ -12,15 +12,6 @@ export const bookingStatusEnum = {
 export type BookingStatusEnumKey =
   (typeof bookingStatusEnum)[keyof typeof bookingStatusEnum];
 
-export const eventTimeSlotEnum = {
-  morning: "morning",
-  afternoon: "afternoon",
-  evening: "evening",
-} as const;
-
-export type EventTimeSlotEnumKey =
-  (typeof eventTimeSlotEnum)[keyof typeof eventTimeSlotEnum];
-
 export const bookingsStatusEnum = {
   pending: "pending",
   confirmed: "confirmed",
@@ -77,10 +68,6 @@ export type Booking = {
      * @type string | undefined, time
      */
     endTime?: string;
-    /**
-     * @type string | undefined
-     */
-    timeSlot?: EventTimeSlotEnumKey;
     /**
      * @type integer | undefined
      */

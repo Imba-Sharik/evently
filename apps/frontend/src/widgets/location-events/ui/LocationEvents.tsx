@@ -4,26 +4,21 @@ import { toast } from 'sonner'
 import { EventCard } from '@/entities/event'
 import { useBooking, BookingDialog } from '@/features/booking'
 import { createBookingAction } from '@/entities/booking/actions'
-import type { EventDetail } from '@/shared/mocks/events'
-
-type EventSlot = {
-  label: string
-  event: EventDetail
-}
+import type { Event } from '@/shared/api/generated/types/Event'
 
 type Props = {
-  slots: EventSlot[]
+  events: Event[]
   selectedDate: Date
   locationName: string
   locationDocumentId: string
 }
 
-export function LocationEvents({ slots, selectedDate, locationName, locationDocumentId }: Props) {
+export function LocationEvents({ events, selectedDate, locationName, locationDocumentId }: Props) {
   const {
     booking, bookingName, bookingEmail,
     setBookingName, setBookingEmail,
     getQuantity, changeQuantity,
-    openBooking, closeBooking,
+    openBooking, closeBooking, eventKey,
   } = useBooking()
 
   async function handleSubmit() {
@@ -33,7 +28,7 @@ export function LocationEvents({ slots, selectedDate, locationName, locationDocu
         customerName: bookingName,
         customerEmail: bookingEmail,
         quantity: booking.quantity,
-        eventDocumentId: booking.event.id,
+        eventDocumentId: String(booking.event.documentId ?? booking.event.id),
         locationDocumentId,
       })
       closeBooking()
@@ -46,18 +41,19 @@ export function LocationEvents({ slots, selectedDate, locationName, locationDocu
   return (
     <>
       <div className="flex flex-col gap-6">
-        {slots.map(({ label, event }) => (
-          <div key={label} className="flex flex-col gap-3">
-            <h2 className="text-2xl font-medium text-muted-foreground">{label}</h2>
+        {events.map(event => {
+          const key = eventKey(event)
+          return (
             <EventCard
+              key={key}
               event={event}
               date={selectedDate}
-              quantity={getQuantity(event.id)}
-              onQuantityChange={(delta) => changeQuantity(event.id, delta)}
+              quantity={getQuantity(key)}
+              onQuantityChange={(delta) => changeQuantity(key, delta)}
               onBook={() => openBooking(event, selectedDate)}
             />
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <BookingDialog

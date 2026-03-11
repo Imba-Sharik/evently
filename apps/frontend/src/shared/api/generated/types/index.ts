@@ -2,7 +2,6 @@ export type {
   Booking,
   BookingStatusEnumKey,
   BookingsStatusEnumKey,
-  EventTimeSlotEnumKey,
 } from "./Booking";
 export type { BookingListResponse } from "./BookingListResponse";
 export type { BookingRequest, DataStatusEnumKey } from "./BookingRequest";
@@ -56,14 +55,9 @@ export type {
   DeleteUsersPermissionsRolesRolePathParams,
 } from "./DeleteUsersPermissionsRolesRole";
 export type { Error } from "./Error";
-export type {
-  BookingsStatusEnum2Key,
-  Event,
-  EventTimeSlotEnum2Key,
-  EventsTimeSlotEnumKey,
-} from "./Event";
+export type { BookingsStatusEnum2Key, Event } from "./Event";
 export type { EventListResponse } from "./EventListResponse";
-export type { DataTimeSlotEnumKey, EventRequest } from "./EventRequest";
+export type { EventRequest } from "./EventRequest";
 export type { EventResponse } from "./EventResponse";
 export type {
   GetAuthEmailConfirmation301,
@@ -196,11 +190,7 @@ export type {
   GetUsersPermissionsRolesIdQuery,
   GetUsersPermissionsRolesIdQueryResponse,
 } from "./GetUsersPermissionsRolesId";
-export type {
-  BookingsStatusEnum3Key,
-  EventsTimeSlotEnum2Key,
-  Location,
-} from "./Location";
+export type { BookingsStatusEnum3Key, Location } from "./Location";
 export type { LocationListResponse } from "./LocationListResponse";
 export type { LocationRequest } from "./LocationRequest";
 export type { LocationResponse } from "./LocationResponse";
@@ -356,15 +346,10 @@ export type { UsersPermissionsUser } from "./UsersPermissionsUser";
 export type { UsersPermissionsUserRegistration } from "./UsersPermissionsUserRegistration";
 export { bookingStatusEnum } from "./Booking";
 export { bookingsStatusEnum } from "./Booking";
-export { eventTimeSlotEnum } from "./Booking";
 export { dataStatusEnum } from "./BookingRequest";
 export { deleteUsersPermissionsRolesRole200OkEnum } from "./DeleteUsersPermissionsRolesRole";
 export { bookingsStatusEnum2 } from "./Event";
-export { eventTimeSlotEnum2 } from "./Event";
-export { eventsTimeSlotEnum } from "./Event";
-export { dataTimeSlotEnum } from "./EventRequest";
 export { bookingsStatusEnum3 } from "./Location";
-export { eventsTimeSlotEnum2 } from "./Location";
 export { postAuthForgotPassword200OkEnum } from "./PostAuthForgotPassword";
 export { postAuthSendEmailConfirmation200SentEnum } from "./PostAuthSendEmailConfirmation";
 export { postUsersPermissionsRoles200OkEnum } from "./PostUsersPermissionsRoles";

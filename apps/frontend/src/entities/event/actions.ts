@@ -2,12 +2,10 @@
 
 import { auth } from '@/auth'
 import { STRAPI_API_URL } from '@/shared/api/strapi'
-import type { DataTimeSlotEnumKey } from '@/shared/api/generated/types/EventRequest'
 
 export type CreateEventInput = {
   name: string
   date: string // YYYY-MM-DD
-  timeSlot: DataTimeSlotEnumKey
   startTime: string // HH:mm
   endTime: string   // HH:mm
   totalSpots: number
@@ -39,7 +37,6 @@ export async function createEventAction(input: CreateEventInput): Promise<Create
       data: {
         name: input.name,
         date: input.date,
-        timeSlot: input.timeSlot,
         startTime: toStrapiTime(input.startTime),
         endTime: toStrapiTime(input.endTime),
         totalSpots: input.totalSpots,
@@ -74,7 +71,6 @@ export async function updateEventAction(
       data: {
         name: input.name,
         date: input.date,
-        timeSlot: input.timeSlot,
         startTime: toStrapiTime(input.startTime),
         endTime: toStrapiTime(input.endTime),
         totalSpots: input.totalSpots,

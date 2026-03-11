@@ -1,8 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import type { EventDetail } from '@/shared/mocks/events'
+import type { Event } from '@/shared/api/generated/types/Event'
 import type { BookingState } from './types'
+
+function eventKey(event: Event) {
+  return String(event.documentId ?? event.id ?? event.name)
+}
 
 export function useBooking() {
   const [quantities, setQuantities] = useState<Record<string, number>>({})
@@ -10,19 +14,20 @@ export function useBooking() {
   const [bookingName, setBookingName] = useState('')
   const [bookingEmail, setBookingEmail] = useState('')
 
-  function getQuantity(eventId: string) {
-    return quantities[eventId] ?? 1
+  function getQuantity(key: string) {
+    return quantities[key] ?? 1
   }
 
-  function changeQuantity(eventId: string, delta: number) {
+  function changeQuantity(key: string, delta: number) {
     setQuantities(prev => ({
       ...prev,
-      [eventId]: Math.max(1, (prev[eventId] ?? 1) + delta),
+      [key]: Math.max(1, (prev[key] ?? 1) + delta),
     }))
   }
 
-  function openBooking(event: EventDetail, date: Date) {
-    setBooking({ event, date, quantity: getQuantity(event.id) })
+  function openBooking(event: Event, date: Date) {
+    const key = eventKey(event)
+    setBooking({ event, date, quantity: getQuantity(key) })
   }
 
   function closeBooking() {
@@ -42,5 +47,6 @@ export function useBooking() {
     changeQuantity,
     openBooking,
     closeBooking,
+    eventKey,
   }
 }

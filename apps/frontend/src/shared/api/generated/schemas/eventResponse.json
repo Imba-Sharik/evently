@@ -3,14 +3,7 @@
   "properties": {
     "data": {
       "type": "object",
-      "required": [
-        "name",
-        "date",
-        "startTime",
-        "endTime",
-        "timeSlot",
-        "totalSpots"
-      ],
+      "required": ["name", "date", "startTime", "endTime", "totalSpots"],
       "properties": {
         "id": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
         "documentId": { "type": "string" },
@@ -25,10 +18,6 @@
           "type": "string",
           "format": "time",
           "example": "12:54.000"
-        },
-        "timeSlot": {
-          "type": "string",
-          "enum": ["morning", "afternoon", "evening"]
         },
         "totalSpots": { "type": "integer" },
         "description": { "type": "string" },
@@ -634,10 +623,6 @@
                     "type": "string",
                     "format": "time",
                     "example": "12:54.000"
-                  },
-                  "timeSlot": {
-                    "type": "string",
-                    "enum": ["morning", "afternoon", "evening"]
                   },
                   "totalSpots": { "type": "integer" },
                   "description": { "type": "string" },

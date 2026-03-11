@@ -3,15 +3,6 @@
  * Do not edit manually.
  */
 
-export const dataTimeSlotEnum = {
-  morning: "morning",
-  afternoon: "afternoon",
-  evening: "evening",
-} as const;
-
-export type DataTimeSlotEnumKey =
-  (typeof dataTimeSlotEnum)[keyof typeof dataTimeSlotEnum];
-
 export type EventRequest = {
   /**
    * @type object
@@ -33,10 +24,6 @@ export type EventRequest = {
      * @type string, time
      */
     endTime: string;
-    /**
-     * @type string
-     */
-    timeSlot: DataTimeSlotEnumKey;
     /**
      * @type integer
      */

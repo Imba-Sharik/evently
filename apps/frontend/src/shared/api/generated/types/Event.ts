@@ -3,24 +3,6 @@
  * Do not edit manually.
  */
 
-export const eventTimeSlotEnum2 = {
-  morning: "morning",
-  afternoon: "afternoon",
-  evening: "evening",
-} as const;
-
-export type EventTimeSlotEnum2Key =
-  (typeof eventTimeSlotEnum2)[keyof typeof eventTimeSlotEnum2];
-
-export const eventsTimeSlotEnum = {
-  morning: "morning",
-  afternoon: "afternoon",
-  evening: "evening",
-} as const;
-
-export type EventsTimeSlotEnumKey =
-  (typeof eventsTimeSlotEnum)[keyof typeof eventsTimeSlotEnum];
-
 export const bookingsStatusEnum2 = {
   pending: "pending",
   confirmed: "confirmed",
@@ -52,10 +34,6 @@ export type Event = {
    * @type string, time
    */
   endTime: string;
-  /**
-   * @type string
-   */
-  timeSlot: EventTimeSlotEnum2Key;
   /**
    * @type integer
    */
@@ -846,10 +824,6 @@ export type Event = {
        * @type string | undefined, time
        */
       endTime?: string;
-      /**
-       * @type string | undefined
-       */
-      timeSlot?: EventsTimeSlotEnumKey;
       /**
        * @type integer | undefined
        */

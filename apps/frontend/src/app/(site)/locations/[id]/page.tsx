@@ -7,19 +7,13 @@ import { getLocationsid } from '@/shared/api/generated/clients/getLocationsid'
 import { getEvents } from '@/shared/api/generated/clients/getEvents'
 import { strapiConfig } from '@/shared/api/strapi'
 import { getDayKey } from '@/shared/lib/date'
-import { DAYS, TIME_LABELS } from '@/shared/mocks/locations'
-import type { EventDetail } from '@/shared/mocks/events'
+import { DAYS } from '@/shared/mocks/locations'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip'
 import { LocationCalendar } from '@/widgets/location-calendar'
 import { LocationSchedule } from '@/widgets/location-schedule'
 import { LocationEvents } from '@/widgets/location-events'
 import { LocationInfo } from '@/widgets/location-info'
 
-type DayRow = { morning: string[]; afternoon: string[]; evening: string[] }
-
-function formatTime(t?: string): string {
-  return t ? t.slice(0, 5) : ''
-}
 
 export default async function LocationPage({
   params,
@@ -56,44 +50,17 @@ export default async function LocationPage({
   const weekEvents = eventsRes?.data ?? []
 
   // Build schedule table from week events
-  const schedule: Record<string, DayRow> = Object.fromEntries(
-    DAYS.map(day => [day, { morning: [], afternoon: [], evening: [] }])
-  )
+  const schedule: Record<string, string[]> = Object.fromEntries(DAYS.map(day => [day, []]))
   for (const ev of weekEvents) {
-    if (!ev.date || !ev.timeSlot || !ev.name) continue
+    if (!ev.date || !ev.name) continue
     const dayKey = getDayKey(parseISO(ev.date))
-    if (dayKey && schedule[dayKey]) {
-      schedule[dayKey][ev.timeSlot as keyof DayRow].push(ev.name)
-    }
+    if (dayKey && schedule[dayKey]) schedule[dayKey].push(ev.name)
   }
 
   const selectedDayKey = getDayKey(selectedDate)
   const selectedDateStr = format(selectedDate, 'yyyy-MM-dd')
-  const dayEvents = weekEvents.filter(e => e.date === selectedDateStr)
 
-  const slots = (['morning', 'afternoon', 'evening'] as const).map(slot => {
-    const ev = dayEvents.find(e => e.timeSlot === slot)
-    const event: EventDetail = ev
-      ? {
-          id: String(ev.documentId ?? ev.id ?? slot),
-          name: ev.name ?? '',
-          timeSlot: slot,
-          timeRange: `${formatTime(ev.startTime)} – ${formatTime(ev.endTime)}`,
-          totalSpots: ev.totalSpots ?? 0,
-          spotsLeft: ev.totalSpots ?? 0,
-          description: ev.description ?? '',
-        }
-      : {
-          id: `empty-${slot}`,
-          name: '',
-          timeSlot: slot,
-          timeRange: slot === 'morning' ? '08:00 – 11:00' : slot === 'afternoon' ? '12:00 – 17:00' : '18:30 – 22:00',
-          totalSpots: 0,
-          spotsLeft: 0,
-          description: '',
-        }
-    return { label: TIME_LABELS[slot], event }
-  })
+  const dayEvents = weekEvents.filter(ev => ev.date === selectedDateStr)
 
   return (
     <div className="bg-background min-h-screen p-8">
@@ -135,7 +102,7 @@ export default async function LocationPage({
 
           {/* ── ROW 2 ────────────────────────────────────────────────── */}
           <LocationEvents
-            slots={slots}
+            events={dayEvents}
             selectedDate={selectedDate}
             locationName={location.name ?? ''}
             locationDocumentId={location.documentId ?? id}

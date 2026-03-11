@@ -27,11 +27,6 @@
       "type": "time",
       "required": true
     },
-    "timeSlot": {
-      "type": "enumeration",
-      "enum": ["morning", "afternoon", "evening"],
-      "required": true
-    },
     "totalSpots": {
       "type": "integer",
       "required": true
