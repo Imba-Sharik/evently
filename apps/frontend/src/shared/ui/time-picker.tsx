@@ -9,8 +9,8 @@ import { cn } from '@/shared/lib/utils'
 type Props = {
   value: string        // "HH:MM"
   onChange: (value: string) => void
-  min: string          // "HH:MM"
-  max: string          // "HH:MM"
+  min?: string         // "HH:MM"
+  max?: string         // "HH:MM"
   className?: string
 }
 
@@ -25,7 +25,7 @@ function pad(n: number) {
 
 const MINUTE_STEPS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
 
-export function TimePicker({ value, onChange, min, max, className }: Props) {
+export function TimePicker({ value, onChange, min = '00:00', max = '23:59', className }: Props) {
   const [open, setOpen] = useState(false)
   const [minH, minM] = parseTime(min)
   const [maxH, maxM] = parseTime(max)
@@ -71,7 +71,7 @@ export function TimePicker({ value, onChange, min, max, className }: Props) {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={cn('h-11 w-36 justify-start gap-2 text-lg border-black font-normal', className)}
+          className={cn('h-11 w-32 justify-start gap-2 text-lg border-black font-normal', className)}
         >
           <Clock className="size-4 text-muted-foreground shrink-0" />
           {value || min}
