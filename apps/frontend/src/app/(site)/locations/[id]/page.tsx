@@ -1,19 +1,14 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Info } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { parseISO, isValid, format, startOfWeek, endOfWeek } from 'date-fns'
 
 import { getLocationsid } from '@/shared/api/generated/clients/getLocationsid'
 import { getEvents } from '@/shared/api/generated/clients/getEvents'
 import { strapiConfig } from '@/shared/api/strapi'
-import { getDayKey } from '@/shared/lib/date'
-import { DAYS } from '@/shared/mocks/locations'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shared/ui/tooltip'
 import { LocationCalendar } from '@/widgets/location-calendar'
-import { LocationSchedule } from '@/widgets/location-schedule'
 import { LocationEvents } from '@/widgets/location-events'
 import { LocationInfo } from '@/widgets/location-info'
-
 
 export default async function LocationPage({
   params,
@@ -49,17 +44,7 @@ export default async function LocationPage({
   } as never, config)
   const weekEvents = eventsRes?.data ?? []
 
-  // Build schedule table from week events
-  const schedule: Record<string, string[]> = Object.fromEntries(DAYS.map(day => [day, []]))
-  for (const ev of weekEvents) {
-    if (!ev.date || !ev.name) continue
-    const dayKey = getDayKey(parseISO(ev.date))
-    if (dayKey && schedule[dayKey]) schedule[dayKey].push(ev.name)
-  }
-
-  const selectedDayKey = getDayKey(selectedDate)
   const selectedDateStr = format(selectedDate, 'yyyy-MM-dd')
-
   const dayEvents = weekEvents.filter(ev => ev.date === selectedDateStr)
 
   return (
@@ -67,46 +52,24 @@ export default async function LocationPage({
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0">
 
-          {/* ── HEADER LEFT ──────────────────────────────────────────── */}
-          <div className="flex items-end pb-6">
-            <div className="flex items-center gap-3">
+          {/* ── LEFT: header + calendar + events ─────────────────────── */}
+          <div className="flex flex-col gap-8 mb-8">
+            <div className="flex items-center gap-3 pb-2">
               <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
                 <ArrowLeft className="size-6" />
               </Link>
               <h1 className="text-5xl font-semibold">{location.name}</h1>
             </div>
-          </div>
-
-          {/* ── HEADER RIGHT ─────────────────────────────────────────── */}
-          <div className="flex items-center gap-2 pb-6">
-            <h2 className="text-4xl font-semibold">Расписание данной локации</h2>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-5 w-5 text-muted-foreground cursor-help shrink-0" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-[18px]">Выбирайте день, вид досуга, время и записывайтесь на любимые мероприятия через удобные интерфейсы нашей системы!</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-
-          {/* ── ROW 1 ────────────────────────────────────────────────── */}
-          <div className="mb-8 flex flex-col">
             <LocationCalendar selectedDate={selectedDate} />
-          </div>
-          <div className="mb-8 flex flex-col">
-            <LocationSchedule schedule={schedule} selectedDayKey={selectedDayKey} />
+            <LocationEvents
+              events={dayEvents}
+              selectedDate={selectedDate}
+              locationName={location.name ?? ''}
+              locationDocumentId={location.documentId ?? id}
+            />
           </div>
 
-          {/* ── ROW 2 ────────────────────────────────────────────────── */}
-          <LocationEvents
-            events={dayEvents}
-            selectedDate={selectedDate}
-            locationName={location.name ?? ''}
-            locationDocumentId={location.documentId ?? id}
-          />
+          {/* ── RIGHT: info ──────────────────────────────────────────── */}
           <LocationInfo location={location} />
 
         </div>

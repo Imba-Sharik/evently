@@ -13,7 +13,7 @@ export function LocationGallery({ images, name }: { images: string[]; name: stri
   const next = () => setIndex(i => (i + 1) % images.length)
 
   return (
-    <div className="relative rounded-2xl overflow-hidden aspect-video bg-muted border border-black">
+    <div className="relative mt-12 rounded-2xl overflow-hidden bg-muted border border-black h-85">
       <Image
         src={images[index]}
         alt={`${name} — фото ${index + 1}`}

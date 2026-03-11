@@ -24,18 +24,21 @@ export function LocationCalendar({ selectedDate }: { selectedDate: Date }) {
   }
 
   return (
-    <div className="rounded-2xl overflow-hidden w-full flex-1 bg-linear-to-br from-[#1F1F1F] to-[#666666] border border-black **:data-[selected-single=true]:bg-[#498BD7] **:data-[slot=button]:text-lg">
+    <div className="rounded-2xl overflow-hidden w-full bg-linear-to-br from-[#1F1F1F] to-[#666666] border border-black **:data-[selected-single=true]:bg-[#498BD7] **:data-[slot=button]:text-lg">
       <Calendar
         mode="single"
         selected={optimisticDate}
         onSelect={handleSelect}
         locale={ru}
-        className="p-3 bg-transparent text-white [--cell-size:--spacing(8)]"
+        className="p-3 bg-transparent text-white"
         classNames={{
           root: 'w-full',
           caption_label: 'font-medium select-none text-lg',
           weekday: 'flex-1 rounded-md text-lg font-normal text-white/60 select-none',
           outside: 'text-white/30 aria-selected:text-white/30',
+          day: 'flex-1',
+          day_button: 'w-full h-8 rounded-md text-lg',
+          today: 'rounded-md bg-white/15 text-white data-[selected=true]:bg-transparent',
         }}
       />
     </div>

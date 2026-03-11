@@ -1,19 +1,16 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { format, parseISO } from 'date-fns'
+import { useState } from 'react'
+import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { toast } from 'sonner'
 import { Button } from '@/shared/ui/button'
 import { Input } from '@/shared/ui/input'
 import { Textarea } from '@/shared/ui/textarea'
 import { TimePicker } from '@/shared/ui/time-picker'
 import { Calendar } from '@/shared/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover'
-import { CalendarIcon, X, Trash2 } from 'lucide-react'
-import { deleteEventAction } from '@/entities/event/actions'
-import { ConfirmDialog } from '@/shared/ui/confirm-dialog'
-import type { SelectedSlot, FormState } from './AdminEventsSchedule'
+import { CalendarIcon, X } from 'lucide-react'
+import type { FormState } from './AdminEventsSchedule'
 
 function pluralDates(n: number) {
   if (n % 10 === 1 && n % 100 !== 11) return `${n} дата`
@@ -22,39 +19,22 @@ function pluralDates(n: number) {
 }
 
 export function EventEditorPanel({
-  selectedSlot,
   form,
   setField,
   isPending,
-  onClose,
   onSave,
-  onDeleted,
   createDates,
   onCreateDatesChange,
 }: {
-  selectedSlot: SelectedSlot
   form: FormState
   setField: <K extends keyof FormState>(key: K, value: FormState[K]) => void
   isPending: boolean
-  onClose: () => void
   onSave: () => void
-  onDeleted: () => void
   createDates: Date[]
   onCreateDatesChange: (dates: Date[]) => void
 }) {
-  const [isDeleting, startDeleteTransition] = useTransition()
   const [multipleMode, setMultipleMode] = useState(false)
   const [calendarOpen, setCalendarOpen] = useState(false)
-
-  function handleDelete() {
-    if (!selectedSlot.documentId) return
-    startDeleteTransition(async () => {
-      const result = await deleteEventAction(selectedSlot.documentId!)
-      if ('error' in result) { alert(result.error); return }
-      toast.success('Мероприятие удалено')
-      onDeleted()
-    })
-  }
 
   function toggleMultipleMode() {
     if (multipleMode) {
@@ -69,97 +49,77 @@ export function EventEditorPanel({
 
   return (
     <div className="border border-black rounded-xl p-5 space-y-5 w-full xl:w-80 xl:shrink-0">
-      <div className="flex items-start justify-between">
-        <div>
-          <h3 className="text-xl font-semibold">
-            {selectedSlot.mode === 'create' ? 'Новое мероприятие' : 'Редактировать мероприятие'}
-          </h3>
-          {selectedSlot.mode === 'edit' && (
-            <p className="text-muted-foreground mt-0.5" style={{ fontSize: 18 }}>
-              {format(parseISO(selectedSlot.date), 'd MMMM yyyy', { locale: ru })}
-              {' · '}
-              {selectedSlot.day}
-            </p>
-          )}
-        </div>
-        {selectedSlot.mode === 'edit' && (
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        )}
-      </div>
+      <h3 className="text-xl font-semibold">Новое мероприятие</h3>
 
       <div className="space-y-2">
-        {/* Date picker — only in create mode */}
-        {selectedSlot.mode === 'create' && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-lg font-medium">Дата</label>
-              <button
-                type="button"
-                onClick={toggleMultipleMode}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {multipleMode ? 'Одна дата' : '+ Несколько дат'}
-              </button>
-            </div>
-
-            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="h-11 w-full justify-start gap-2 text-lg border-black font-normal">
-                  <CalendarIcon className="size-4 text-muted-foreground shrink-0" />
-                  {multipleMode
-                    ? createDates.length === 0 ? 'Выберите даты' : pluralDates(createDates.length)
-                    : primaryDate ? format(primaryDate, 'd MMMM yyyy', { locale: ru }) : 'Выберите дату'
-                  }
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                {multipleMode ? (
-                  <Calendar
-                    mode="multiple"
-                    selected={createDates}
-                    onSelect={dates => onCreateDatesChange(dates ?? [])}
-                    locale={ru}
-                  />
-                ) : (
-                  <Calendar
-                    mode="single"
-                    selected={primaryDate}
-                    onSelect={date => {
-                      if (date) {
-                        onCreateDatesChange([date])
-                        setCalendarOpen(false)
-                      }
-                    }}
-                    locale={ru}
-                  />
-                )}
-              </PopoverContent>
-            </Popover>
-
-            {multipleMode && createDates.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {[...createDates]
-                  .sort((a, b) => a.getTime() - b.getTime())
-                  .map(d => (
-                    <span
-                      key={d.toISOString()}
-                      className="inline-flex items-center gap-1 text-sm bg-secondary rounded-md px-2 py-0.5"
-                    >
-                      {format(d, 'd MMM', { locale: ru })}
-                      <button
-                        type="button"
-                        onClick={() => onCreateDatesChange(createDates.filter(x => x.getTime() !== d.getTime()))}
-                      >
-                        <X className="size-3" />
-                      </button>
-                    </span>
-                  ))}
-              </div>
-            )}
+        {/* Date picker */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="text-lg font-medium">Дата</label>
+            <button
+              type="button"
+              onClick={toggleMultipleMode}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {multipleMode ? 'Одна дата' : '+ Несколько дат'}
+            </button>
           </div>
-        )}
+
+          <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="h-11 w-full justify-start gap-2 text-lg border-black font-normal">
+                <CalendarIcon className="size-4 text-muted-foreground shrink-0" />
+                {multipleMode
+                  ? createDates.length === 0 ? 'Выберите даты' : pluralDates(createDates.length)
+                  : primaryDate ? format(primaryDate, 'd MMMM yyyy', { locale: ru }) : 'Выберите дату'
+                }
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              {multipleMode ? (
+                <Calendar
+                  mode="multiple"
+                  selected={createDates}
+                  onSelect={dates => onCreateDatesChange(dates ?? [])}
+                  locale={ru}
+                />
+              ) : (
+                <Calendar
+                  mode="single"
+                  selected={primaryDate}
+                  onSelect={date => {
+                    if (date) {
+                      onCreateDatesChange([date])
+                      setCalendarOpen(false)
+                    }
+                  }}
+                  locale={ru}
+                />
+              )}
+            </PopoverContent>
+          </Popover>
+
+          {multipleMode && createDates.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {[...createDates]
+                .sort((a, b) => a.getTime() - b.getTime())
+                .map(d => (
+                  <span
+                    key={d.toISOString()}
+                    className="inline-flex items-center gap-1 text-sm bg-secondary rounded-md px-2 py-0.5"
+                  >
+                    {format(d, 'd MMM', { locale: ru })}
+                    <button
+                      type="button"
+                      onClick={() => onCreateDatesChange(createDates.filter(x => x.getTime() !== d.getTime()))}
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                ))}
+            </div>
+          )}
+        </div>
 
         <div className="space-y-2 max-w-md">
           <label className="text-lg font-medium">Название</label>
@@ -214,30 +174,20 @@ export function EventEditorPanel({
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <Button
-          onClick={onSave}
-          disabled={!form.name.trim() || isPending || (selectedSlot.mode === 'create' && createDates.length === 0)}
-          className="h-10 text-lg"
-        >
-          {isPending
-            ? (selectedSlot.mode === 'edit' ? 'Обновление...' : 'Сохранение...')
-            : (selectedSlot.mode === 'edit' ? 'Обновить' : 'Сохранить')}
-        </Button>
-
-        {selectedSlot.mode === 'edit' && selectedSlot.documentId && (
-          <ConfirmDialog
-            title="Удалить мероприятие?"
-            description={`Это действие нельзя отменить. Мероприятие «${form.name}» будет удалено безвозвратно.`}
-            onConfirm={handleDelete}
-            trigger={
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" disabled={isPending || isDeleting}>
-                <Trash2 className="size-5" />
-              </Button>
-            }
-          />
-        )}
-      </div>
+      <Button
+        onClick={onSave}
+        disabled={
+          isPending ||
+          !form.name.trim() ||
+          !form.startTime ||
+          !form.endTime ||
+          !form.spots ||
+          createDates.length === 0
+        }
+        className="h-10 text-lg"
+      >
+        {isPending ? 'Сохранение...' : 'Сохранить'}
+      </Button>
     </div>
   )
 }

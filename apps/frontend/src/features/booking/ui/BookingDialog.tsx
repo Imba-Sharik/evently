@@ -60,7 +60,7 @@ export function BookingDialog({
             </div>
             <div className="flex gap-2 text-2xl">
               <span className="text-muted-foreground">Время:</span>
-              <span className="font-semibold">{booking.event.timeRange}</span>
+              <span className="font-semibold">{booking.event.startTime?.slice(0, 5)} – {booking.event.endTime?.slice(0, 5)}</span>
             </div>
             <div className="flex gap-2 text-2xl">
               <span className="text-muted-foreground">Количество мест:</span>
