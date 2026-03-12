@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Map as MapboxMap, Marker as MapboxMarker } from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const DEFAULT_STYLE = "mapbox://styles/mapbox/streets-v12";
 const DEFAULT_ZOOM = 14;
@@ -109,7 +110,7 @@ export function AddressMap({
           .addTo(map);
       }
     });
-  }, [lat, lng, featureType]);
+  }, [lat, lng, featureType, showMarker]);
 
   return <div ref={containerRef} className={className} />;
 }
