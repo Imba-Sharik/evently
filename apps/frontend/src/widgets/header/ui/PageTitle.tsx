@@ -1,6 +1,6 @@
 "use client"
 
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 
 const TITLES: Record<string, string> = {
   "/admin/locations": "Локации",
@@ -15,16 +15,17 @@ const TITLES: Record<string, string> = {
 
 export function PageTitle() {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   if (TITLES[pathname]) {
     return <span className="text-xl font-semibold">{TITLES[pathname]}</span>
   }
 
-  if (/^\/admin\/locations\/[^/]+\/events$/.test(pathname)) {
-    const name = searchParams.get("name")
-    const title = name ? `${name} / Мероприятия` : "Мероприятия"
-    return <span className="text-xl font-semibold">{title}</span>
+  if (/^\/admin\/events\/new$/.test(pathname)) {
+    return <span className="text-xl font-semibold">Новое мероприятие</span>
+  }
+
+  if (/^\/admin\/events\/[^/]+\/edit$/.test(pathname)) {
+    return <span className="text-xl font-semibold">Редактирование мероприятия</span>
   }
 
   return null

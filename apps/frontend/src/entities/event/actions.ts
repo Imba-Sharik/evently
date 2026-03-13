@@ -5,12 +5,13 @@ import { STRAPI_API_URL } from '@/shared/api/strapi'
 
 export type CreateEventInput = {
   name: string
-  date: string // YYYY-MM-DD
+  date?: string // YYYY-MM-DD, not required for templates
   startTime: string // HH:mm
   endTime: string   // HH:mm
   totalSpots: number
   description?: string
-  locationDocumentId: string
+  locationDocumentId?: string
+  isTemplate?: boolean
 }
 
 export type CreateEventResult = { error: string } | { success: true }
@@ -42,6 +43,7 @@ export async function createEventAction(input: CreateEventInput): Promise<Create
         totalSpots: input.totalSpots,
         description: input.description,
         location: input.locationDocumentId,
+        isTemplate: input.isTemplate ?? false,
       },
     }),
   })

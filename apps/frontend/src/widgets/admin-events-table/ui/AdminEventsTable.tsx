@@ -1,7 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   type ColumnDef,
@@ -47,7 +47,6 @@ import {
 import type { Event } from '@/shared/api/generated/types/Event'
 import { deleteEventAction } from '@/entities/event/actions'
 import { ConfirmDialog } from '@/shared/ui/confirm-dialog'
-import { EventFormDialog } from './EventFormDialog'
 
 const TIME_SLOT_LABELS: Record<string, string> = {
   morning: 'Утро',
@@ -82,14 +81,21 @@ export function AdminEventsTable({ data, locations }: Props) {
   'use no memo'
 
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const msg = searchParams.get('success')
+    if (!msg) return
+    toast.success(msg)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('success')
+    router.replace(url.pathname + (url.search || ''))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const [sorting, setSorting] = useState<SortingState>([{ id: 'date', desc: false }])
   const [globalFilter, setGlobalFilter] = useState('')
   const [dateFilter, setDateFilter] = useState('')
   const [locationFilter, setLocationFilter] = useState('all')
-
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingEvent, setEditingEvent] = useState<Event | undefined>(undefined)
-  const [templateEvent, setTemplateEvent] = useState<Event | undefined>(undefined)
 
   const locationNames = useMemo(
     () => Array.from(new Set(data.map((e) => e.location?.name ?? '').filter(Boolean))),
@@ -179,19 +185,21 @@ export function AdminEventsTable({ data, locations }: Props) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="text-lg">
                 <DropdownMenuItem
-                  onClick={() => { setTemplateEvent(event); setEditingEvent(undefined); setDialogOpen(true) }}
+                  onClick={() => router.push(`/admin/events/new?template=${event.documentId}`)}
                 >
                   Использовать шаблон
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => { setEditingEvent(event); setDialogOpen(true) }}
+                  onClick={() => router.push(`/admin/events/${event.documentId}/edit`)}
                 >
                   Редактировать
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <ConfirmDialog
                   title="Удалить мероприятие?"
-                  description={`Мероприятие «${event.name}» будет удалено безвозвратно.`}
+                  description={event.isTemplate
+                    ? `Мероприятие «${event.name}» сохранено как шаблон. При удалении шаблон тоже исчезнет.`
+                    : `Мероприятие «${event.name}» будет удалено безвозвратно.`}
                   onConfirm={async () => {
                     if (!event.documentId) return
                     const result = await deleteEventAction(String(event.documentId))
@@ -302,7 +310,7 @@ export function AdminEventsTable({ data, locations }: Props) {
 
         <Button
           className="h-11 gap-2 text-lg"
-          onClick={() => { setEditingEvent(undefined); setDialogOpen(true) }}
+          onClick={() => router.push('/admin/events/new')}
         >
           <Plus className="size-4" />
           Мероприятие
@@ -404,17 +412,6 @@ export function AdminEventsTable({ data, locations }: Props) {
         </div>
       </div>
 
-      <EventFormDialog
-        key={editingEvent?.documentId ?? templateEvent?.documentId ?? 'new'}
-        open={dialogOpen}
-        onOpenChange={(open) => {
-          setDialogOpen(open)
-          if (!open) { setEditingEvent(undefined); setTemplateEvent(undefined) }
-        }}
-        locations={locations}
-        event={editingEvent}
-        templateEvent={templateEvent}
-      />
     </div>
   )
 }

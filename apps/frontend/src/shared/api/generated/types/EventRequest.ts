@@ -13,9 +13,13 @@ export type EventRequest = {
      */
     name: string;
     /**
-     * @type string, date
+     * @type string | undefined, date
      */
-    date: string;
+    date?: string;
+    /**
+     * @type boolean | undefined
+     */
+    isTemplate?: boolean;
     /**
      * @type string, time
      */

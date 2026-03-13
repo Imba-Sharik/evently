@@ -23,9 +23,13 @@ export type Event = {
    */
   name: string;
   /**
-   * @type string, date
+   * @type string | undefined, date
    */
-  date: string;
+  date?: string;
+  /**
+   * @type boolean | undefined
+   */
+  isTemplate?: boolean;
   /**
    * @type string, time
    */
@@ -816,6 +820,10 @@ export type Event = {
        * @type string | undefined, date
        */
       date?: string;
+      /**
+       * @type boolean | undefined
+       */
+      isTemplate?: boolean;
       /**
        * @type string | undefined, time
        */

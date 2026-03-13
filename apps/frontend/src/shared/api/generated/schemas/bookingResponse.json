@@ -21,6 +21,7 @@
             "documentId": { "type": "string" },
             "name": { "type": "string" },
             "date": { "type": "string", "format": "date" },
+            "isTemplate": { "type": "boolean" },
             "startTime": {
               "type": "string",
               "format": "time",

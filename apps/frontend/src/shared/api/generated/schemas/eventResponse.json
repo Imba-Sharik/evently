@@ -3,12 +3,13 @@
   "properties": {
     "data": {
       "type": "object",
-      "required": ["name", "date", "startTime", "endTime", "totalSpots"],
+      "required": ["name", "startTime", "endTime", "totalSpots"],
       "properties": {
         "id": { "oneOf": [{ "type": "string" }, { "type": "number" }] },
         "documentId": { "type": "string" },
         "name": { "type": "string" },
         "date": { "type": "string", "format": "date" },
+        "isTemplate": { "type": "boolean" },
         "startTime": {
           "type": "string",
           "format": "time",
@@ -614,6 +615,7 @@
                   "documentId": { "type": "string" },
                   "name": { "type": "string" },
                   "date": { "type": "string", "format": "date" },
+                  "isTemplate": { "type": "boolean" },
                   "startTime": {
                     "type": "string",
                     "format": "time",

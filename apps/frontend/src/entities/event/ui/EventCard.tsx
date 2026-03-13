@@ -50,7 +50,7 @@ export function EventCard({
       </div>
 
       {/* Description */}
-      <p className="text-lg mt-3 leading-relaxed">
+      <p className="text-lg mt-3 leading-relaxed line-clamp-4">
         <strong>{bold}</strong>
         {rest}
       </p>

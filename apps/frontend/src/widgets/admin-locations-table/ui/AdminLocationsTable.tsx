@@ -116,9 +116,6 @@ export function AdminLocationsTable({ data }: Props) {
               <DropdownMenuItem onClick={() => router.push(`/admin/locations/${row.original.documentId}/edit`)}>
                 Редактировать
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => router.push(`/admin/locations/${row.original.documentId}/events?name=${encodeURIComponent(row.original.name ?? '')}`)}>
-                Создать мероприятие
-              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <ConfirmDialog
                 title="Удалить локацию?"

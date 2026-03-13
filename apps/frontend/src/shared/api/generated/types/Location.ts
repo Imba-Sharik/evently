@@ -784,6 +784,10 @@ export type Location = {
      */
     date?: string;
     /**
+     * @type boolean | undefined
+     */
+    isTemplate?: boolean;
+    /**
      * @type string | undefined, time
      */
     startTime?: string;

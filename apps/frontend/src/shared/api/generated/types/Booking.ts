@@ -61,6 +61,10 @@ export type Booking = {
      */
     date?: string;
     /**
+     * @type boolean | undefined
+     */
+    isTemplate?: boolean;
+    /**
      * @type string | undefined, time
      */
     startTime?: string;

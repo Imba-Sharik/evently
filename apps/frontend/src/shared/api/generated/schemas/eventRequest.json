@@ -3,11 +3,12 @@
   "required": ["data"],
   "properties": {
     "data": {
-      "required": ["name", "date", "startTime", "endTime", "totalSpots"],
+      "required": ["name", "startTime", "endTime", "totalSpots"],
       "type": "object",
       "properties": {
         "name": { "type": "string" },
         "date": { "type": "string", "format": "date" },
+        "isTemplate": { "type": "boolean" },
         "startTime": {
           "type": "string",
           "format": "time",
