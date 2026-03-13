@@ -23,7 +23,7 @@ export default async function SiteLayout({
             {children}
           </main>
         </SidebarInset>
-        <Toaster richColors position="top-center" />
+        <Toaster position="top-center" />
       </SidebarProvider>
     );
   }
@@ -34,7 +34,7 @@ export default async function SiteLayout({
       <main className="flex-1 overflow-y-auto pt-16 [scrollbar-gutter:stable]">
         {children}
       </main>
-      <Toaster richColors position="top-center" />
+      <Toaster position="top-center" />
     </>
   );
 }

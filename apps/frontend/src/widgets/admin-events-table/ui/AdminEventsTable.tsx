@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import {
@@ -72,6 +72,52 @@ const PAGE_SIZE_OPTIONS = [5, 10, 20]
 
 type LocationOption = { documentId: string; name: string }
 
+function EventActions({ event, router }: { event: Event; router: ReturnType<typeof useRouter> }) {
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  return (
+    <div className="flex justify-end">
+      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="size-8">
+            <MoreHorizontal className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="text-lg">
+          <DropdownMenuItem onClick={() => router.push(`/admin/events/new?template=${event.documentId}`)}>
+            Использовать шаблон
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push(`/admin/events/${event.documentId}/edit`)}>
+            Редактировать
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="text-red-600 focus:text-red-600"
+            onSelect={e => { e.preventDefault(); setDropdownOpen(false); setConfirmOpen(true) }}
+          >
+            Удалить
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Удалить мероприятие?"
+        description={event.isTemplate
+          ? `Мероприятие «${event.name}» сохранено как шаблон. При удалении шаблон тоже исчезнет.`
+          : `Мероприятие «${event.name}» будет удалено безвозвратно.`}
+        onConfirm={async () => {
+          if (!event.documentId) return
+          const result = await deleteEventAction(String(event.documentId))
+          if ('error' in result) { toast.error(result.error); return }
+          toast.success('Мероприятие удалено')
+          router.refresh()
+        }}
+      />
+    </div>
+  )
+}
+
 type Props = {
   data: Event[]
   locations: LocationOption[]
@@ -82,10 +128,13 @@ export function AdminEventsTable({ data, locations }: Props) {
 
   const router = useRouter()
   const searchParams = useSearchParams()
+  const successShown = useRef(false)
 
   useEffect(() => {
+    if (successShown.current) return
     const msg = searchParams.get('success')
     if (!msg) return
+    successShown.current = true
     toast.success(msg)
     const url = new URL(window.location.href)
     url.searchParams.delete('success')
@@ -173,54 +222,7 @@ export function AdminEventsTable({ data, locations }: Props) {
     },
     {
       id: 'actions',
-      cell: ({ row }) => {
-        const event = row.original
-        return (
-          <div className="flex justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="size-8">
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="text-lg">
-                <DropdownMenuItem
-                  onClick={() => router.push(`/admin/events/new?template=${event.documentId}`)}
-                >
-                  Использовать шаблон
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => router.push(`/admin/events/${event.documentId}/edit`)}
-                >
-                  Редактировать
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <ConfirmDialog
-                  title="Удалить мероприятие?"
-                  description={event.isTemplate
-                    ? `Мероприятие «${event.name}» сохранено как шаблон. При удалении шаблон тоже исчезнет.`
-                    : `Мероприятие «${event.name}» будет удалено безвозвратно.`}
-                  onConfirm={async () => {
-                    if (!event.documentId) return
-                    const result = await deleteEventAction(String(event.documentId))
-                    if ('error' in result) { toast.error(result.error); return }
-                    toast.success('Мероприятие удалено')
-                    router.refresh()
-                  }}
-                  trigger={
-                    <DropdownMenuItem
-                      className="text-red-600 focus:text-red-600"
-                      onSelect={e => e.preventDefault()}
-                    >
-                      Удалить
-                    </DropdownMenuItem>
-                  }
-                />
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )
-      },
+      cell: ({ row }) => <EventActions event={row.original} router={router} />,
     },
   ], [router])
 
