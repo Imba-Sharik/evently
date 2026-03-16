@@ -1,28 +1,20 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { parseISO, isValid, format, startOfWeek, endOfWeek } from 'date-fns'
+import { format } from 'date-fns'
 
 import { getLocationsid } from '@/shared/api/generated/clients/getLocationsid'
 import { getEvents } from '@/shared/api/generated/clients/getEvents'
 import { strapiConfig } from '@/shared/api/strapi'
-import { LocationCalendar } from '@/widgets/location-calendar'
 import { LocationEvents } from '@/widgets/location-events'
 import { LocationInfo } from '@/widgets/location-info'
 
 export default async function LocationPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ date?: string }>
 }) {
   const { id } = await params
-  const { date } = await searchParams
-
-  const parsed = date ? parseISO(date) : null
-  const selectedDate = parsed && isValid(parsed) ? parsed : new Date()
-
   const config = strapiConfig()
 
   const locationRes = await getLocationsid(id as never, {
@@ -32,27 +24,21 @@ export default async function LocationPage({
   const location = locationRes?.data
   if (!location) notFound()
 
-  const weekStart = format(startOfWeek(selectedDate, { weekStartsOn: 1 }), 'yyyy-MM-dd')
-  const weekEnd = format(endOfWeek(selectedDate, { weekStartsOn: 1 }), 'yyyy-MM-dd')
+  const today = format(new Date(), 'yyyy-MM-dd')
 
   const eventsRes = await getEvents({
-    'filters[location][documentId][$eq]': id,
-    'filters[date][$gte]': weekStart,
-    'filters[date][$lte]': weekEnd,
-    'pagination[limit]': 100,
-    sort: 'startTime:asc',
+    populate: 'location',
+    'filters[date][$gte]': today,
+    'pagination[limit]': 20,
   } as never, config)
-  const weekEvents = eventsRes?.data ?? []
-
-  const selectedDateStr = format(selectedDate, 'yyyy-MM-dd')
-  const dayEvents = weekEvents.filter(ev => ev.date === selectedDateStr)
+  const events = eventsRes?.data ?? []
 
   return (
     <div className="bg-background min-h-screen p-8">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0">
 
-          {/* ── LEFT: header + calendar + events ─────────────────────── */}
+          {/* ── LEFT: header + filters + events ─────────────────────── */}
           <div className="flex flex-col gap-8 mb-8">
             <div className="flex items-center gap-3 pb-2">
               <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -60,10 +46,8 @@ export default async function LocationPage({
               </Link>
               <h1 className="text-5xl font-semibold">{location.name}</h1>
             </div>
-            <LocationCalendar selectedDate={selectedDate} />
             <LocationEvents
-              events={dayEvents}
-              selectedDate={selectedDate}
+              events={events}
               locationName={location.name ?? ''}
               locationDocumentId={location.documentId ?? id}
             />

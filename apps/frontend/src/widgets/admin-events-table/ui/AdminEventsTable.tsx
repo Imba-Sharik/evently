@@ -41,7 +41,6 @@ import {
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
-  Plus,
   Search,
 } from 'lucide-react'
 import type { Event } from '@/shared/api/generated/types/Event'
@@ -84,9 +83,6 @@ function EventActions({ event, router }: { event: Event; router: ReturnType<type
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="text-lg">
-          <DropdownMenuItem onClick={() => router.push(`/admin/events/new?template=${event.documentId}`)}>
-            Использовать шаблон
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push(`/admin/events/${event.documentId}/edit`)}>
             Редактировать
           </DropdownMenuItem>
@@ -103,9 +99,7 @@ function EventActions({ event, router }: { event: Event; router: ReturnType<type
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Удалить мероприятие?"
-        description={event.isTemplate
-          ? `Мероприятие «${event.name}» сохранено как шаблон. При удалении шаблон тоже исчезнет.`
-          : `Мероприятие «${event.name}» будет удалено безвозвратно.`}
+        description={`Мероприятие «${event.name}» будет удалено безвозвратно.`}
         onConfirm={async () => {
           if (!event.documentId) return
           const result = await deleteEventAction(String(event.documentId))
@@ -310,13 +304,6 @@ export function AdminEventsTable({ data, locations }: Props) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button
-          className="h-11 gap-2 text-lg"
-          onClick={() => router.push('/admin/events/new')}
-        >
-          <Plus className="size-4" />
-          Мероприятие
-        </Button>
       </div>
 
       {/* Table */}

@@ -39,6 +39,9 @@ export function HomeClient({ locations, events }: Props) {
   const [customDate, setCustomDate] = useState<Date | undefined>()
   const [locationFilter, setLocationFilter] = useState('')
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
+
+  const PAGE_SIZE = 20
 
   const {
     booking, bookingName, bookingEmail,
@@ -59,6 +62,9 @@ export function HomeClient({ locations, events }: Props) {
     if (search && !event.name.toLowerCase().includes(search.toLowerCase())) return false
     return true
   })
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   async function handleSubmit() {
     if (!booking || !bookingName || !bookingEmail) return
@@ -84,14 +90,14 @@ export function HomeClient({ locations, events }: Props) {
         <Button
           variant={dateFilter === 'today' ? 'default' : 'outline'}
           className="rounded-full text-lg"
-          onClick={() => setDateFilter('today')}
+          onClick={() => { setDateFilter('today'); setCustomDate(undefined); setPage(1) }}
         >
           Сегодня
         </Button>
         <Button
           variant={dateFilter === 'tomorrow' ? 'default' : 'outline'}
           className="rounded-full text-lg"
-          onClick={() => setDateFilter('tomorrow')}
+          onClick={() => { setDateFilter('tomorrow'); setCustomDate(undefined); setPage(1) }}
         >
           Завтра
         </Button>
@@ -114,6 +120,7 @@ export function HomeClient({ locations, events }: Props) {
               onSelect={date => {
                 setCustomDate(date)
                 setDateFilter('custom')
+                setPage(1)
               }}
               locale={ru}
             />
@@ -122,7 +129,7 @@ export function HomeClient({ locations, events }: Props) {
 
         <Select
           value={locationFilter || 'all'}
-          onValueChange={v => setLocationFilter(v === 'all' ? '' : v)}
+          onValueChange={v => { setLocationFilter(v === 'all' ? '' : v); setPage(1) }}
         >
           <SelectTrigger className="w-52 rounded-full text-lg">
             <SelectValue placeholder="Выберите локацию" />
@@ -142,7 +149,7 @@ export function HomeClient({ locations, events }: Props) {
           <Input
             placeholder="Поиск по мероприятиям"
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); setPage(1) }}
             className="pl-9 pr-9 rounded-full text-lg"
           />
           {search && (
@@ -158,7 +165,7 @@ export function HomeClient({ locations, events }: Props) {
 
       {/* Events list */}
       <div className="flex flex-col gap-4">
-        {filtered.map(event => {
+        {paginated.map(event => {
           const key = eventKey(event)
           const qty = getQuantity(key)
           const available = (event.totalSpots ?? 0) > 0
@@ -226,6 +233,28 @@ export function HomeClient({ locations, events }: Props) {
           </div>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 mt-6">
+          <Button
+            variant="outline"
+            className="text-lg"
+            disabled={page === 1}
+            onClick={() => setPage(p => p - 1)}
+          >
+            Назад
+          </Button>
+          <span className="text-lg text-muted-foreground">{page} / {totalPages}</span>
+          <Button
+            variant="outline"
+            className="text-lg"
+            disabled={page === totalPages}
+            onClick={() => setPage(p => p + 1)}
+          >
+            Вперёд
+          </Button>
+        </div>
+      )}
 
       <BookingDialog
         booking={booking}

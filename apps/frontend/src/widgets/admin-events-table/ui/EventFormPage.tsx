@@ -52,10 +52,9 @@ function pluralDates(n: number) {
 const calendarClassNames = {
   root: 'w-full',
   caption_label: 'font-medium select-none text-lg',
-  weekday: 'flex-1 rounded-md text-lg font-normal text-white/60 select-none',
+  weekday: 'text-lg text-white/60',
+  day_button: 'text-lg',
   outside: 'text-white/30 aria-selected:text-white/30',
-  day: 'flex-1',
-  day_button: 'w-full h-8 rounded-md text-lg',
   today: 'rounded-md bg-white/15 text-white data-[selected=true]:bg-transparent',
 }
 
@@ -143,9 +142,9 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
 
       <div className="flex flex-col xl:flex-row gap-6 items-start">
         {/* Left: calendar + preview */}
-        <div className="flex flex-col gap-4 w-full xl:flex-1 xl:max-w-sm">
+        <div className="flex flex-col gap-4 w-full sm:w-135 sm:shrink-0">
           {/* Date calendar */}
-          <div className="rounded-2xl overflow-hidden w-full bg-linear-to-br from-[#1F1F1F] to-[#666666] border border-black **:data-[selected-single=true]:bg-[#498BD7]">
+          <div className="rounded-2xl overflow-hidden w-full bg-linear-to-br from-[#1F1F1F] to-[#666666] border border-black flex justify-center **:data-[selected-single=true]:bg-[#498BD7]">
             <Calendar
               mode="single"
               selected={primaryDate}

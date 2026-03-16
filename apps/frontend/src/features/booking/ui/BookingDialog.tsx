@@ -38,7 +38,7 @@ export function BookingDialog({
 }: Props) {
   return (
     <Dialog open={!!booking} onOpenChange={(open) => !open && onCancel()}>
-      <DialogContent className="sm:max-w-sm border-black">
+      <DialogContent className="sm:w-125 border-black">
         <DialogHeader>
           <DialogTitle className="text-2xl">Записаться на мероприятие</DialogTitle>
           <DialogDescription className="sr-only">Форма записи на мероприятие</DialogDescription>

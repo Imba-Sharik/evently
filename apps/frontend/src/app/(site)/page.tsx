@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { format } from 'date-fns'
 
 import { getLocations } from '@/shared/api/generated/clients/getLocations'
 import { getEvents } from '@/shared/api/generated/clients/getEvents'
@@ -7,9 +8,16 @@ import { strapiConfig } from '@/shared/api/strapi'
 import { HomeClient } from './HomeClient'
 
 export default async function Home() {
+  const today = format(new Date(), 'yyyy-MM-dd')
+
   const [locRes, evtRes] = await Promise.all([
     getLocations({ populate: 'image' } as never, strapiConfig()),
-    getEvents({ populate: 'location' } as never, strapiConfig()),
+    getEvents({
+      populate: 'location',
+      'filters[date][$gte]': today,
+      'pagination[limit]': 100,
+      sort: 'date:asc',
+    } as never, strapiConfig()),
   ])
   const locations = locRes?.data ?? []
   const events = evtRes?.data ?? []
