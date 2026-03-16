@@ -122,6 +122,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  .container {
+    max-width: 1140px !important;
+  }
   .maplibregl-popup-content {
     @apply bg-transparent! shadow-none! p-0! rounded-none!;
   }

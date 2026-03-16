@@ -20,20 +20,25 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <div className="relative h-72 overflow-hidden">
+      <div className="relative overflow-hidden" style={{ height: '403px' }}>
         <Image
-          src="/backround_image.png"
+          src="/bg_2.png"
           alt=""
           fill
           priority
-          className="object-cover blur-lg scale-110"
+          className="object-cover"
         />
-        <div className="relative z-10 h-full container mx-auto flex gap-4 px-8 py-6">
+        {/* overlay: fill #000 34% + backdrop-blur 100px */}
+        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.34)', backdropFilter: 'blur(100px)', opacity: 0.84 }} />
+        <div className="relative z-10 h-full container mx-auto flex flex-col gap-4 px-8 pt-10">
+          <Image src="/EVENTLY.svg" alt="Evently" width={160} height={32} />
+          <div className="flex gap-4 flex-1 items-center">
           {locations.slice(0, 2).map((location) => (
             <Link
               key={location.documentId}
               href={`/locations/${location.documentId}`}
-              className="flex-1 relative rounded-3xl overflow-hidden block"
+              className="relative rounded-3xl overflow-hidden block border border-white"
+              style={{ width: '565px', height: '270px' }}
             >
               <Image
                 src={location.image?.url ?? '/location_1.png'}
@@ -48,6 +53,7 @@ export default async function Home() {
               </div>
             </Link>
           ))}
+          </div>
         </div>
       </div>
 

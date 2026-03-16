@@ -86,7 +86,7 @@ export function HomeClient({ locations, events }: Props) {
   return (
     <div className="container mx-auto px-8 py-6">
       {/* Filter row */}
-      <div className="flex gap-3 mb-6 flex-wrap items-center">
+      <div className="flex gap-1 mb-6 items-center border px-4 py-3" style={{ borderColor: '#CECECE', borderRadius: '40px' }}>
         <Button
           variant={dateFilter === 'today' ? 'default' : 'outline'}
           className="rounded-full text-lg"
@@ -127,6 +127,7 @@ export function HomeClient({ locations, events }: Props) {
           </PopoverContent>
         </Popover>
 
+        <div className="w-px mx-1" style={{ backgroundColor: '#CECECE', height: '24px' }} />
         <Select
           value={locationFilter || 'all'}
           onValueChange={v => { setLocationFilter(v === 'all' ? '' : v); setPage(1) }}
@@ -143,6 +144,7 @@ export function HomeClient({ locations, events }: Props) {
             ))}
           </SelectContent>
         </Select>
+        <div className="w-px mx-1" style={{ backgroundColor: '#CECECE', height: '24px' }} />
 
         <div className="relative flex-1 min-w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
