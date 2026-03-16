@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
-import { format } from 'date-fns'
 
 import { getLocationsid } from '@/shared/api/generated/clients/getLocationsid'
 import { getEvents } from '@/shared/api/generated/clients/getEvents'
@@ -24,11 +23,9 @@ export default async function LocationPage({
   const location = locationRes?.data
   if (!location) notFound()
 
-  const today = format(new Date(), 'yyyy-MM-dd')
-
   const eventsRes = await getEvents({
     populate: 'location',
-    'filters[date][$gte]': today,
+    'filters[location][documentId][$eq]': id,
     'pagination[limit]': 20,
   } as never, config)
   const events = eventsRes?.data ?? []
