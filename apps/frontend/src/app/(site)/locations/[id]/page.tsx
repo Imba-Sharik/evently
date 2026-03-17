@@ -31,7 +31,7 @@ export default async function LocationPage({
   const events = eventsRes?.data ?? []
 
   return (
-    <div className="bg-background min-h-screen p-8">
+    <div className="bg-background min-h-screen py-8">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0">
 

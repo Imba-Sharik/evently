@@ -29,13 +29,13 @@ export function EventCard({
   return (
     <div className="bg-white p-6 border border-black" style={{ borderRadius: '30px' }}>
       <div className="flex justify-between items-start mb-4">
-        <div>
+        <div className="max-w-137.5">
           <p className="text-lg font-bold">{event.name}</p>
           <p className="text-lg text-muted-foreground">
             {available ? `Осталось ${event.totalSpots} мест` : 'Не осталось мест :('}
           </p>
           <p className="text-lg mt-2">
-            <span className="font-bold italic">{event.name}</span>
+            <span className="font-bold">{event.name}</span>
             {event.description ? ` – ${event.description}` : ''}
           </p>
         </div>

@@ -30,7 +30,7 @@ export default async function Home() {
         />
         {/* overlay: fill #000 34% + backdrop-blur 100px */}
         <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.34)', backdropFilter: 'blur(100px)', opacity: 0.84 }} />
-        <div className="relative z-10 h-full container mx-auto flex flex-col gap-4 px-8 pt-10">
+        <div className="relative z-10 h-full container mx-auto flex flex-col gap-4 pt-10">
           <Image src="/EVENTLY.svg" alt="Evently" width={160} height={32} />
           <div className="flex gap-4 flex-1 items-center">
           {locations.slice(0, 2).map((location) => (
@@ -47,7 +47,7 @@ export default async function Home() {
                 className="object-cover"
               />
               <div className="absolute bottom-4 left-4">
-                <span className="bg-white/10 text-white text-lg font-medium px-3 py-1.5 rounded-full backdrop-blur-md border border-white/30">
+                <span className="text-white text-lg font-medium px-4 py-2 rounded-full border border-white/20" style={{ backdropFilter: 'blur(16px) brightness(0.65) saturate(140%)', background: 'rgba(0,0,0,0.15)' }}>
                   {location.name}
                 </span>
               </div>

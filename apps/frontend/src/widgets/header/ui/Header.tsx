@@ -7,14 +7,15 @@ interface HeaderProps {
   className?: string
   leftSlot?: React.ReactNode
   showLogo?: boolean
+  fullWidth?: boolean
 }
 
-export async function Header({ className, leftSlot, showLogo = true }: HeaderProps) {
+export async function Header({ className, leftSlot, showLogo = true, fullWidth }: HeaderProps) {
   const session = await auth()
 
   return (
     <header className={cn("border-b bg-background px-8", className ?? "fixed top-0 left-0 right-0 z-50")}>
-      <div className="container mx-auto flex h-16 items-center justify-between">
+      <div className={cn("flex h-16 items-center justify-between", fullWidth ? "w-full" : "container mx-auto")}>
         <div className="flex items-center gap-2">
           {leftSlot}
           {showLogo && (
@@ -23,12 +24,7 @@ export async function Header({ className, leftSlot, showLogo = true }: HeaderPro
             </Link>
           )}
         </div>
-        <nav className="flex items-center gap-6">
-          <Link href="/" className="text-lg hover:text-foreground/70 transition-colors">
-            Локации
-          </Link>
-        </nav>
-        <UserNav session={session} />
+<UserNav session={session} />
       </div>
     </header>
   )

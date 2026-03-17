@@ -71,7 +71,7 @@ export function HomeClient({ locations, events }: Props) {
   }
 
   return (
-    <div className="container mx-auto px-8 py-6">
+    <div className="container mx-auto py-6">
       <EventsFilter
         className="mb-6"
         dateFilter={dateFilter}

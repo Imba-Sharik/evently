@@ -10,8 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu"
-import { Button } from "@/shared/ui/button"
-import Link from "next/link"
+
 
 interface UserNavProps {
   session: Session | null
@@ -19,16 +18,7 @@ interface UserNavProps {
 
 export function UserNav({ session }: UserNavProps) {
   if (!session) {
-    return (
-      <div className="flex gap-2">
-        <Button variant="ghost" className="text-lg" asChild>
-          <Link href="/login">Войти</Link>
-        </Button>
-        <Button className="text-lg" asChild>
-          <Link href="/register">Регистрация</Link>
-        </Button>
-      </div>
-    )
+    return null
   }
 
   const initials = session.user?.name?.charAt(0).toUpperCase() ?? "U"
@@ -49,10 +39,6 @@ export function UserNav({ session }: UserNavProps) {
           <p className="text-lg font-medium">{session.user?.name}</p>
           <p className="text-lg text-muted-foreground">{session.user?.email}</p>
         </div>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/profile">Профиль</Link>
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => signOut({ callbackUrl: '/' })}

@@ -49,12 +49,7 @@ export function LoginForm({
         <Field>
           <div className="flex items-center">
             <FieldLabel className="text-lg" htmlFor="password">Пароль</FieldLabel>
-            <a
-              href="#"
-              className="ml-auto text-lg underline-offset-4 hover:underline"
-            >
-              Забыли пароль?
-            </a>
+            {/* <a href="#" className="ml-auto text-lg underline-offset-4 hover:underline">Забыли пароль?</a> */}
           </div>
           <PasswordInput id="password" name="password" className="text-lg h-11" required />
         </Field>
@@ -64,10 +59,10 @@ export function LoginForm({
             {isPending ? "Входим..." : "Войти"}
           </Button>
         </Field>
-        <FieldDescription className="text-center text-lg">
+        {/* <FieldDescription className="text-center text-lg">
           Нет аккаунта?{" "}
           <Link href="/register">Зарегистрироваться</Link>
-        </FieldDescription>
+        </FieldDescription> */}
         {/* TODO: OAuth — uncomment when provider is configured
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
