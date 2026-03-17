@@ -34,10 +34,9 @@ export function EventCard({
           <p className="text-lg text-muted-foreground">
             {available ? `Осталось ${event.totalSpots} мест` : 'Не осталось мест :('}
           </p>
-          <p className="text-lg mt-2">
-            <span className="font-bold">{event.name}</span>
-            {event.description ? ` – ${event.description}` : ''}
-          </p>
+          {event.description && (
+            <p className="text-lg mt-2">{event.description}</p>
+          )}
         </div>
         <div className="text-right text-lg text-muted-foreground shrink-0 ml-4">
           <p>{formatDate(date)}</p>

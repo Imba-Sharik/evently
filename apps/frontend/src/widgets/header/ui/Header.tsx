@@ -24,7 +24,12 @@ export async function Header({ className, leftSlot, showLogo = true, fullWidth }
             </Link>
           )}
         </div>
-<UserNav session={session} />
+        <nav className="flex items-center gap-6">
+          <Link href="/" className="text-lg hover:text-muted-foreground transition-colors">
+            Главная
+          </Link>
+        </nav>
+        <UserNav session={session} />
       </div>
     </header>
   )

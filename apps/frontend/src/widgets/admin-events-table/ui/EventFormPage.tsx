@@ -22,6 +22,7 @@ import { Checkbox } from '@/shared/ui/checkbox'
 import { type FormState, emptyForm } from '@/entities/event/model/types'
 import { createEventAction, updateEventAction } from '@/entities/event/actions'
 import { EventCard } from '@/entities/event/ui/EventCard'
+import { ConfirmDialog } from '@/shared/ui/confirm-dialog'
 import type { Event } from '@/shared/api/generated/types/Event'
 
 type LocationOption = { documentId: string; name: string }
@@ -72,6 +73,8 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
   const [previewQuantity, setPreviewQuantity] = useState(1)
   const [saveAsTemplate, setSaveAsTemplate] = useState(false)
   const [selectedTemplateId, setSelectedTemplateId] = useState('__none__')
+
+  const isDirty = form.name.trim() !== '' || form.description.trim() !== '' || form.spots !== '' || form.startTime !== '' || form.endTime !== '' || dates.length > 0 || locationId !== ''
 
   function setField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm(prev => ({ ...prev, [key]: value }))
@@ -305,9 +308,23 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
           </div>
 
           <div className="flex gap-3 justify-between">
-            <Button variant="outline" className="border-black text-lg h-11" onClick={() => router.push('/admin/events')}>
-              Отмена
-            </Button>
+            {isDirty ? (
+              <ConfirmDialog
+                trigger={
+                  <Button variant="outline" className="border-black text-lg h-11">
+                    Отмена
+                  </Button>
+                }
+                title="Отменить создание?"
+                description="Все введённые данные будут потеряны."
+                confirmLabel="Да, отменить"
+                onConfirm={() => router.push('/admin/events')}
+              />
+            ) : (
+              <Button variant="outline" className="border-black text-lg h-11" onClick={() => router.push('/admin/events')}>
+                Отмена
+              </Button>
+            )}
             <Button
               onClick={handleSave}
               disabled={!isValid || isPending}
