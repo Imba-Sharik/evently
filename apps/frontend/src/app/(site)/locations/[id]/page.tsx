@@ -38,10 +38,10 @@ export default async function LocationPage({
           {/* ── LEFT: header + filters + events ─────────────────────── */}
           <div className="flex flex-col gap-8 mb-8">
             <div className="flex items-center gap-3 pb-2">
-              <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
-                <ArrowLeft className="size-6" />
+              <Link href="/" className="text-black">
+                <ArrowLeft style={{ width: '20px', height: '20px' }} />
               </Link>
-              <h1 className="text-5xl font-semibold">{location.name}</h1>
+              <h1 className="text-4xl font-semibold">{location.name}</h1>
             </div>
             <LocationEvents
               events={events}

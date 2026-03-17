@@ -2,16 +2,11 @@
 
 import { useState } from 'react'
 import { format, addDays, parseISO } from 'date-fns'
-import { ru } from 'date-fns/locale'
-import { Search, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import type { Event } from '@/shared/api/generated/types/Event'
-import { Button } from '@/shared/ui/button'
-import { Input } from '@/shared/ui/input'
-import { Calendar } from '@/shared/ui/calendar'
-import { Popover, PopoverTrigger, PopoverContent } from '@/shared/ui/popover'
 import { EventCard } from '@/entities/event'
+import { EventsFilter } from '@/shared/ui/events-filter'
 import { useBooking, BookingDialog } from '@/features/booking'
 import { createBookingAction } from '@/entities/booking/actions'
 
@@ -68,65 +63,14 @@ export function LocationEvents({ events, locationName, locationDocumentId }: Pro
 
   return (
     <>
-      {/* Filter row */}
-      <div className="flex gap-3 flex-wrap items-center">
-        <Button
-          variant={dateFilter === 'today' ? 'default' : 'outline'}
-          className="rounded-full text-lg"
-          onClick={() => { setDateFilter('today'); setCustomDate(undefined) }}
-        >
-          Сегодня
-        </Button>
-        <Button
-          variant={dateFilter === 'tomorrow' ? 'default' : 'outline'}
-          className="rounded-full text-lg"
-          onClick={() => { setDateFilter('tomorrow'); setCustomDate(undefined) }}
-        >
-          Завтра
-        </Button>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={dateFilter === 'custom' ? 'default' : 'outline'}
-              className="rounded-full text-lg"
-            >
-              {dateFilter === 'custom' && customDate
-                ? format(customDate, 'd MMMM', { locale: ru })
-                : 'Выбрать дату'}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={customDate}
-              onSelect={date => {
-                setCustomDate(date)
-                setDateFilter('custom')
-              }}
-              locale={ru}
-            />
-          </PopoverContent>
-        </Popover>
-
-        <div className="relative flex-1 min-w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Поиск по мероприятиям"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9 pr-9 rounded-full text-lg"
-          />
-          {search && (
-            <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              onClick={() => setSearch('')}
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      </div>
+      <EventsFilter
+        className="mb-6"
+        dateFilter={dateFilter}
+        customDate={customDate}
+        search={search}
+        onDateChange={(filter, date) => { setDateFilter(filter); setCustomDate(date) }}
+        onSearchChange={setSearch}
+      />
 
       {/* Events list */}
       <div className="flex flex-col gap-6">

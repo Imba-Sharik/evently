@@ -37,8 +37,8 @@ export default async function Home() {
             <Link
               key={location.documentId}
               href={`/locations/${location.documentId}`}
-              className="relative rounded-3xl overflow-hidden block border border-white"
-              style={{ width: '565px', height: '270px' }}
+              className="relative overflow-hidden block border border-white"
+              style={{ width: '565px', height: '270px', borderRadius: '40px' }}
             >
               <Image
                 src={location.image?.url ?? '/location_1.png'}

@@ -2,29 +2,16 @@
 
 import { useState } from 'react'
 import { format, parseISO, addDays } from 'date-fns'
-import { ru } from 'date-fns/locale'
-import { Search, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 import type { Event } from '@/shared/api/generated/types/Event'
 import type { Location } from '@/shared/api/generated/types/Location'
 import { Button } from '@/shared/ui/button'
-import { Input } from '@/shared/ui/input'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/shared/ui/select'
-import { Calendar } from '@/shared/ui/calendar'
-import { Popover, PopoverTrigger, PopoverContent } from '@/shared/ui/popover'
 import { useBooking, BookingDialog } from '@/features/booking'
 import { createBookingAction } from '@/entities/booking/actions'
+import { EventCard } from '@/entities/event'
+import { EventsFilter } from '@/shared/ui/events-filter'
 
-function spotsLabel(n: number): string {
-  if (n === 0) return 'Не осталось мест :('
-  const mod100 = n % 100
-  const mod10 = n % 10
-  if (mod100 >= 11 && mod100 <= 19) return `Осталось ${n} мест`
-  if (mod10 === 1) return `Осталось ${n} место`
-  if (mod10 >= 2 && mod10 <= 4) return `Осталось ${n} места`
-  return `Осталось ${n} мест`
-}
 
 type Props = {
   locations: Location[]
@@ -85,147 +72,33 @@ export function HomeClient({ locations, events }: Props) {
 
   return (
     <div className="container mx-auto px-8 py-6">
-      {/* Filter row */}
-      <div className="flex gap-1 mb-6 items-center border px-4 py-3" style={{ borderColor: '#CECECE', borderRadius: '40px' }}>
-        <Button
-          variant={dateFilter === 'today' ? 'default' : 'outline'}
-          className="rounded-full text-lg"
-          onClick={() => { setDateFilter('today'); setCustomDate(undefined); setPage(1) }}
-        >
-          Сегодня
-        </Button>
-        <Button
-          variant={dateFilter === 'tomorrow' ? 'default' : 'outline'}
-          className="rounded-full text-lg"
-          onClick={() => { setDateFilter('tomorrow'); setCustomDate(undefined); setPage(1) }}
-        >
-          Завтра
-        </Button>
-
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant={dateFilter === 'custom' ? 'default' : 'outline'}
-              className="rounded-full text-lg"
-            >
-              {dateFilter === 'custom' && customDate
-                ? format(customDate, 'd MMMM', { locale: ru })
-                : 'Выбрать дату'}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={customDate}
-              onSelect={date => {
-                setCustomDate(date)
-                setDateFilter('custom')
-                setPage(1)
-              }}
-              locale={ru}
-            />
-          </PopoverContent>
-        </Popover>
-
-        <div className="w-px mx-1" style={{ backgroundColor: '#CECECE', height: '24px' }} />
-        <Select
-          value={locationFilter || 'all'}
-          onValueChange={v => { setLocationFilter(v === 'all' ? '' : v); setPage(1) }}
-        >
-          <SelectTrigger className="w-52 rounded-full text-lg">
-            <SelectValue placeholder="Выберите локацию" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all" className="text-lg">Все локации</SelectItem>
-            {locations.map(loc => (
-              <SelectItem key={loc.documentId} value={loc.documentId!} className="text-lg">
-                {loc.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="w-px mx-1" style={{ backgroundColor: '#CECECE', height: '24px' }} />
-
-        <div className="relative flex-1 min-w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Поиск по мероприятиям"
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1) }}
-            className="pl-9 pr-9 rounded-full text-lg"
-          />
-          {search && (
-            <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              onClick={() => setSearch('')}
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      </div>
+      <EventsFilter
+        className="mb-6"
+        dateFilter={dateFilter}
+        customDate={customDate}
+        search={search}
+        locations={locations}
+        locationFilter={locationFilter}
+        onDateChange={(filter, date) => { setDateFilter(filter); setCustomDate(date); setPage(1) }}
+        onSearchChange={v => { setSearch(v); setPage(1) }}
+        onLocationChange={v => { setLocationFilter(v); setPage(1) }}
+      />
 
       {/* Events list */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 p-4" style={{ border: '1px solid #CECECE', borderRadius: '40px' }}>
         {paginated.map(event => {
           const key = eventKey(event)
-          const qty = getQuantity(key)
-          const available = (event.totalSpots ?? 0) > 0
-          const dateFormatted = event.date
-            ? format(parseISO(event.date), 'EEE, d MMMM', { locale: ru })
-            : ''
-          const dateCapitalized = dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1)
-          const startTime = event.startTime?.slice(0, 5) ?? ''
-
+          const date = event.date ? parseISO(event.date) : new Date()
           return (
-            <div key={key} className="bg-white rounded-2xl border p-6">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <p className="text-lg font-bold">{event.name}</p>
-                  <p className="text-lg text-muted-foreground">{spotsLabel(event.totalSpots ?? 0)}</p>
-                </div>
-                <div className="text-right text-lg text-muted-foreground shrink-0 ml-4">
-                  <p>{dateCapitalized}</p>
-                  <p>Начало: {startTime}</p>
-                  <p>{event.location?.name}</p>
-                </div>
-              </div>
-
-              <p className="text-lg mb-4">
-                <span className="font-bold italic">{event.name}</span>
-                {event.description ? ` – ${event.description}` : ''}
-              </p>
-
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  disabled={!available}
-                  className="text-lg"
-                  onClick={() => available && openBooking(event, parseISO(event.date!))}
-                >
-                  {available ? 'Записаться' : 'Недоступно'}
-                </Button>
-
-                {available && (
-                  <div className="flex items-center gap-2 text-lg">
-                    <span className="text-muted-foreground">Кол-во мест:</span>
-                    <button
-                      className="w-7 h-7 rounded border flex items-center justify-center hover:bg-gray-50"
-                      onClick={() => changeQuantity(key, 1)}
-                    >
-                      +
-                    </button>
-                    <span className="w-6 text-center">{qty}</span>
-                    <button
-                      className="w-7 h-7 rounded border flex items-center justify-center hover:bg-gray-50"
-                      onClick={() => changeQuantity(key, -1)}
-                    >
-                      −
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+            <EventCard
+              key={key}
+              event={event}
+              date={date}
+              locationName={event.location?.name}
+              quantity={getQuantity(key)}
+              onQuantityChange={(delta) => changeQuantity(key, delta)}
+              onBook={() => openBooking(event, date)}
+            />
           )
         })}
 
