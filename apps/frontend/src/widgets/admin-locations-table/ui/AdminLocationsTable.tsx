@@ -40,7 +40,6 @@ import {
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
-  Plus,
   Search,
 } from 'lucide-react'
 import type { Location } from '@/shared/api/generated/types/Location'
@@ -183,8 +182,7 @@ export function AdminLocationsTable({ data }: Props) {
             className="pl-9 border-black text-lg h-11"
           />
         </div>
-        <Button className="h-11 gap-2 text-lg" onClick={() => router.push('/admin/locations/new')}>
-          <Plus className="size-4" />
+        <Button className="h-11 text-lg" onClick={() => router.push('/admin/locations/new')}>
           Создать локацию
         </Button>
       </div>
