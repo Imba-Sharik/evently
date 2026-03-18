@@ -35,7 +35,7 @@ export function EventsFilter({
   className,
 }: Props) {
   return (
-    <div className={`flex gap-1 items-center px-4 py-3 ${className ?? ''}`} style={{ border: '1px solid #CECECE', borderRadius: '40px' }}>
+    <div className={`flex gap-1 items-center px-4 py-3 section-border ${className ?? ''}`}>
       <Button
         variant={dateFilter === 'today' ? 'default' : 'outline'}
         className="rounded-full text-lg"

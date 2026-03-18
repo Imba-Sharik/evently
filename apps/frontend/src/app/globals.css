@@ -122,8 +122,23 @@
   body {
     @apply bg-background text-foreground;
   }
+  button,
+  a,
+  [role="button"],
+  [role="link"],
+  [role="tab"],
+  [role="menuitem"],
+  [role="option"],
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
   .container {
     max-width: 1140px !important;
+  }
+  .section-border {
+    border: 1px solid #CECECE;
+    border-radius: 40px;
   }
   .maplibregl-popup-content {
     @apply bg-transparent! shadow-none! p-0! rounded-none!;

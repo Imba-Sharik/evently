@@ -123,8 +123,7 @@ export function AdminTemplatesList({ templates }: Props) {
   )
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Готовые шаблоны</h2>
+    <div className="space-y-4 p-5 section-border">
 
       {/* Search */}
       <div className="relative">

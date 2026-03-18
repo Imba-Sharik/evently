@@ -47,12 +47,6 @@ import type { Event } from '@/shared/api/generated/types/Event'
 import { deleteEventAction } from '@/entities/event/actions'
 import { ConfirmDialog } from '@/shared/ui/confirm-dialog'
 
-const TIME_SLOT_LABELS: Record<string, string> = {
-  morning: 'Утро',
-  afternoon: 'День',
-  evening: 'Вечер',
-}
-
 const MONTHS_RU = [
   'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря',
@@ -178,29 +172,17 @@ export function AdminEventsTable({ data, locations }: Props) {
       id: 'time',
       header: 'Время',
       cell: ({ row }) => (
-        <span className="text-muted-foreground">
+        <span>
           {formatTime(row.original.startTime)} – {formatTime(row.original.endTime)}
         </span>
       ),
-    },
-    {
-      accessorKey: 'timeSlot',
-      header: 'Слот',
-      cell: ({ getValue }) => {
-        const slot = getValue<string>()
-        return slot ? (
-          <span className="px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-lg font-medium">
-            {TIME_SLOT_LABELS[slot] ?? slot}
-          </span>
-        ) : '—'
-      },
     },
     {
       id: 'locationName',
       header: 'Локация',
       accessorFn: (row) => row.location?.name ?? '—',
       cell: ({ getValue }) => (
-        <span className="text-muted-foreground">{getValue<string>()}</span>
+        <span>{getValue<string>()}</span>
       ),
     },
     {
@@ -239,7 +221,7 @@ export function AdminEventsTable({ data, locations }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageSize: 5 } },
     globalFilterFn: (row, _colId, value) => {
       const q = value.toLowerCase()
       return (
@@ -255,9 +237,9 @@ export function AdminEventsTable({ data, locations }: Props) {
   const ghostCount = pageSize - table.getRowModel().rows.length
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-5 section-border">
       {/* Filters */}
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-48">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
           <Input
@@ -324,7 +306,7 @@ export function AdminEventsTable({ data, locations }: Props) {
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className="py-1.5">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

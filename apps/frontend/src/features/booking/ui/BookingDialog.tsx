@@ -92,9 +92,9 @@ export function BookingDialog({
             </div>
           </div>
         )}
-        <DialogFooter className="mt-2 flex-row">
-          <Button className="text-xl flex-1 h-12" onClick={onSubmit}>Отправить</Button>
+        <DialogFooter className="mt-2 flex-row! justify-between gap-3">
           <Button variant="outline" className="text-xl flex-1 h-12 border-black" onClick={onCancel}>Отменить</Button>
+          <Button className="text-xl flex-1 h-12" onClick={onSubmit}>Отправить</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

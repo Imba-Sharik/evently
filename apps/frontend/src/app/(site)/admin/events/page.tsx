@@ -57,29 +57,24 @@ export default async function EventsPage() {
   }
 
   return (
-    <div className="p-6 space-y-4">
-      {/* Top bar */}
-      <div className="flex items-center justify-between">
-        <div />
-        <Button asChild className="h-11 gap-2 text-lg">
-          <Link href="/admin/events/new">
-            Создать мероприятие
-          </Link>
-        </Button>
+    <div className="p-6 flex gap-6 items-start">
+      {/* Templates */}
+      <div className="w-150 shrink-0 space-y-4">
+        <h2 className="text-xl font-semibold h-11 flex items-center">Готовые шаблоны</h2>
+        <AdminTemplatesList templates={templates} />
       </div>
 
-      {/* Two-column layout */}
-      <div className="flex gap-6">
-        {/* Templates sidebar */}
-        <div className="w-96 shrink-0">
-          <AdminTemplatesList templates={templates} />
-        </div>
-
-        {/* Events table */}
-        <div className="flex-1 min-w-0 space-y-4">
+      {/* Events */}
+      <div className="flex-1 min-w-0 space-y-4">
+        <div className="flex items-center justify-between h-11">
           <h2 className="text-xl font-semibold">Расписание мероприятий</h2>
-          <AdminEventsTable data={events} locations={locations} />
+          <Button asChild className="h-11 gap-2 text-lg">
+            <Link href="/admin/events/new">
+              Создать мероприятие
+            </Link>
+          </Button>
         </div>
+        <AdminEventsTable data={events} locations={locations} />
       </div>
     </div>
   )

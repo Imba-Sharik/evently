@@ -185,7 +185,7 @@ export function AdminLocationsTable({ data }: Props) {
         </div>
         <Button className="h-11 gap-2 text-lg" onClick={() => router.push('/admin/locations/new')}>
           <Plus className="size-4" />
-          Локация
+          Создать локацию
         </Button>
       </div>
 

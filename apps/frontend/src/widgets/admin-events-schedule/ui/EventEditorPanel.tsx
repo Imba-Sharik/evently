@@ -59,7 +59,7 @@ export function EventEditorPanel({
             <button
               type="button"
               onClick={toggleMultipleMode}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {multipleMode ? 'Одна дата' : '+ Несколько дат'}
             </button>

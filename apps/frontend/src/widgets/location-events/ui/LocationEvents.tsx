@@ -64,7 +64,6 @@ export function LocationEvents({ events, locationName, locationDocumentId }: Pro
   return (
     <>
       <EventsFilter
-        className="mb-6"
         dateFilter={dateFilter}
         customDate={customDate}
         search={search}
@@ -73,7 +72,7 @@ export function LocationEvents({ events, locationName, locationDocumentId }: Pro
       />
 
       {/* Events list */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 p-4 section-border">
         {filtered.map(event => {
           const key = eventKey(event)
           const date = event.date ? parseISO(event.date) : new Date()

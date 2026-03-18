@@ -31,10 +31,10 @@ export function ConfirmDialog({ trigger, title, description, confirmLabel = 'У�
           <AlertDialogTitle className="text-lg">{title}</AlertDialogTitle>
           <AlertDialogDescription className="text-lg">{description}</AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="sm:justify-start">
-          <AlertDialogCancel className="text-lg">Отмена</AlertDialogCancel>
+        <AlertDialogFooter className="flex-row! justify-between gap-3">
+          <AlertDialogCancel className="text-lg flex-1 mt-0">Отмена</AlertDialogCancel>
           <AlertDialogAction
-            className="text-lg bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="text-lg flex-1 bg-destructive text-destructive-foreground hover:bg-destructive/90"
             onClick={onConfirm}
           >
             {confirmLabel}

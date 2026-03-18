@@ -85,7 +85,7 @@ export function HomeClient({ locations, events }: Props) {
       />
 
       {/* Events list */}
-      <div className="flex flex-col gap-4 p-4" style={{ border: '1px solid #CECECE', borderRadius: '40px' }}>
+      <div className="flex flex-col gap-4 p-4 section-border">
         {paginated.map(event => {
           const key = eventKey(event)
           const date = event.date ? parseISO(event.date) : new Date()

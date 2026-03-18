@@ -172,7 +172,7 @@ export function EventFormDialog({ open, onOpenChange, locations, event, template
                 <button
                   type="button"
                   onClick={toggleMultipleMode}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 >
                   {multipleMode ? 'Одна дата' : '+ Несколько дат'}
                 </button>
@@ -274,14 +274,14 @@ export function EventFormDialog({ open, onOpenChange, locations, event, template
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-2">
-          <Button variant="outline" className="border-black text-lg h-11" onClick={() => handleOpenChange(false)}>
+        <div className="flex justify-between gap-3 pt-2">
+          <Button variant="outline" className="border-black text-lg h-11 flex-1" onClick={() => handleOpenChange(false)}>
             Отмена
           </Button>
           <Button
             onClick={handleSave}
             disabled={!isValid || isPending}
-            className="text-lg h-11"
+            className="text-lg h-11 flex-1"
           >
             {isPending
               ? (isEdit ? 'Обновление...' : 'Создание...')
