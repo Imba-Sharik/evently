@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import Link from "next/link"
+import Image from "next/image"
 import { cn } from "@/shared/lib/utils"
 import { UserNav } from "./UserNav"
 
@@ -19,8 +20,8 @@ export async function Header({ className, leftSlot, showLogo = true, fullWidth }
         <div className="flex items-center gap-2">
           {leftSlot}
           {showLogo && (
-            <Link href="/" className="text-4xl font-semibold">
-              EVENTLY
+            <Link href="/">
+              <Image src="/EVENTLY-dark.svg" alt="Evently" width={130} height={22} />
             </Link>
           )}
         </div>
