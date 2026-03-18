@@ -221,7 +221,7 @@ export function AdminEventsTable({ data, locations }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    initialState: { pagination: { pageSize: 5 } },
+    initialState: { pagination: { pageSize: 10 } },
     globalFilterFn: (row, _colId, value) => {
       const q = value.toLowerCase()
       return (

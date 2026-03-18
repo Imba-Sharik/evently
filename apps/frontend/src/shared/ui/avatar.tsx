@@ -14,6 +14,7 @@ function Avatar({
 }) {
   return (
     <AvatarPrimitive.Root
+      suppressHydrationWarning
       data-slot="avatar"
       data-size={size}
       className={cn(

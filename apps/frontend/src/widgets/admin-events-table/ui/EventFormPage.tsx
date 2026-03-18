@@ -135,7 +135,7 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
   }
 
   return (
-    <div className="p-4 xl:p-6 max-w-5xl mx-auto">
+    <div className="p-4 xl:p-6 2xl:max-w-6xl 2xl:mx-auto">
       <div className="flex items-center gap-3 mb-6">
         <Button variant="ghost" size="icon" onClick={() => router.push('/admin/events')}>
           <ArrowLeft className="size-5" />
@@ -145,7 +145,7 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
 
       <div className="flex flex-col xl:flex-row gap-6 items-start">
         {/* Left: calendar + preview */}
-        <div className="flex flex-col gap-4 w-full sm:w-135 sm:shrink-0">
+        <div className="flex flex-col gap-4 w-full xl:flex-1 xl:min-w-0">
           {/* Date calendar */}
           <div className="rounded-2xl overflow-hidden w-full bg-linear-to-br from-[#1F1F1F] to-[#666666] border border-black flex justify-center **:data-[selected-single=true]:bg-[#498BD7]">
             <Calendar
@@ -175,7 +175,7 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
         </div>
 
         {/* Form */}
-        <div className="border border-black rounded-xl p-5 space-y-5 w-full xl:w-120 xl:shrink-0">
+        <div className="border border-black rounded-xl p-5 space-y-5 w-full xl:flex-1 xl:min-w-0">
           {/* Header: title + template select */}
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -248,11 +248,11 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
                 placeholder="Описание"
                 value={form.description}
                 onChange={e => setField('description', e.target.value)}
-                className="text-lg md:text-lg border-black resize-none min-h-20"
+                className="text-lg md:text-lg border-black resize-none min-h-30"
               />
             </div>
 
-            {/* Time + Spots */}
+            {/* Time + Spots + Location */}
             <div className="flex gap-4 items-end flex-wrap">
               <div className="flex flex-col gap-2">
                 <label className="font-medium">Начало</label>
@@ -262,7 +262,7 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
                 <label className="font-medium">Конец</label>
                 <TimePicker value={form.endTime} onChange={v => setField('endTime', v)} className="border-black" />
               </div>
-              <div className="flex flex-col gap-2 flex-1">
+              <div className="flex flex-col gap-2">
                 <label className="font-medium">Кол-во мест</label>
                 <Input
                   type="number"
@@ -270,18 +270,14 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
                   placeholder="Кол-во мест"
                   value={form.spots}
                   onChange={e => setField('spots', e.target.value)}
-                  className="w-full text-lg h-11 border-black"
+                  className="w-30 text-lg h-11 border-black"
                 />
               </div>
-            </div>
-
-            {/* Location + Save as template — create mode only */}
-            {!isEdit && (
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
-                <div className="space-y-2 flex-1">
+              {!isEdit && (
+                <div className="flex flex-col gap-2 flex-1 min-w-40">
                   <label className="font-medium">Выберите локацию</label>
                   <Select value={locationId} onValueChange={setLocationId}>
-                    <SelectTrigger className="border-black text-lg w-full" style={{ height: '44px' }}>
+                    <SelectTrigger className="border-black text-lg w-full h-11!">
                       <SelectValue placeholder="Выберите локацию" />
                     </SelectTrigger>
                     <SelectContent className="text-lg" position="popper">
@@ -293,17 +289,19 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
                     </SelectContent>
                   </Select>
                 </div>
-                {selectedTemplateId === '__none__' && (
-                  <label className="flex items-center justify-between gap-2 h-11 px-3 cursor-pointer border border-black rounded-lg">
-                    Сохранить как шаблон
-                    <Checkbox
-                      checked={saveAsTemplate}
-                      onCheckedChange={v => setSaveAsTemplate(!!v)}
-                      className="border-black"
-                    />
-                  </label>
-                )}
-              </div>
+              )}
+            </div>
+
+            {/* Save as template — create mode only */}
+            {!isEdit && selectedTemplateId === '__none__' && (
+              <label className="flex items-center justify-between gap-2 h-11 px-3 cursor-pointer border border-black rounded-lg w-fit">
+                Сохранить как шаблон
+                <Checkbox
+                  checked={saveAsTemplate}
+                  onCheckedChange={v => setSaveAsTemplate(!!v)}
+                  className="border-black"
+                />
+              </label>
             )}
           </div>
 
@@ -311,7 +309,7 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
             {isDirty ? (
               <ConfirmDialog
                 trigger={
-                  <Button variant="outline" className="border-black text-lg h-11">
+                  <Button variant="outline" className="border-black text-lg h-11 flex-1">
                     Отмена
                   </Button>
                 }
@@ -321,14 +319,14 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
                 onConfirm={() => router.push('/admin/events')}
               />
             ) : (
-              <Button variant="outline" className="border-black text-lg h-11" onClick={() => router.push('/admin/events')}>
+              <Button variant="outline" className="border-black text-lg h-11 flex-1" onClick={() => router.push('/admin/events')}>
                 Отмена
               </Button>
             )}
             <Button
               onClick={handleSave}
               disabled={!isValid || isPending}
-              className="text-lg h-11"
+              className="text-lg h-11 flex-1"
             >
               {isPending
                 ? (isEdit ? 'Обновление...' : 'Создание...')
