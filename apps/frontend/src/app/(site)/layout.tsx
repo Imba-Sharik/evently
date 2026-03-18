@@ -32,7 +32,7 @@ export default async function SiteLayout({
   return (
     <>
       <Header />
-      <main className="flex-1 overflow-y-auto pt-16">
+      <main className="flex-1 pt-16">
         {children}
       </main>
       <Footer />
