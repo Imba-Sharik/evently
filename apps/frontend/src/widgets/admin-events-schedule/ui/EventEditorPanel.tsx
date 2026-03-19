@@ -147,7 +147,10 @@ export function EventEditorPanel({
             <label className="text-lg font-medium">Начало</label>
             <TimePicker
               value={form.startTime}
-              onChange={v => setField('startTime', v)}
+              onChange={v => {
+                setField('startTime', v)
+                if (form.endTime && v > form.endTime) setField('endTime', v)
+              }}
               className="border-black"
             />
           </div>
@@ -156,6 +159,7 @@ export function EventEditorPanel({
             <TimePicker
               value={form.endTime}
               onChange={v => setField('endTime', v)}
+              min={form.startTime}
               className="border-black"
             />
           </div>

@@ -20,7 +20,7 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <div className="relative overflow-hidden" style={{ height: '403px' }}>
+      <div className="relative overflow-hidden" style={{ height: '340px' }}>
         <Image
           src="/bg_2.png"
           alt=""
@@ -30,8 +30,8 @@ export default async function Home() {
         />
         {/* overlay: fill #000 34% + backdrop-blur 100px */}
         <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.34)', backdropFilter: 'blur(100px)', opacity: 0.84 }} />
-        <div className="relative z-10 h-full container mx-auto flex flex-col gap-4 pt-10">
-          <div className="flex gap-4 flex-1 items-center justify-center">
+        <div className="relative z-10 h-full container mx-auto flex items-center justify-center">
+          <div className="flex gap-4 items-center justify-center">
           {locations.slice(0, 2).map((location) => (
             <Link
               key={location.documentId}

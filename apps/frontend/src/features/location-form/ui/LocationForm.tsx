@@ -175,19 +175,102 @@ export function LocationForm(props: Props) {
   const canSubmit = isValid && !!addressValue && (requirePhoto ? images.length > 0 : true)
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="border border-black rounded-xl p-5">
       <div className="flex flex-col xl:flex-row gap-8 items-start">
 
-        {/* Левая колонка — фотографии */}
-        <div className="w-full xl:w-80 xl:shrink-0 space-y-3">
+        {/* Левая колонка — поля */}
+        <div className="w-full xl:flex-1 xl:max-w-md space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-lg">Название</Label>
+            <Input id="name" placeholder="Локация #4" className="border-black text-lg h-11" {...register('name')} />
+            {errors.name && <p className="text-lg text-destructive">{errors.name.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-lg">Адрес</Label>
+            <AddressInput
+              accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
+              language="ru"
+              placeholder="Москва, ул. Примерная, 1"
+              value={addressValue}
+              onChange={setAddressValue}
+              onClear={() => setAddressValue(undefined)}
+              mapClassName="h-48 w-full rounded-xl overflow-hidden border border-black"
+            />
+            {!addressValue && <p className="text-lg text-muted-foreground">Выберите адрес из списка</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="metro" className="text-lg">Метро</Label>
+            <Input id="metro" placeholder="Площадь Революции" className="border-black text-lg h-11" {...register('metro')} />
+            {errors.metro && <p className="text-lg text-destructive">{errors.metro.message}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description" className="text-lg">Описание</Label>
+            <Textarea
+              id="description"
+              placeholder="Расскажите о локации..."
+              rows={4}
+              className="border-black text-[18px] placeholder:text-[19px] resize-none min-h-28"
+              {...register('description')}
+            />
+            {errors.description && <p className="text-lg text-destructive">{errors.description.message}</p>}
+          </div>
+
+          {serverError && <p className="text-lg text-destructive">{serverError}</p>}
+
+          <div className="flex gap-3 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 text-lg h-11 border-black"
+              onClick={() => router.push('/admin/locations')}
+            >
+              Отмена
+            </Button>
+            <Button type="submit" className="flex-1 text-lg h-11" disabled={!canSubmit || isSubmitting}>
+              {isSubmitting ? (isEdit ? 'Обновление...' : 'Создание...') : isEdit ? 'Обновить' : 'Создать'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Правая колонка — галерея */}
+        <div className="w-full xl:flex-1 space-y-3">
           <div className="flex items-baseline justify-between">
-            <Label className="text-lg">Фотографии</Label>
+            <Label className="text-lg">Галерея объекта</Label>
             <span className="text-lg text-muted-foreground">
               {images.length} / 5
             </span>
           </div>
 
-          {/* Unified draggable image list */}
+          {/* FileUpload dropzone for adding new files */}
+          {images.length < 5 && (
+            <FileUpload
+              accept="image/*"
+              maxFiles={5 - images.length}
+              multiple
+              value={newFiles}
+              onValueChange={handleFileChange}
+            >
+              <FileUploadDropzone className="border-black gap-3 py-8">
+                <UploadCloud className="size-8 text-muted-foreground" />
+                <div className="space-y-1 text-center">
+                  <p className="text-[18px] font-medium">
+                    {isEdit ? 'Добавить новые фото' : 'Перетащите изображения сюда'}
+                  </p>
+                  <p className="text-[18px] text-muted-foreground">PNG, JPG, WEBP · до 10 МБ</p>
+                </div>
+                <FileUploadTrigger asChild>
+                  <Button type="button" variant="outline" size="sm" className="border-black">
+                    Выбрать файлы
+                  </Button>
+                </FileUploadTrigger>
+              </FileUploadDropzone>
+            </FileUpload>
+          )}
+
+          {/* Draggable image list */}
           {images.length > 0 && (
             <div className="space-y-2">
               {images.map((item, index) => (
@@ -237,89 +320,6 @@ export function LocationForm(props: Props) {
               ))}
             </div>
           )}
-
-          {/* FileUpload dropzone for adding new files */}
-          {images.length < 5 && (
-            <FileUpload
-              accept="image/*"
-              maxFiles={5 - images.length}
-              multiple
-              value={newFiles}
-              onValueChange={handleFileChange}
-            >
-              <FileUploadDropzone className="border-black gap-3 py-8">
-                <UploadCloud className="size-8 text-muted-foreground" />
-                <div className="space-y-1 text-center">
-                  <p className="text-[18px] font-medium">
-                    {isEdit ? 'Добавить новые фото' : 'Перетащите изображения сюда'}
-                  </p>
-                  <p className="text-[18px] text-muted-foreground">PNG, JPG, WEBP · до 10 МБ</p>
-                </div>
-                <FileUploadTrigger asChild>
-                  <Button type="button" variant="outline" size="sm" className="border-black">
-                    Выбрать файлы
-                  </Button>
-                </FileUploadTrigger>
-              </FileUploadDropzone>
-            </FileUpload>
-          )}
-        </div>
-
-        {/* Правая колонка — поля */}
-        <div className="w-full xl:flex-1 xl:max-w-md space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-lg">Название</Label>
-            <Input id="name" placeholder="Локация #4" className="border-black text-lg h-11" {...register('name')} />
-            {errors.name && <p className="text-lg text-destructive">{errors.name.message}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-lg">Адрес</Label>
-            <AddressInput
-              accessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN!}
-              language="ru"
-              placeholder="Москва, ул. Примерная, 1"
-              value={addressValue}
-              onChange={setAddressValue}
-              onClear={() => setAddressValue(undefined)}
-              mapClassName="h-48 w-full rounded-xl overflow-hidden border border-black"
-            />
-            {!addressValue && <p className="text-lg text-muted-foreground">Выберите адрес из списка</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="metro" className="text-lg">Метро</Label>
-            <Input id="metro" placeholder="Площадь Революции" className="border-black text-lg h-11" {...register('metro')} />
-            {errors.metro && <p className="text-lg text-destructive">{errors.metro.message}</p>}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description" className="text-lg">Описание</Label>
-            <Textarea
-              id="description"
-              placeholder="Расскажите о локации..."
-              rows={4}
-              className="border-black text-[18px] placeholder:text-[19px] resize-none min-h-28"
-              {...register('description')}
-            />
-            {errors.description && <p className="text-lg text-destructive">{errors.description.message}</p>}
-          </div>
-
-          {serverError && <p className="text-lg text-destructive">{serverError}</p>}
-
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" className="text-lg h-11 px-6" disabled={!canSubmit || isSubmitting}>
-              {isSubmitting ? (isEdit ? 'Обновление...' : 'Создание...') : isEdit ? 'Обновить' : 'Создать'}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="text-lg h-11 border-black"
-              onClick={() => router.push('/admin/locations')}
-            >
-              Отмена
-            </Button>
-          </div>
         </div>
 
       </div>

@@ -256,11 +256,14 @@ export function EventFormPage({ locations, event, templateEvent, templates = [] 
             <div className="flex gap-4 items-end flex-wrap">
               <div className="flex flex-col gap-2">
                 <label className="font-medium">Начало</label>
-                <TimePicker value={form.startTime} onChange={v => setField('startTime', v)} className="border-black" />
+                <TimePicker value={form.startTime} onChange={v => {
+                  setField('startTime', v)
+                  if (form.endTime && v > form.endTime) setField('endTime', v)
+                }} className="border-black" />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-medium">Конец</label>
-                <TimePicker value={form.endTime} onChange={v => setField('endTime', v)} className="border-black" />
+                <TimePicker value={form.endTime} onChange={v => setField('endTime', v)} min={form.startTime} className="border-black" />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-medium">Кол-во мест</label>

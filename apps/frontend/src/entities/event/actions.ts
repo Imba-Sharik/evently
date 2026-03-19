@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { auth } from '@/auth'
 import { STRAPI_API_URL } from '@/shared/api/strapi'
 
@@ -53,6 +54,7 @@ export async function createEventAction(input: CreateEventInput): Promise<Create
     return { error: data.error?.message ?? 'Ошибка создания мероприятия' }
   }
 
+  revalidatePath('/admin/events')
   return { success: true }
 }
 
@@ -86,6 +88,7 @@ export async function updateEventAction(
     return { error: data.error?.message ?? 'Ошибка обновления мероприятия' }
   }
 
+  revalidatePath('/admin/events')
   return { success: true }
 }
 
@@ -99,5 +102,6 @@ export async function deleteEventAction(documentId: string): Promise<CreateEvent
   })
 
   if (!res.ok) return { error: 'Ошибка удаления мероприятия' }
+  revalidatePath('/admin/events')
   return { success: true }
 }

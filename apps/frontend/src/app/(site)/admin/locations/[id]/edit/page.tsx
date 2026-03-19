@@ -20,7 +20,7 @@ export default async function EditLocationPage({
   if (!location) notFound()
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 xl:p-6 2xl:max-w-6xl 2xl:mx-auto space-y-6">
       <div className="flex items-center gap-3">
         <Link href="/admin/locations" className="inline-flex items-center justify-center size-9 rounded-md hover:bg-accent transition-colors">
           <ArrowLeft className="size-5" />

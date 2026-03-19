@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { auth } from '@/auth'
 import { STRAPI_API_URL } from '@/shared/api/strapi'
 
@@ -73,6 +74,7 @@ export async function createLocationAction(formData: FormData): Promise<CreateLo
   }
 
   const created = await res.json()
+  revalidatePath('/admin/locations')
   return { success: true, id: created.data?.documentId ?? created.data?.id }
 }
 
@@ -134,6 +136,7 @@ export async function updateLocationAction(documentId: string, formData: FormDat
     return { error: data.error?.message ?? 'Ошибка обновления локации' }
   }
 
+  revalidatePath('/admin/locations')
   return { success: true, id: documentId }
 }
 
@@ -147,5 +150,6 @@ export async function deleteLocationAction(documentId: string): Promise<{ error:
   })
 
   if (!res.ok) return { error: 'Ошибка удаления локации' }
+  revalidatePath('/admin/locations')
   return { success: true }
 }

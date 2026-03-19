@@ -26,7 +26,7 @@ export function UserNav({ session }: UserNavProps) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Avatar className="h-9 w-9 cursor-pointer">
+        <Avatar className="h-9 w-9 cursor-pointer ring-1 ring-black">
           <AvatarImage
             src={session.user?.image ?? ""}
             alt={session.user?.name ?? "User"}
